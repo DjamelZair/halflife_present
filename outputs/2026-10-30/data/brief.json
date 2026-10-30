@@ -5,10 +5,15 @@
   "status": {
     "demo": false,
     "counts": {
-      "PubMed": 50,
-      "bioRxiv": 7,
-      "medRxiv": 2,
-      "ClinicalTrials.gov": 20
+      "clinic/PubMed": 49,
+      "clinic/bioRxiv": 7,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 15,
+      "discovery/ClinicalTrials.gov": 43
     },
     "errors": {}
   },
@@ -22,7 +27,8 @@
       "url": "https://doi.org/10.1002/bcp.70863",
       "peer_reviewed": true,
       "original_title": "Interpreting antiretroviral exposure and drug-drug interactions in pregnancy: A clinically anchored framework for HIV pharmacology.",
-      "drugs": []
+      "drugs": [],
+      "lane": "clinic"
     },
     {
       "title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
@@ -33,34 +39,38 @@
       "url": "https://doi.org/10.1080/14622416.2026.2746620",
       "peer_reviewed": true,
       "original_title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
-      "drugs": []
+      "drugs": [],
+      "lane": "clinic"
     },
     {
-      "title": "Cytochrome P450 inhibitors: friends or foes?",
-      "what": "Cytochrome P450 (CYP450) enzymes play a central role in the metabolism of xenobiotics and endogenous compounds, influencing drug pharmacokinetics, efficacy, and safety. Inhibition of these enzymes has traditionally been viewed as a major liability in drug discovery due to its association with drug-drug interactions (DDIs), toxicity, and metabolic instability.",
+      "title": "Linerixibat authorised in the EU for cholestatic pruritus in adult patients with primary biliary cholangitis (PBC)",
+      "what": "linerixibat is indicated for the treatment of cholestatic pruritus in adult patients with primary biliary cholangitis (PBC).",
       "why": "",
       "pkpd_hook": "",
-      "source": "PubMed, Frontiers in chemistry",
-      "url": "https://doi.org/10.3389/fchem.2026.1988344",
+      "source": "EMA, EU authorisation",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/lynavoy",
       "peer_reviewed": true,
-      "original_title": "Cytochrome P450 inhibitors: friends or foes?",
-      "drugs": []
+      "original_title": "Linerixibat authorised in the EU for cholestatic pruritus in adult patients with primary biliary cholangitis (PBC)",
+      "drugs": [
+        "linerixibat"
+      ],
+      "lane": "discovery"
     }
   ],
   "molecule": {
-    "name": "montelukast",
-    "smiles": "CC(C)(C1=CC=CC=C1CC[C@H](C2=CC=CC(=C2)/C=C/C3=NC4=C(C=CC(=C4)Cl)C=C3)SCC5(CC5)CC(=O)O)O",
+    "name": "linerixibat",
+    "smiles": "CCCC[C@@]1(CS(=O)(=O)C2=C(C=C(C(=C2)CNC(CC(=O)O)CC(=O)O)OC)[C@H](N1)C3=CC=CC=C3)CC",
     "source": "PubChem",
-    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/5281040",
-    "Formula": "C35H36ClNO3S",
-    "Molecular weight": 586.2,
-    "logP": 8.95,
-    "H bond donors": 2,
-    "H bond acceptors": 4,
-    "TPSA": 70.4,
-    "Rotatable bonds": 12,
-    "Rings": 5,
-    "Rule of five violations": 2
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/53492727",
+    "Formula": "C28H38N2O7S",
+    "Molecular weight": 546.7,
+    "logP": 3.91,
+    "H bond donors": 4,
+    "H bond acceptors": 7,
+    "TPSA": 142.0,
+    "Rotatable bonds": 13,
+    "Rings": 3,
+    "Rule of five violations": 1
   },
   "pair": {
     "a": "avanafil",
