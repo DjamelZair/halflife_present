@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-30",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "PubMed": 28,
+      "bioRxiv": 7,
+      "medRxiv": 2,
+      "ClinicalTrials.gov": 20
+    },
+    "errors": {}
+  },
+  "cards": [
+    {
+      "title": "Interpreting antiretroviral exposure and drug-drug interactions in pregnancy: A clinically anchored framework for HIV pharmacology.",
+      "what": "In pregnancy, antiretroviral drug-drug interactions must be interpreted against dynamic changes in gastrointestinal physiology, plasma-protein binding, renal elimination, hepatic enzyme activity and membrane transporter expression. Interaction studies quantify geometric mean exposure ratios relative to nonpregnant adults, but these measures describe relative pharmacokinetic change rather than whether effective exposure is preserved.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, British journal of clinical pharmacology",
+      "url": "https://doi.org/10.1002/bcp.70863",
+      "peer_reviewed": true,
+      "original_title": "Interpreting antiretroviral exposure and drug-drug interactions in pregnancy: A clinically anchored framework for HIV pharmacology.",
+      "drugs": []
+    },
+    {
+      "title": "Physiologically based pharmacokinetic modeling to predict sumatriptan pharmacokinetics across OCT1 functional groups.",
+      "what": "Sumatriptan is a 5-hydroxytryptamine 1B/1D receptor agonist for acute migraine. Reduced organic cation transporter 1 (OCT1) function is associated with increased sumatriptan exposure, but its quantitative contribution to pharmacokinetic variability remains unclear.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Naunyn-Schmiedeberg's archives of pharmacology",
+      "url": "https://doi.org/10.1007/s00210-026-06018-w",
+      "peer_reviewed": true,
+      "original_title": "Physiologically based pharmacokinetic modeling to predict sumatriptan pharmacokinetics across OCT1 functional groups.",
+      "drugs": []
+    },
+    {
+      "title": "Microbiome-Mediated Pharmacokinetics and Informed Dosing of Mycophenolate in Kidney Transplantation.",
+      "what": "The gut microbiome contributes to interindividual variability in drug pharmacokinetics; however, its role in guiding dose adjustments remains unclear. Mycophenolic acid (MPA), the active metabolite of the immunosuppressant mycophenolate mofetil (MMF), exhibits high pharmacokinetic variability, potentially linked to microbial activity.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Clinical pharmacokinetics",
+      "url": "https://doi.org/10.1007/s40262-026-01707-4",
+      "peer_reviewed": true,
+      "original_title": "Microbiome-Mediated Pharmacokinetics and Informed Dosing of Mycophenolate in Kidney Transplantation.",
+      "drugs": []
+    }
+  ],
+  "molecule": {
+    "name": "montelukast",
+    "smiles": "CC(C)(C1=CC=CC=C1CC[C@H](C2=CC=CC(=C2)/C=C/C3=NC4=C(C=CC(=C4)Cl)C=C3)SCC5(CC5)CC(=O)O)O",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/5281040",
+    "Formula": "C35H36ClNO3S",
+    "Molecular weight": 586.2,
+    "logP": 8.95,
+    "H bond donors": 2,
+    "H bond acceptors": 4,
+    "TPSA": 70.4,
+    "Rotatable bonds": 12,
+    "Rings": 5,
+    "Rule of five violations": 2
+  },
+  "pair": {
+    "a": "midazolam",
+    "b": "clarithromycin",
+    "sentences": [
+      "clarithromycin is a strong inhibitor of CYP3A and midazolam is a sensitive substrate of CYP3A, so midazolam exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 8.5,
+    "category": "strong increase"
+  }
+}
