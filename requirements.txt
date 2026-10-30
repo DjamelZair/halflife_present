@@ -1,0 +1,18 @@
+# core
+requests>=2.32
+pandas>=2.2
+numpy>=1.26
+matplotlib>=3.8
+networkx>=3.2
+rdkit>=2024.3
+pillow>=10.0
+python-dotenv>=1.0
+
+# app
+streamlit>=1.40
+
+# optional, only used when ANTHROPIC_API_KEY is set
+anthropic>=0.40
+
+# tests
+pytest>=8.0

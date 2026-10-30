@@ -1,0 +1,61 @@
+# CLAUDE.md, handoff for Claude Code
+
+## What this is
+Halflife, a Christmas 2026 present for a hospital pharmacist in the Netherlands. He gets a push every
+morning, opens a Streamlit app with three news cards, a 3D molecule and an interaction lab.
+The person building it (the repo owner) wants the **easiest version** first.
+
+## Decisions already made
+* English interface, but **always European generic names (INN)**: rifampicin, paracetamol, ciclosporin.
+  Never US names, never brand names. `halflife/names.py` maps the known US names.
+* **No Claude API key for now.** Plain mode: `rank.py` picks the three most relevant items by keywords,
+  cards show the title and first two sentences of the abstract. The Claude path in
+  `summarise/brief.py` stays in place for later, it only activates when `ANTHROPIC_API_KEY` is set.
+* Push via **ntfy** (no account, secret topic). No Telegram.
+* Hosting: GitHub Actions for the daily job, Streamlit Community Cloud for the app.
+* Out of scope for now: notes helper, case of the week, Dutch translation, brand names.
+
+## Design rules
+* Clean and airy: near white background, dark navy main colour, soft blue fills, one warm accent used
+  sparingly, rounded cards and pill buttons, Poppins. Reference was a white and red lab landing page;
+  we swapped red for navy because he likes navy.
+* All colours live in `config.PALETTE` and `.streamlit/config.toml`. Never hardcode colours elsewhere.
+* Every run writes `outputs/YYYY-MM-DD/` with `figures/`, `data/` and `poster.html`. Never only CSVs,
+  always figures too.
+
+## Code conventions
+* Python, modular, one job per module.
+* Comments read like the owner wrote them: short, first person, casual. No dashes as punctuation in
+  comments, docs or UI text. British spelling in prose.
+* No invented facts. Interaction roles only from `data/cyp_reference.csv` (copied from the FDA page).
+  Model values are illustrative and labelled as such. Every news card links to its source.
+
+## Status
+Built and tested offline (`pytest -q`, 14 tests, and `python run_daily.py --demo`):
+config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
+FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
+ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
+
+**Never run against the live APIs.** The build environment blocked PubMed, bioRxiv,
+ClinicalTrials.gov, PubChem and ntfy. Endpoints follow the documented APIs, but expect small fixes.
+
+## Next steps, in order
+1. `pip install -r requirements.txt && pytest -q && python run_daily.py --demo` to confirm the setup.
+2. `python run_daily.py --no-push` live. Check each source in the printed "Errors per source" line and
+   `figures/sources_overview.png` (a zero bar means a source is broken). Fix what breaks:
+   * `sources/pubmed.py`: E-utilities esearch with `reldate` and `datetype=edat`, then efetch XML.
+   * `sources/preprints.py`: `/details/{server}/{start}/{end}/{cursor}?category=...`, 30 per page;
+     medRxiv may ignore paging.
+   * `sources/trials.py`: api v2 `/studies` sorted by `LastUpdatePostDate:desc`, date filtered in Python.
+   * `molecules/pubchem.py`: property names `SMILES` and `ConnectivitySMILES`, 3D SDF via
+     `record/SDF?record_type=3d`.
+3. Tune `PUBMED_QUERY` in `config.py` and the weights in `rank.py` after a few days of real output.
+4. Test the push: set `NTFY_TOPIC` in `.env`, run without `--no-push`, check the phone.
+5. Push to GitHub, add secrets, run the workflow by hand once, then deploy on Streamlit Cloud and set `APP_URL`.
+6. Delete the demo folder in `outputs/` once a live run exists (it is marked `"demo": true`).
+7. Note: the cron is fixed at 06:23 UTC, so the push comes an hour later in summer time.
+
+## Helpful skills
+From github.com/K-Dense-AI/claude-scientific-skills, only these were used as references:
+`paper-lookup` (PubMed, bioRxiv, medRxiv), `database-lookup` (ClinicalTrials.gov, PubChem),
+`rdkit`, `pkpd-modeling` (ICH M12 formula). No need to install the other 170.

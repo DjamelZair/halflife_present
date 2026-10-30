@@ -1,0 +1,42 @@
+name: Morning brief
+
+on:
+  schedule:
+    # GitHub runs cron in UTC. 06:23 UTC is 07:23 in Dutch winter time and 08:23 in summer time.
+    # Not on the hour on purpose, GitHub delays jobs that start at :00 when it is busy.
+    - cron: "23 6 * * *"
+  workflow_dispatch: {}  # lets me press "Run workflow" by hand to test
+
+permissions:
+  contents: write  # needed to commit the new outputs folder back to the repo
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Run the morning brief
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          APP_URL: ${{ secrets.APP_URL }}
+          NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}  # optional, empty means plain mode
+        run: python run_daily.py
+
+      - name: Save outputs to the repo
+        run: |
+          git config user.name "halflife-bot"
+          git config user.email "halflife-bot@users.noreply.github.com"
+          git add outputs/
+          git commit -m "Morning brief $(date +%F)" || echo "nothing new"
+          git push

@@ -1,0 +1,9 @@
+{
+  "_note": "Offline fallback only. Checked by molecular formula with RDKit. Stereochemistry left out on purpose; live mode takes the full structure from PubChem.",
+  "molecules": {
+    "rivaroxaban": "O=C(NCC1CN(c2ccc(N3CCOCC3=O)cc2)C(=O)O1)c1ccc(Cl)s1",
+    "midazolam": "Cc1ncc2n1-c1ccc(Cl)cc1C(c1ccccc1F)=NC2",
+    "caffeine": "Cn1cnc2c1c(=O)n(C)c(=O)n2C",
+    "paracetamol": "CC(=O)Nc1ccc(O)cc1"
+  }
+}

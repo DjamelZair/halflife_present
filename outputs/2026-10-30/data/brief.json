@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-30",
+  "mode": "fallback",
+  "demo": true,
+  "status": {
+    "demo": true,
+    "counts": {
+      "PubMed": 5
+    },
+    "errors": {}
+  },
+  "cards": [
+    {
+      "title": "Predicting drug-drug interaction and optimal dosing regimens of rivaroxaban combined with ceritinib using physiologically based pharmacokinetic and pharmacodynamic modeling.",
+      "what": "Direct oral anticoagulants like rivaroxaban are globally recommended for cancer-associated thrombosis. However, co-administration with the targeted ALK inhibitor ceritinib in lung cancer patients poses a critical risk of drug-drug interactions (DDI) due to potent CYP3A4 inhibition, lacking quantitative clinical assessments.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, European journal of pharmacology",
+      "url": "https://doi.org/10.1016/j.ejphar.2026.179399",
+      "peer_reviewed": true,
+      "original_title": "Predicting drug-drug interaction and optimal dosing regimens of rivaroxaban combined with ceritinib using physiologically based pharmacokinetic and pharmacodynamic modeling.",
+      "drugs": [
+        "ceritinib",
+        "rivaroxaban"
+      ]
+    },
+    {
+      "title": "Pharmacokinetics and Therapeutic Drug Monitoring in Liver and Kidney Disease.",
+      "what": "Hepatic and renal dysfunction can substantially alter drug pharmacokinetics. This can lead to unpredictable changes in drug clearance and elimination, which may increase the risk of toxicity or treatment failure.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Clinics in laboratory medicine",
+      "url": "https://doi.org/10.1016/j.cll.2026.07.002",
+      "peer_reviewed": true,
+      "original_title": "Pharmacokinetics and Therapeutic Drug Monitoring in Liver and Kidney Disease.",
+      "drugs": []
+    },
+    {
+      "title": "RNA-encoded PGT121-LS anti-HIV antibody: Comprehensive preclinical characterization and translational pharmacokinetics.",
+      "what": "Human immunodeficiency virus (HIV)-1 broadly neutralizing antibodies (bNAbs) have demonstrated clinical efficacy but face manufacturing challenges associated with recombinant protein production and purification. Here, we present a ribonucleic acid (RNA)-encoded bNAb (RibobNAb) platform that enables antibody production of the clinically validated bNAb PGT121 via lipid nanoparticle (LNP) delivery.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Molecular therapy. Nucleic acids",
+      "url": "https://doi.org/10.1016/j.omtn.2026.103102",
+      "peer_reviewed": true,
+      "original_title": "RNA-encoded PGT121-LS anti-HIV antibody: Comprehensive preclinical characterization and translational pharmacokinetics.",
+      "drugs": []
+    }
+  ],
+  "molecule": {
+    "name": "rivaroxaban",
+    "smiles": "O=C(NCC1CN(c2ccc(N3CCOCC3=O)cc2)C(=O)O1)c1ccc(Cl)s1",
+    "source": "offline sample",
+    "url": "",
+    "Formula": "C19H18ClN3O5S",
+    "Molecular weight": 435.9,
+    "logP": 2.52,
+    "H bond donors": 1,
+    "H bond acceptors": 6,
+    "TPSA": 88.2,
+    "Rotatable bonds": 5,
+    "Rings": 4,
+    "Rule of five violations": 0
+  },
+  "pair": {
+    "a": "ceritinib",
+    "b": "rivaroxaban",
+    "sentences": [
+      "ceritinib is a strong inhibitor of CYP3A and rivaroxaban is a moderate sensitive substrate of CYP3A, so rivaroxaban exposure can be higher."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 3.19,
+    "category": "moderate increase"
+  }
+}

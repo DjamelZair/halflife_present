@@ -1,0 +1,8 @@
+# clean white and navy theme, same colours as halflife/config.py
+[theme]
+base = "light"
+primaryColor = "#0B1F3A"
+backgroundColor = "#F7F9FC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#0B1F3A"
+font = "sans serif"
