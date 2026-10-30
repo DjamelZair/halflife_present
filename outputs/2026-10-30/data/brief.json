@@ -31,14 +31,14 @@
       "lane": "clinic"
     },
     {
-      "title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
-      "what": "Interindividual variability in drug response remains a critical challenge in contemporary pharmacotherapy, and cytochrome P450 (CYP450) genetic polymorphisms are a principal determinant of this heterogeneity. The CYP450 superfamily mediates the oxidative biotransformation of 70-80% of clinically prescribed medications.",
+      "title": "Boezemfibrilleren bij hoge doseringen omega 3-vetzuren",
+      "what": "Meer dan één gram omega 3-vetzuren per dag kan het risico op boezemfibrilleren verhogen. Dit geldt vooral voor mensen met hart- en vaatziekten of een verhoogd risico daarop.",
       "why": "",
       "pkpd_hook": "",
-      "source": "PubMed, Pharmacogenomics",
-      "url": "https://doi.org/10.1080/14622416.2026.2746620",
+      "source": "Lareb, Pharmacovigilance signal (Dutch)",
+      "url": "https://www.lareb.nl/news/boezemfibrilleren-bij-hoge-doseringen-omega-3-vetzuren/",
       "peer_reviewed": true,
-      "original_title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
+      "original_title": "Boezemfibrilleren bij hoge doseringen omega 3-vetzuren",
       "drugs": [],
       "lane": "clinic"
     },
