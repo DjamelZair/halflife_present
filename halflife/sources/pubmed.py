@@ -20,7 +20,7 @@ def _params(extra: dict) -> dict:
     return p
 
 
-def search_ids(query: str, days: int, max_results: int = 30) -> list[str]:
+def search_ids(query: str, days: int, max_results: int = config.PUBMED_MAX_RESULTS) -> list[str]:
     r = requests.get(
         f"{EUTILS}/esearch.fcgi",
         params=_params({

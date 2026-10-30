@@ -128,6 +128,13 @@ def test_pubmed_uses_the_papers_own_doi_not_a_reference():
     assert item.identifier == "10.1007/s40262-026-01707-4"
 
 
+def test_pubmed_query_stays_on_human_pharmacology():
+    q = config.PUBMED_QUERY
+    assert '"drug interactions"[MeSH Terms:noexp]' in q  # exploded it brings in pesticide synergy papers
+    assert "drug discovery" not in q.lower()
+    assert q.count("(") == q.count(")")
+
+
 def test_pubmed_falls_back_to_the_pubmed_page_without_doi():
     from halflife.sources.pubmed import parse_articles
     xml = PUBMED_XML.replace(b'<ArticleId IdType="doi">10.1007/s40262-026-01707-4</ArticleId>', b"")

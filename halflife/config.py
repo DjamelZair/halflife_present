@@ -35,13 +35,40 @@ LANGUAGE = "en"
 # how many items end up in the daily brief
 BRIEF_SIZE = 3
 LOOKBACK_DAYS = 2
+PUBMED_MAX_RESULTS = 60  # newest first, so with 30 the cap cut off papers before ranking saw them
 
-# search terms for the morning brief, tuned for a hospital pharmacist
-PUBMED_QUERY = (
-    '("drug interactions"[MeSH Terms] OR "drug-drug interaction"[Title/Abstract] '
-    'OR pharmacokinetics[Title] OR "therapeutic drug monitoring"[Title/Abstract] '
-    'OR "hospital pharmacy"[Title/Abstract] OR "drug discovery"[Title])'
+# search terms for the morning brief, tuned for a hospital pharmacist.
+# MeSH terms are noexp on purpose: exploded "drug interactions" pulls in drug synergism, so pesticide papers
+_TOPICS = (
+    # interactions
+    '"drug interactions"[MeSH Terms:noexp] OR "drug-drug interaction*"[Title/Abstract] '
+    'OR "drug interaction*"[Title] OR "herb-drug interaction*"[Title/Abstract] '
+    # pharmacokinetics and TDM
+    'OR pharmacokinetic*[Title] OR "population pharmacokinetic*"[Title/Abstract] '
+    'OR "physiologically based pharmacokinetic"[Title/Abstract] '
+    'OR "therapeutic drug monitoring"[Title/Abstract] OR "model-informed precision dosing"[Title/Abstract] '
+    # dosing in special populations, dosing phrases only so radiation dose stays out
+    'OR ((dosing[Title] OR "dose adjustment*"[Title/Abstract] OR "dose individuali*"[Title/Abstract] '
+    'OR "dose optimi*"[Title/Abstract] OR "dosing regimen*"[Title/Abstract]) '
+    'AND (renal[Title/Abstract] OR kidney[Title/Abstract] OR hepatic[Title/Abstract] OR pregnan*[Title/Abstract] '
+    'OR paediatric[Title/Abstract] OR pediatric[Title/Abstract] OR neonat*[Title/Abstract] OR elderly[Title/Abstract] '
+    'OR "older adults"[Title/Abstract] OR obes*[Title/Abstract] OR "critically ill"[Title/Abstract] '
+    'OR "intensive care"[Title/Abstract])) '
+    # new approvals
+    'OR "drug approval"[MeSH Terms:noexp] OR ((FDA[Title] OR EMA[Title] OR "European Medicines Agency"[Title]) '
+    'AND approv*[Title] AND (drug*[Title] OR therap*[Title] OR medicine*[Title]))'
 )
+# fresh records have no MeSH yet, so "animals NOT humans" only drops the ones already indexed as animal only.
+# the title list catches the unindexed ones
+_NOT_HUMAN = (
+    '(animals[MeSH Terms] NOT humans[MeSH Terms]) '
+    'OR insect*[Title] OR pest*[Title] OR plant*[Title] OR veterinar*[Title] OR livestock[Title] '
+    'OR cattle[Title] OR poultry[Title] OR horse*[Title] OR dogs[Title] OR canine[Title] OR cats[Title] '
+    'OR feline[Title] OR goats[Title] OR sheep[Title] OR pigs[Title] OR swine[Title] OR rat[Title] OR rats[Title] '
+    'OR mouse[Title] OR mice[Title] OR murine[Title] OR device*[Title] OR radiotherapy[Title]'
+)
+_NOT_PAPERS = 'comment[Publication Type] OR "published erratum"[Publication Type] OR "retraction of publication"[Publication Type]'
+PUBMED_QUERY = f"({_TOPICS}) AND english[Language] NOT ({_NOT_HUMAN}) NOT ({_NOT_PAPERS})"
 TRIALS_QUERY = "drug interaction OR pharmacokinetics"
 
 # api keys, only read from the environment, never hardcoded
