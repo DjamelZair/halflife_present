@@ -5,7 +5,7 @@
   "status": {
     "demo": false,
     "counts": {
-      "PubMed": 28,
+      "PubMed": 50,
       "bioRxiv": 7,
       "medRxiv": 2,
       "ClinicalTrials.gov": 20
@@ -25,25 +25,25 @@
       "drugs": []
     },
     {
-      "title": "Physiologically based pharmacokinetic modeling to predict sumatriptan pharmacokinetics across OCT1 functional groups.",
-      "what": "Sumatriptan is a 5-hydroxytryptamine 1B/1D receptor agonist for acute migraine. Reduced organic cation transporter 1 (OCT1) function is associated with increased sumatriptan exposure, but its quantitative contribution to pharmacokinetic variability remains unclear.",
+      "title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
+      "what": "Interindividual variability in drug response remains a critical challenge in contemporary pharmacotherapy, and cytochrome P450 (CYP450) genetic polymorphisms are a principal determinant of this heterogeneity. The CYP450 superfamily mediates the oxidative biotransformation of 70-80% of clinically prescribed medications.",
       "why": "",
       "pkpd_hook": "",
-      "source": "PubMed, Naunyn-Schmiedeberg's archives of pharmacology",
-      "url": "https://doi.org/10.1007/s00210-026-06018-w",
+      "source": "PubMed, Pharmacogenomics",
+      "url": "https://doi.org/10.1080/14622416.2026.2746620",
       "peer_reviewed": true,
-      "original_title": "Physiologically based pharmacokinetic modeling to predict sumatriptan pharmacokinetics across OCT1 functional groups.",
+      "original_title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
       "drugs": []
     },
     {
-      "title": "Microbiome-Mediated Pharmacokinetics and Informed Dosing of Mycophenolate in Kidney Transplantation.",
-      "what": "The gut microbiome contributes to interindividual variability in drug pharmacokinetics; however, its role in guiding dose adjustments remains unclear. Mycophenolic acid (MPA), the active metabolite of the immunosuppressant mycophenolate mofetil (MMF), exhibits high pharmacokinetic variability, potentially linked to microbial activity.",
+      "title": "Cytochrome P450 inhibitors: friends or foes?",
+      "what": "Cytochrome P450 (CYP450) enzymes play a central role in the metabolism of xenobiotics and endogenous compounds, influencing drug pharmacokinetics, efficacy, and safety. Inhibition of these enzymes has traditionally been viewed as a major liability in drug discovery due to its association with drug-drug interactions (DDIs), toxicity, and metabolic instability.",
       "why": "",
       "pkpd_hook": "",
-      "source": "PubMed, Clinical pharmacokinetics",
-      "url": "https://doi.org/10.1007/s40262-026-01707-4",
+      "source": "PubMed, Frontiers in chemistry",
+      "url": "https://doi.org/10.3389/fchem.2026.1988344",
       "peer_reviewed": true,
-      "original_title": "Microbiome-Mediated Pharmacokinetics and Informed Dosing of Mycophenolate in Kidney Transplantation.",
+      "original_title": "Cytochrome P450 inhibitors: friends or foes?",
       "drugs": []
     }
   ],
@@ -63,10 +63,10 @@
     "Rule of five violations": 2
   },
   "pair": {
-    "a": "midazolam",
-    "b": "clarithromycin",
+    "a": "avanafil",
+    "b": "itraconazole",
     "sentences": [
-      "clarithromycin is a strong inhibitor of CYP3A and midazolam is a sensitive substrate of CYP3A, so midazolam exposure can be higher."
+      "itraconazole is a strong inhibitor of CYP3A and avanafil is a sensitive substrate of CYP3A, so avanafil exposure can be higher."
     ],
     "fm": 0.9,
     "i_over_ki": 50.0,
