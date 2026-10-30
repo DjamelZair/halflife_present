@@ -19,15 +19,20 @@ The person building it (the repo owner) wants the **easiest version** first.
   (new approvals, first in class or first in human, phase 3 results) gives 1. A lane short on items hands its
   slots to the other. Every card has a `lane` field. Nothing is shown twice: `history.py` reads earlier briefs.
   * Clinic sources: PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, Lareb signals (RSS items with an ATC code,
-    titles kept in Dutch).
+    titles kept in Dutch). A Lareb signal not shown before always takes one of the two Clinic slots.
   * Discovery sources, in priority order: EMA (medicines JSON, positive opinions and EU authorisations, no
     generics, biosimilars or negative opinions), FDA novel approvals page with openFDA as backup when the page
     parses to zero rows, ClinicalTrials.gov phase 3 with recent results, PubMed first in human.
   * Molecule of the day comes from the discovery card when PubChem knows it and it has at most
     `MAX_HEAVY_ATOMS`, otherwise the old logic.
-  * Skipped after a live check on 30 October 2026: EUDA (Cloudflare challenge on every URL, so the Toxicology
-    lane waits), CBG-MEB (no machine readable feed, the RSS link only exists in a JavaScript popup).
-    Never work around a bot block. fda.gov only needs the honest `config.HTTP_HEADERS` user agent.
+  * Toxicology lane (optional): a new EUDA initial report, risk assessment, control decision or alert on a new
+    psychoactive substance replaces the lowest Clinic card that day. Read from the Irish HRB National Drugs
+    Library (drugsandalcohol.ie NPS subject page plus record pages for the date added), never from
+    euda.europa.eu, which sits behind a Cloudflare challenge. Links to the EUDA page when the record has one,
+    otherwise to the library record. The "why" line is a fixed sentence about the EU process per kind.
+  * CBG-MEB is not in yet: no machine readable feed found, the RSS link only exists in a JavaScript popup.
+    Add it to Discovery below EMA once the owner pastes that link.
+  * Never work around a bot block. fda.gov only needs the honest `config.HTTP_HEADERS` user agent.
 * Out of scope for now: notes helper, case of the week, Dutch translation, brand names.
 
 ## Design rules
@@ -51,7 +56,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 34 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 37 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.

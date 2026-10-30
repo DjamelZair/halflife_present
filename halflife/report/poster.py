@@ -20,8 +20,8 @@ def _card(i: int, c) -> str:
     hook = f'<p class="hook">{html.escape(c.pkpd_hook)}</p>' if c.pkpd_hook else ""
     why = f'<p class="why">{html.escape(c.why)}</p>' if c.why else ""
     drugs = "".join(f'<span class="chip">{html.escape(d)}</span>' for d in c.drugs)
-    # only discovery gets a tag for now, clinic cards get topic tags in the new web app
-    lane = '<span class="lane">Discovery</span>' if c.lane == "discovery" else ""
+    # discovery and toxicology get a lane tag, clinic cards get topic tags in the new web app
+    lane = f'<span class="lane {c.lane}">{c.lane.capitalize()}</span>' if c.lane != "clinic" else ""
     return f"""
     <article class="card">
       <div class="num">0{i} {lane}</div>
@@ -84,7 +84,7 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
   :root {{
     --navy: {P['navy']}; --steel: {P['steel']}; --mist: {P['mist']}; --bg: {P['background']};
     --white: {P['white']}; --slate: {P['slate']}; --line: {P['line']}; --accent: {P['accent']};
-    --discovery: {P['discovery']};
+    --discovery: {P['discovery']}; --toxicology: {P['toxicology']};
   }}
   * {{ box-sizing: border-box; }}
   body {{ margin: 0; background: var(--bg); color: var(--slate); font-family: 'Poppins', system-ui, sans-serif;
@@ -112,6 +112,7 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
            padding: 2px 10px; vertical-align: middle; font-weight: 500; }}
   .lane {{ background: var(--discovery); color: var(--navy); font-size: 11px; font-weight: 600; border-radius: 999px;
            padding: 2px 10px; margin-left: 6px; }}
+  .lane.toxicology {{ background: var(--toxicology); color: var(--white); }}
   .chips {{ display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }}
   .chip {{ border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 12px; color: var(--navy); }}
   .pill {{ align-self: flex-start; margin-top: auto; background: var(--navy); color: var(--white); text-decoration: none;

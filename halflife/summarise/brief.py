@@ -99,7 +99,7 @@ def summarise_fallback(items: list[Item], n: int = config.BRIEF_SIZE) -> list[Ca
         Card(
             title=it.title,
             what=_first_sentences(it.abstract, 2),
-            why="",  # the poster explains the fallback once, no need to repeat it per card
+            why=it.extra.get("why", ""),  # only EUDA has one, a fixed line about the EU process
             pkpd_hook="",
             source=f"{it.source}, {it.journal}", url=it.url,
             peer_reviewed=_is_peer_reviewed(it), original_title=it.title,
@@ -116,13 +116,27 @@ def _drugs(it: Item) -> list[str]:
     return named + [d for d in find_drugs(f"{it.title} {it.abstract}") if d not in named]
 
 
-def _slots(clinic: list[Item], discovery: list[Item], n: int) -> dict[str, int]:
-    """Two clinic and one discovery card. A lane short on items hands its slots to the other one."""
-    want = dict(config.LANE_CARDS)
-    want["discovery"] = min(want["discovery"], len(discovery))
-    want["clinic"] = min(n - want["discovery"], len(clinic))
-    want["discovery"] = min(n - want["clinic"], len(discovery))
+LANES = ("clinic", "toxicology", "discovery")  # also the order of the cards
+
+
+def _slots(pools: dict[str, list[Item]], n: int) -> dict[str, int]:
+    """Two clinic and one discovery card. A lane short on items hands its slots to the other one,
+    and a toxicology item takes the place of the lowest clinic card."""
+    clinic, discovery = pools["clinic"], pools["discovery"]
+    want = {"toxicology": 1 if pools["toxicology"] else 0}
+    want["discovery"] = min(config.LANE_CARDS["discovery"], len(discovery))
+    want["clinic"] = min(n - want["discovery"] - want["toxicology"], len(clinic))
+    want["discovery"] = min(n - want["clinic"] - want["toxicology"], len(discovery))
     return want
+
+
+def _pick_clinic(pool: list[Item], k: int) -> list[Item]:
+    """The best clinic items, but a new Lareb signal always gets a slot (the newest one, if there are more)."""
+    lareb = sorted((it for it in pool if it.source == "Lareb"), key=lambda it: it.date, reverse=True)
+    if not k or not lareb:
+        return pool[:k]
+    rest = [it for it in pool if it.source != "Lareb"][:k - 1]
+    return rank([lareb[0]] + rest)
 
 
 def build_brief(items: list[Item], n: int = config.BRIEF_SIZE,
@@ -133,14 +147,16 @@ def build_brief(items: list[Item], n: int = config.BRIEF_SIZE,
     if not items:
         return [], "empty"
     # rank first, so even without Claude the best items rise to the top
-    pools = {lane: rank([it for it in items if it.lane == lane]) for lane in ("clinic", "discovery")}
-    slots = _slots(pools["clinic"], pools["discovery"], n)
+    pools = {lane: rank([it for it in items if it.lane == lane]) for lane in LANES}
+    slots = _slots(pools, n)
+    chosen = {lane: _pick_clinic(pools[lane], slots[lane]) if lane == "clinic" else pools[lane][:slots[lane]]
+              for lane in LANES}
     if config.ANTHROPIC_API_KEY:
         try:
-            cards = [c for lane in ("clinic", "discovery") if slots[lane]
-                     for c in summarise_with_claude(pools[lane], slots[lane])]
+            cards = [c for lane in LANES if chosen[lane]
+                     for c in summarise_with_claude(chosen[lane], len(chosen[lane]))]
             return cards, "claude"
         except Exception as e:
             log.warning("Claude summary failed, using fallback: %s", e)
-    cards = [c for lane in ("clinic", "discovery") for c in summarise_fallback(pools[lane], slots[lane])]
+    cards = [c for lane in LANES for c in summarise_fallback(chosen[lane], len(chosen[lane]))]
     return cards, "fallback"

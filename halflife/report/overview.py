@@ -22,8 +22,9 @@ SOURCES = {
     ("discovery", "FDA"): "FDA",
     ("discovery", "PubMed"): "PubMed, first in human",
     ("discovery", "ClinicalTrials.gov"): "Phase 3 results",
+    ("toxicology", "EUDA"): "EUDA, via HRB library",
 }
-LANE_COLOURS = {"clinic": P["navy"], "discovery": P["discovery"]}
+LANE_COLOURS = {"clinic": P["navy"], "discovery": P["discovery"], "toxicology": P["toxicology"]}
 
 
 def sources_figure(items: list[Item], picked_ids: set[str], path: Path | None = None):
@@ -55,7 +56,7 @@ def sources_figure(items: list[Item], picked_ids: set[str], path: Path | None = 
     for i, (s, it) in enumerate(scored):
         picked = (it.identifier or it.title) in picked_ids
         # discovery scores sit on their own scale (EMA starts at 30), the lane colour makes that visible
-        dot = P["discovery"] if it.lane == "discovery" else P["steel"]
+        dot = P["steel"] if it.lane == "clinic" else LANE_COLOURS.get(it.lane, P["steel"])
         ax2.scatter(s, i, s=60 if picked else 30, color=P["accent"] if picked else dot,
                     zorder=3, edgecolor="none")
     if len(scored) <= 15:  # titles only fit when there are not too many items

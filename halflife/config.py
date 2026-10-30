@@ -28,7 +28,7 @@ PALETTE = {
     "accent": "#E2574C",     # used sparingly, inducers and warnings
     # lane tags, from the jewel family in docs/DESIGN.md
     "discovery": "#B45CD6",  # plum
-    "toxicology": "#3D5BD9", # cobalt, reserved, no toxicology source works yet
+    "toxicology": "#3D5BD9", # cobalt
 }
 FONT = "Poppins"
 
@@ -36,7 +36,8 @@ FONT = "Poppins"
 LANGUAGE = "en"
 
 # how many items end up in the daily brief: two clinic cards and one discovery card.
-# no discovery item that day means three clinic cards, the morning never comes up empty
+# no discovery item that day means three clinic cards, the morning never comes up empty.
+# a new EUDA item on a new psychoactive substance replaces the lowest clinic card that day
 BRIEF_SIZE = 3
 LANE_CARDS = {"clinic": 2, "discovery": 1}
 LOOKBACK_DAYS = 2
@@ -44,6 +45,7 @@ LOOKBACK_DAYS = 2
 # and the history check makes sure nothing shows up twice
 DISCOVERY_LOOKBACK_DAYS = 30
 LAREB_LOOKBACK_DAYS = 30  # a couple of signals a month, the history check stops repeats
+TOXICOLOGY_LOOKBACK_DAYS = 7  # days since the library added the EUDA record
 PHASE3_COMPLETED_WITHIN_DAYS = 730  # results get posted years late, I only want recent trials
 # molecule of the day from the discovery card only when 3D and RDKit can cope, so no antibodies
 MAX_HEAVY_ATOMS = 100

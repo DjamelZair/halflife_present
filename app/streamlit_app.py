@@ -41,6 +41,7 @@ st.markdown(f"""
           font-size: 12px; color: {P['navy']}; margin: 0 6px 6px 0; }}
   .lane {{ background: {P['discovery']}; color: {P['navy']}; font-size: 11px; font-weight: 600;
            border-radius: 999px; padding: 2px 10px; margin-left: 6px; }}
+  .lane.toxicology {{ background: {P['toxicology']}; color: {P['white']}; }}
   .badge {{ background: {P['accent']}; color: white; font-size: 11px; border-radius: 999px; padding: 2px 10px; }}
   .pill {{ display: inline-block; background: {P['navy']}; color: white !important; text-decoration: none !important;
           border-radius: 999px; padding: 8px 18px; font-size: 13px; font-weight: 500; margin-top: 6px; }}
@@ -114,7 +115,8 @@ def card_html(i: int, c: dict) -> str:
     why = f'<p style="color:{P["navy"]}">{c["why"]}</p>' if c.get("why") else ""
     hook = f'<p class="hook">{c["pkpd_hook"]}</p>' if c.get("pkpd_hook") else ""
     chips = "".join(f'<span class="chip">{d}</span>' for d in c.get("drugs", []))
-    lane = '<span class="lane">Discovery</span>' if c.get("lane") == "discovery" else ""
+    lane_name = c.get("lane", "clinic")
+    lane = f'<span class="lane {lane_name}">{lane_name.capitalize()}</span>' if lane_name != "clinic" else ""
     return f"""<div class="card"><div class="num">0{i} {lane}</div><h4>{c['title']}{badge}</h4>
       <p>{c['what']}</p>{why}{hook}<div>{chips}</div>
       <a class="pill" href="{c['url']}" target="_blank">Read source ↗</a>

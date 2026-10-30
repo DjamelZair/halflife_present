@@ -47,7 +47,7 @@ Lane tags, same in both modes and the same dark text, on top of the topic tags (
 | Lane | Fill | Shown |
 |---|---|---|
 | Discovery | `#B45CD6` plum | on the discovery card (new approvals, first in human, phase 3 results) |
-| Toxicology | `#3D5BD9` cobalt | reserved, no working source yet (EUDA blocks automated requests) |
+| Toxicology | `#3D5BD9` cobalt, **white text** (dark text on cobalt is about 2.6:1, too low) | on a card about a new psychoactive substance: EUDA initial report, risk assessment, control decision or alert |
 
 Clinic cards carry no lane tag, only their topic tag. Each card in `brief.json` has a `lane` field.
 

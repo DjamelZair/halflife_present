@@ -4,7 +4,7 @@ import json
 import logging
 
 from halflife import config
-from halflife.sources import ema, fda_novel, lareb, preprints, pubmed, trials
+from halflife.sources import ema, euda, fda_novel, lareb, preprints, pubmed, trials
 from halflife.sources.base import Item
 
 log = logging.getLogger(__name__)
@@ -21,6 +21,8 @@ SOURCES = {
     "FDA": fda_novel.fetch,
     "PubMed discovery": pubmed.fetch_discovery,
     "Phase 3 results": trials.fetch_phase3_results,
+    # toxicology, EUDA through the Irish drugs library, euda.europa.eu blocks bots
+    "EUDA": euda.fetch,
 }
 
 

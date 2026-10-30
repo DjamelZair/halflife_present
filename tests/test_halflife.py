@@ -363,3 +363,57 @@ def test_molecule_comes_from_the_discovery_card_when_small(monkeypatch):
     assert pipeline.discovery_molecule([card(["daraxonrasib"], "discovery")], demo=False).name == "daraxonrasib"
     assert pipeline.discovery_molecule([card(["bigpeptide"], "discovery")], demo=False) is None
     assert pipeline.discovery_molecule([card(["daraxonrasib"], "clinic")], demo=False) is None
+
+
+# Lareb slot and the toxicology lane
+
+def test_a_new_lareb_signal_always_gets_a_clinic_slot():
+    from halflife.summarise.brief import build_brief
+    lareb = Item("Lareb", "Kans op leverschade bij ocrelizumab", "x", "https://lareb/1", "2026-10-08")
+    older = Item("Lareb", "Boezemfibrilleren bij omega 3", "x", "https://lareb/0", "2026-10-01")
+    cards, _ = build_brief(_items(5, 1) + [older, lareb])
+    clinic = [c.url for c in cards if c.lane == "clinic"]
+    assert len(clinic) == 2 and "https://lareb/1" in clinic  # the newest signal, next to the best paper
+    assert "https://lareb/0" not in clinic
+    # shown before, so no slot today: the older signal steps up
+    cards, _ = build_brief(_items(5, 1) + [older, lareb], exclude={"https://lareb/1"})
+    assert "https://lareb/0" in [c.url for c in cards]
+    # and no slot when there is no signal at all
+    cards, _ = build_brief(_items(5, 1), exclude={"https://lareb/1", "https://lareb/0"})
+    assert [c.url for c in cards if c.lane == "clinic"] == ["https://c/0", "https://c/1"]
+
+
+def test_toxicology_replaces_the_lowest_clinic_card():
+    from halflife.summarise.brief import build_brief
+    tox = Item("EUDA", "EUDA initial report: spirochlorphine", "x", "https://euda/1", "2026-10-29",
+               extra={"why": "An initial report is the first EU level step."}, lane="toxicology")
+    cards, _ = build_brief(_items(5, 1) + [tox])
+    assert [c.lane for c in cards] == ["clinic", "toxicology", "discovery"]
+    assert cards[0].url == "https://c/0"  # the best clinic card stays
+    assert cards[1].why.startswith("An initial report")
+
+
+NPS_PAGE = """<p>European Union Drugs Agency. (2026) <a href="https://www.drugsandalcohol.ie/45831/"><em>EUDA initial report
+on the new psychoactive substance: 8-[1-(4-chlorophenyl)ethyl]-1-phenyl-1,3,8-triazaspiro[4.5]decan-4-one
+(spirochlorphine).</em></a> Lisbon: EUDA.</p>
+<p>European Union Drugs Agency. (2026) <a href="https://www.drugsandalcohol.ie/47092/"><em>European Web Survey on Drugs
+2024.</em></a></p>
+<p>European Monitoring Centre for Drugs and Drug Addiction. (2020) <a href="https://www.drugsandalcohol.ie/30001/">
+<em>EMCDDA initial report on the new psychoactive substance MDMB-4en-PINACA.</em></a></p>"""
+
+RECORD_PAGE = """<meta name="eprints.datestamp" content="2026-10-29 13:58:27" />
+<meta name="eprints.title" content="EUDA initial report on the new psychoactive substance: 8-[1-(4-chlorophenyl)ethyl]-1-phenyl-1,3,8-triazaspiro[4.5]decan-4-one (spirochlorphine)" />
+<a href="https://www.euda.europa.eu/publications/initial-reports/spirochlorphine_en">EUDA</a>"""
+
+
+def test_euda_keeps_only_recent_nps_documents_and_links_to_euda():
+    from halflife.sources.euda import parse_record, parse_subject, to_item
+    [entry] = parse_subject(NPS_PAGE, min_year=2025)  # the survey and the 2020 report drop out
+    assert entry["kind"] == "initial report"
+    it = to_item(entry, parse_record(RECORD_PAGE))
+    assert it.title == "EUDA initial report: spirochlorphine"
+    assert it.url == "https://www.euda.europa.eu/publications/initial-reports/spirochlorphine_en"
+    assert it.date == "2026-10-29" and it.lane == "toxicology"
+    # no EUDA link on the record, then the library record that credits EUDA
+    no_link = parse_record(RECORD_PAGE.split("<a ")[0])
+    assert to_item(entry, no_link).url == "https://www.drugsandalcohol.ie/45831/"
