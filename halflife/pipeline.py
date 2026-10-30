@@ -23,18 +23,15 @@ FM_BY_ROLE = {"sensitive substrate": 0.9, "moderate sensitive substrate": 0.7, "
 IKI_BY_ROLE = {"strong inhibitor": 50.0, "moderate inhibitor": 5.0}
 INDUCTION_BY_ROLE = {"strong inducer": 10.0, "moderate inducer": 3.0}  # strong gives 80 percent lower or more
 
-# when nothing in the news gives a pair, I fall back to a classic teaching example
-DEFAULT_PAIR = ("midazolam", "clarithromycin")
-
-
-def pick_pair(cards) -> tuple[str, str]:
+def pick_pair(cards, day: date) -> tuple[str, str]:
+    """A pair from the news when there is one, otherwise the pair of the day from the FDA table."""
     for c in cards:
         drugs = c.drugs
         for i in range(len(drugs)):
             for j in range(i + 1, len(drugs)):
                 if cyp.check_pair(drugs[i], drugs[j]):
                     return drugs[i], drugs[j]
-    return DEFAULT_PAIR
+    return cyp.daily_pair(day)
 
 
 def illustrative_ratio(findings) -> dict:
@@ -96,7 +93,7 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
                     **properties.describe(comp.smiles)}
 
     # 3. interaction of the day
-    a, b = pick_pair(cards)
+    a, b = pick_pair(cards, day)
     findings = cyp.check_pair(a, b)
     ill = illustrative_ratio(findings)
     ratio = ill["ratio"]

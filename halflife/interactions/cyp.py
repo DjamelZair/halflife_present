@@ -1,7 +1,9 @@
 """Lookups on the FDA CYP table: which enzyme, which role, and what two drugs have in common."""
 
+import hashlib
 import re
 from dataclasses import dataclass
+from datetime import date
 from functools import lru_cache
 
 import pandas as pd
@@ -30,13 +32,17 @@ def roles_for(drug: str) -> pd.DataFrame:
     return df[df["key"] == to_inn(drug).lower()][["drug", "enzyme", "role"]]
 
 
+# vague entries, not one medicine, so I skip them for text matching and the daily pair
+VAGUE = {"oral contraceptives", "grapefruit juice"}
+
+
 def find_drugs(text: str) -> list[str]:
     """Spots drugs from the table in a piece of text, works without any LLM."""
     text = text.lower()
     found = []
     for name in all_drugs():
         # skip the vague entries, they would match half of all abstracts
-        if name.lower() in {"oral contraceptives", "grapefruit juice"}:
+        if name.lower() in VAGUE:
             continue
         if re.search(rf"\b{re.escape(name.lower())}\b", text):
             found.append(name)
@@ -81,3 +87,23 @@ def shared_enzymes(a: str, b: str) -> list[str]:
     ea = set(roles_for(a)["enzyme"])
     eb = set(roles_for(b)["enzyme"])
     return sorted(ea & eb)
+
+
+@lru_cache(maxsize=1)
+def all_pairs() -> list[tuple[str, str]]:
+    """Every (substrate, inhibitor or inducer) pair that shares an enzyme in the FDA table."""
+    df = load_table()
+    df = df[~df["key"].isin(VAGUE)]
+    victims = df[df["role"].isin(SUBSTRATE_ROLES)]
+    perps = df[df["role"].isin(INHIBITOR_ROLES | INDUCER_ROLES)]
+    merged = victims.merge(perps, on="enzyme", suffixes=("_v", "_p"))
+    pairs = {(v, p) for v, p in zip(merged["drug_v"], merged["drug_p"]) if v != p}
+    # shuffled once by a hash, so neighbouring days get different enzymes and drugs.
+    # hashlib and not hash(), that one changes every time Python starts
+    return sorted(pairs, key=lambda vp: hashlib.sha256("|".join(vp).encode()).hexdigest())
+
+
+def daily_pair(day: date) -> tuple[str, str]:
+    """Same pair all day, a different one tomorrow, every pair once before any repeats."""
+    pairs = all_pairs()
+    return pairs[day.toordinal() % len(pairs)]

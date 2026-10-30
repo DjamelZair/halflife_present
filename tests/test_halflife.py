@@ -44,6 +44,28 @@ def test_known_pairs_from_the_fda_table():
     assert "moderate inhibitor" in set(roles[roles["enzyme"] == "CYP1A2"]["role"])
 
 
+def test_daily_pair_is_a_real_interaction_and_changes_by_day():
+    from datetime import date, timedelta
+    start = date(2026, 12, 25)
+    days = [start + timedelta(days=k) for k in range(14)]
+    pairs = [cyp.daily_pair(d) for d in days]
+    for victim, perpetrator in pairs:
+        assert cyp.check_pair(victim, perpetrator), (victim, perpetrator)  # same enzyme, right roles
+    assert cyp.daily_pair(start) == pairs[0]  # stable within a day
+    assert len(set(pairs)) == len(pairs)  # no repeats in two weeks
+    assert len({v for v, _ in pairs}) > 7  # and not the same victim day after day
+
+
+def test_news_pair_wins_over_the_daily_pair():
+    from datetime import date
+    from halflife.pipeline import pick_pair
+    from halflife.summarise.brief import Card
+    card = Card("t", "", "", "", "PubMed", "https://example.org", True, "t",
+                drugs=["clarithromycin", "midazolam"])
+    assert set(pick_pair([card], date(2026, 12, 25))) == {"clarithromycin", "midazolam"}
+    assert pick_pair([], date(2026, 12, 25)) == cyp.daily_pair(date(2026, 12, 25))
+
+
 def test_find_drugs_in_text():
     text = "Co-administration of rivaroxaban with ceritinib raised exposure."
     assert set(cyp.find_drugs(text)) == {"rivaroxaban", "ceritinib"}
