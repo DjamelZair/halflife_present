@@ -57,17 +57,24 @@ APP_URL = os.getenv("APP_URL", "")
 HTTP_TIMEOUT = 30
 
 
-def output_dir(day: date | None = None) -> Path:
+DEMO_DIR_NAME = "demo"  # demo runs go here, never in a dated folder, and git ignores it
+
+
+def output_dir(day: date | None = None, demo: bool = False) -> Path:
     """Every run gets its own dated folder with figures and data split out."""
     day = day or date.today()
-    out = OUTPUT_ROOT / day.isoformat()
+    out = OUTPUT_ROOT / (DEMO_DIR_NAME if demo else day.isoformat())
     (out / "figures").mkdir(parents=True, exist_ok=True)
     (out / "data").mkdir(parents=True, exist_ok=True)
     return out
 
 
 def latest_output_dir() -> Path | None:
+    """Newest dated run, or the demo folder when there is no live run yet."""
     if not OUTPUT_ROOT.exists():
         return None
-    runs = sorted(p for p in OUTPUT_ROOT.iterdir() if p.is_dir())
-    return runs[-1] if runs else None
+    runs = sorted(p for p in OUTPUT_ROOT.iterdir() if p.is_dir() and p.name != DEMO_DIR_NAME)
+    if runs:
+        return runs[-1]
+    demo = OUTPUT_ROOT / DEMO_DIR_NAME
+    return demo if demo.is_dir() else None

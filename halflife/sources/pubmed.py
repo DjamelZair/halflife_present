@@ -47,19 +47,24 @@ def fetch_items(pmids: list[str]) -> list[Item]:
         timeout=config.HTTP_TIMEOUT,
     )
     r.raise_for_status()
-    root = ET.fromstring(r.content)
+    return parse_articles(r.content)
 
+
+def parse_articles(xml: bytes) -> list[Item]:
+    root = ET.fromstring(xml)
     items = []
     for art in root.findall(".//PubmedArticle"):
-        pmid = _text(art.find(".//PMID"))
+        # exact paths on purpose: the reference list and comments carry their own PMIDs and DOIs
+        pmid = _text(art.find("MedlineCitation/PMID"))
         title = _text(art.find(".//ArticleTitle"))
         abstract = " ".join(_text(a) for a in art.findall(".//Abstract/AbstractText"))
         journal = _text(art.find(".//Journal/Title"))
         year = _text(art.find(".//PubDate/Year"))
         doi = ""
-        for aid in art.findall(".//ArticleId"):
+        for aid in art.findall("PubmedData/ArticleIdList/ArticleId"):
             if aid.get("IdType") == "doi":
                 doi = _text(aid)
+                break
         if not abstract:
             continue  # no abstract means nothing useful to summarise
         url = f"https://doi.org/{doi}" if doi else f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"

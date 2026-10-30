@@ -27,6 +27,8 @@ The person building it (the repo owner) wants the **easiest version** first.
   follow the new tokens when they are next touched.
 * Every run writes `outputs/YYYY-MM-DD/` with `figures/`, `data/` and `poster.html`. Never only CSVs,
   always figures too.
+* Demo runs write `outputs/demo/` instead, which is in `.gitignore`. `config.latest_output_dir()` skips it
+  and only falls back to it when there is no dated run yet.
 
 ## Code conventions
 * Python, modular, one job per module.
@@ -36,24 +38,21 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested offline (`pytest -q`, 14 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 17 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
 
-**Never run against the live APIs.** The build environment blocked PubMed, bioRxiv,
-ClinicalTrials.gov, PubChem and ntfy. Endpoints follow the documented APIs, but expect small fixes.
+**First live run on 30 October 2026** (`--no-push`): all four news sources and PubChem work
+(PubMed 28, bioRxiv 7, medRxiv 2, ClinicalTrials.gov 20). One fix was needed: PubMed took the DOI
+from the paper's reference list, so `parse_articles` now only reads `PubmedData/ArticleIdList`.
+ntfy is still untested. Use a virtualenv in `.venv/`, it is ignored by git.
 
 ## Next steps, in order
-1. `pip install -r requirements.txt && pytest -q && python run_daily.py --demo` to confirm the setup.
-2. `python run_daily.py --no-push` live. Check each source in the printed "Errors per source" line and
-   `figures/sources_overview.png` (a zero bar means a source is broken). Fix what breaks:
-   * `sources/pubmed.py`: E-utilities esearch with `reldate` and `datetype=edat`, then efetch XML.
-   * `sources/preprints.py`: `/details/{server}/{start}/{end}/{cursor}?category=...`, 30 per page;
-     medRxiv may ignore paging.
-   * `sources/trials.py`: api v2 `/studies` sorted by `LastUpdatePostDate:desc`, date filtered in Python.
-   * `molecules/pubchem.py`: property names `SMILES` and `ConnectivitySMILES`, 3D SDF via
-     `record/SDF?record_type=3d`.
+1. Setup: `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pytest -q`.
+2. Live check, done once: `python run_daily.py --no-push`. Rerun it after touching a source and look at
+   `figures/sources_overview.png` (a zero bar means a source is broken). Preprint DOIs now use the
+   openRxiv prefix `10.64898`, that is expected.
 3. Tune `PUBMED_QUERY` in `config.py` and the weights in `rank.py` after a few days of real output.
 4. Test the push: set `NTFY_TOPIC` in `.env`, run without `--no-push`, check the phone.
 5. Push to GitHub, add secrets, run the workflow by hand once.
@@ -61,8 +60,7 @@ ClinicalTrials.gov, PubChem and ntfy. Endpoints follow the documented APIs, but 
    molecule hero, dark and light mode, data from `outputs/<latest>/data/brief.json` plus a small 3D structure file
    the pipeline writes per day. Deploy with GitHub Pages and set `APP_URL` to it.
 7. Shorter headlines in plain mode (rules in `docs/DESIGN.md`), or add the Claude API key.
-8. Delete the demo folder in `outputs/` once a live run exists (it is marked `"demo": true`).
-9. Note: the cron is fixed at 06:23 UTC, so the push comes an hour later in summer time.
+8. Note: the cron is fixed at 06:23 UTC, so the push comes an hour later in summer time.
 
 ## Helpful skills
 From github.com/K-Dense-AI/claude-scientific-skills, only these were used as references:

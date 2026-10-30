@@ -102,15 +102,58 @@ def test_animal_study_is_penalised():
     assert score(human) > score(rat)
 
 
+# sources
+
+# trimmed from a real efetch record: the paper's own ids, then a reference with its own DOI
+PUBMED_XML = b"""<PubmedArticleSet><PubmedArticle>
+<MedlineCitation><PMID>41000001</PMID><Article>
+<Journal><Title>Clinical pharmacokinetics</Title><JournalIssue><PubDate><Year>2026</Year></PubDate></JournalIssue></Journal>
+<ArticleTitle>Mycophenolate dosing in kidney transplant</ArticleTitle>
+<Abstract><AbstractText>Some abstract.</AbstractText></Abstract>
+</Article>
+<CommentsCorrectionsList><CommentsCorrections><PMID>12345</PMID></CommentsCorrections></CommentsCorrectionsList>
+</MedlineCitation>
+<PubmedData>
+<ArticleIdList><ArticleId IdType="pubmed">41000001</ArticleId><ArticleId IdType="doi">10.1007/s40262-026-01707-4</ArticleId></ArticleIdList>
+<ReferenceList><Reference><Citation>Old paper.</Citation>
+<ArticleIdList><ArticleId IdType="doi">10.1208/s12248-009-9133-0</ArticleId></ArticleIdList></Reference></ReferenceList>
+</PubmedData>
+</PubmedArticle></PubmedArticleSet>"""
+
+
+def test_pubmed_uses_the_papers_own_doi_not_a_reference():
+    from halflife.sources.pubmed import parse_articles
+    [item] = parse_articles(PUBMED_XML)
+    assert item.url == "https://doi.org/10.1007/s40262-026-01707-4"
+    assert item.identifier == "10.1007/s40262-026-01707-4"
+
+
+def test_pubmed_falls_back_to_the_pubmed_page_without_doi():
+    from halflife.sources.pubmed import parse_articles
+    xml = PUBMED_XML.replace(b'<ArticleId IdType="doi">10.1007/s40262-026-01707-4</ArticleId>', b"")
+    [item] = parse_articles(xml)
+    assert item.url == "https://pubmed.ncbi.nlm.nih.gov/41000001/"  # not the reference's DOI
+
+
 # whole pipeline
 
 def test_demo_run_writes_all_outputs(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
     from halflife.pipeline import run
     result = run(demo=True, push=False)
-    out = tmp_path / result["date"]
+    out = tmp_path / config.DEMO_DIR_NAME
+    assert not (tmp_path / result["date"]).exists()  # demo never takes the dated folder
     for f in ("poster.html", "data/brief.json", "data/brief.csv", "data/items.csv",
               "figures/molecule.png", "figures/interaction_network.png", "figures/auc_ratio.png",
               "figures/concentration_curve.png", "figures/sources_overview.png"):
         assert (out / f).exists(), f
     assert result["pair"]["a"] in {"ceritinib", "rivaroxaban"}
+
+
+def test_latest_output_prefers_live_over_demo(tmp_path, monkeypatch):
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    (tmp_path / config.DEMO_DIR_NAME).mkdir()
+    assert config.latest_output_dir().name == config.DEMO_DIR_NAME  # only the demo so far
+    (tmp_path / "2026-10-29").mkdir()
+    (tmp_path / "2026-10-30").mkdir()
+    assert config.latest_output_dir().name == "2026-10-30"  # "demo" sorts after dates, must not win

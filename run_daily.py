@@ -1,7 +1,7 @@
 """Run the morning brief. GitHub Actions calls this every day, I can also run it by hand.
 
     python run_daily.py            live sources, sends the push
-    python run_daily.py --demo     saved PubMed sample, no internet needed
+    python run_daily.py --demo     saved PubMed sample, no internet needed, writes outputs/demo/
     python run_daily.py --no-push  everything except the notification
 """
 

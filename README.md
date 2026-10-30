@@ -26,13 +26,13 @@ Drug names are always European generic names (rifampicin, paracetamol, ciclospor
 python -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-python run_daily.py --demo        # saved PubMed sample, no internet needed
+python run_daily.py --demo        # saved PubMed sample, no internet needed, writes outputs/demo/
 python run_daily.py --no-push     # live sources, no notification
 streamlit run app/streamlit_app.py
 pytest -q
 ```
 
-Every run writes to `outputs/YYYY-MM-DD/`:
+Every live run writes to `outputs/YYYY-MM-DD/` (a demo run writes to `outputs/demo/`, which git ignores):
 
 ```
 outputs/2026-10-30/

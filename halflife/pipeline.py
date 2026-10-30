@@ -77,7 +77,7 @@ def pick_molecule(cards, demo: bool) -> pubchem.Compound | None:
 
 def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     day = day or date.today()
-    out = config.output_dir(day)
+    out = config.output_dir(day, demo=demo)
     figs_dir, data_dir = out / "figures", out / "data"
 
     # 1. news
