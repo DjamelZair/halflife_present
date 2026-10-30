@@ -13,7 +13,7 @@ app holds the rest.
 | Part | What it does | Data |
 |---|---|---|
 | Morning push | Three headlines at about 07:30 via the ntfy app | ntfy.sh |
-| Today | Three cards with title, opening of the abstract, drugs mentioned, source link | PubMed, bioRxiv, medRxiv, ClinicalTrials.gov |
+| Today | Two Clinic cards and one Discovery card: title, opening of the abstract, drugs mentioned, source link | Clinic: PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, Lareb. Discovery: EMA, FDA (openFDA as backup), PubMed first in human, ClinicalTrials.gov phase 3 results |
 | Molecule | Rotating 3D model, 2D structure, drug likeness properties | PubChem, RDKit, 3Dmol.js |
 | Interaction lab | Two drugs, shared CYP enzymes, sliders for an AUC ratio model | FDA CYP example table, ICH M12 static model |
 | Poster | One HTML page per day with everything above | generated |
@@ -51,7 +51,7 @@ halflife/
 ├── rank.py            keyword relevance score, works without an LLM
 ├── pipeline.py        the whole morning in one function
 ├── style.py           shared matplotlib style
-├── sources/           pubmed, preprints (bioRxiv, medRxiv), trials, collect
+├── sources/           pubmed, preprints (bioRxiv, medRxiv), trials, lareb, ema, fda_novel, collect
 ├── summarise/         card builder, plain mode or Claude when a key is set
 ├── molecules/         pubchem, rdkit properties, figures
 ├── interactions/      FDA table lookups, ICH M12 model, figures
@@ -79,4 +79,7 @@ data/                  cyp_reference.csv (FDA), sample PubMed items and molecule
   [K-Dense claude-scientific-skills](https://github.com/K-Dense-AI/claude-scientific-skills) (MIT).
 * API details checked against the `paper-lookup` and `database-lookup` skills from the same repo.
 * 3D viewer: [3Dmol.js](https://3dmol.org) 2.5.5, BSD 3 clause, bundled in `app/vendor/`.
-* Sample data: real PubMed records from October 2026, abstracts shortened.
+* Sample data: real PubMed records from October 2026, abstracts shortened, plus real EMA, FDA and
+  ClinicalTrials.gov records from 30 October 2026 for the discovery lane.
+* Regulators: EMA medicines data (JSON report), FDA *Novel Drug Approvals*, openFDA drugsfda.
+* Dutch signals: Lareb news RSS, titles kept in Dutch.

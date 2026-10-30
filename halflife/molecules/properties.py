@@ -21,6 +21,10 @@ def mol_from_smiles(smiles: str) -> Chem.Mol:
     return mol
 
 
+def heavy_atoms(smiles: str) -> int:
+    return mol_from_smiles(smiles).GetNumHeavyAtoms()
+
+
 def describe(smiles: str) -> dict:
     mol = mol_from_smiles(smiles)
     props = {

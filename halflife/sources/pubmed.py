@@ -74,3 +74,10 @@ def parse_articles(xml: bytes) -> list[Item]:
 
 def fetch(days: int = config.LOOKBACK_DAYS) -> list[Item]:
     return fetch_items(search_ids(config.PUBMED_QUERY, days))
+
+
+def fetch_discovery(days: int = config.LOOKBACK_DAYS) -> list[Item]:
+    items = fetch_items(search_ids(config.PUBMED_DISCOVERY_QUERY, days))
+    for it in items:
+        it.lane = "discovery"
+    return items

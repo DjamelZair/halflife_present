@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass, field
 
 @dataclass
 class Item:
-    source: str          # PubMed, bioRxiv, medRxiv, ClinicalTrials.gov
+    source: str          # PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, EMA, FDA, Lareb
     title: str
     abstract: str
     url: str
@@ -13,6 +13,7 @@ class Item:
     journal: str = ""
     identifier: str = ""  # doi, pmid or nct number
     extra: dict = field(default_factory=dict)
+    lane: str = "clinic"  # clinic or discovery, decides which card slot it competes for
 
     def to_dict(self) -> dict:
         return asdict(self)

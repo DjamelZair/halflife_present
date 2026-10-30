@@ -20,9 +20,11 @@ def _card(i: int, c) -> str:
     hook = f'<p class="hook">{html.escape(c.pkpd_hook)}</p>' if c.pkpd_hook else ""
     why = f'<p class="why">{html.escape(c.why)}</p>' if c.why else ""
     drugs = "".join(f'<span class="chip">{html.escape(d)}</span>' for d in c.drugs)
+    # only discovery gets a tag for now, clinic cards get topic tags in the new web app
+    lane = '<span class="lane">Discovery</span>' if c.lane == "discovery" else ""
     return f"""
     <article class="card">
-      <div class="num">0{i}</div>
+      <div class="num">0{i} {lane}</div>
       <h3>{html.escape(c.title)} {badge}</h3>
       <p>{html.escape(c.what)}</p>
       {why}
@@ -82,6 +84,7 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
   :root {{
     --navy: {P['navy']}; --steel: {P['steel']}; --mist: {P['mist']}; --bg: {P['background']};
     --white: {P['white']}; --slate: {P['slate']}; --line: {P['line']}; --accent: {P['accent']};
+    --discovery: {P['discovery']};
   }}
   * {{ box-sizing: border-box; }}
   body {{ margin: 0; background: var(--bg); color: var(--slate); font-family: 'Poppins', system-ui, sans-serif;
@@ -107,6 +110,8 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
   .hook {{ background: var(--mist); border-radius: 14px; padding: 10px 14px; color: var(--navy); }}
   .badge {{ background: var(--accent); color: var(--white); font-size: 11px; border-radius: 999px;
            padding: 2px 10px; vertical-align: middle; font-weight: 500; }}
+  .lane {{ background: var(--discovery); color: var(--navy); font-size: 11px; font-weight: 600; border-radius: 999px;
+           padding: 2px 10px; margin-left: 6px; }}
   .chips {{ display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 10px; }}
   .chip {{ border: 1px solid var(--line); border-radius: 999px; padding: 2px 12px; font-size: 12px; color: var(--navy); }}
   .pill {{ align-self: flex-start; margin-top: auto; background: var(--navy); color: var(--white); text-decoration: none;

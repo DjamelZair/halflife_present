@@ -26,18 +26,30 @@ PALETTE = {
     "slate": "#475569",      # body text
     "line": "#E2E8F0",       # borders and grid lines
     "accent": "#E2574C",     # used sparingly, inducers and warnings
+    # lane tags, from the jewel family in docs/DESIGN.md
+    "discovery": "#B45CD6",  # plum
+    "toxicology": "#3D5BD9", # cobalt, reserved, no toxicology source works yet
 }
 FONT = "Poppins"
 
 # english interface, but always European generic names (INN), never US brand names
 LANGUAGE = "en"
 
-# how many items end up in the daily brief
+# how many items end up in the daily brief: two clinic cards and one discovery card.
+# no discovery item that day means three clinic cards, the morning never comes up empty
 BRIEF_SIZE = 3
+LANE_CARDS = {"clinic": 2, "discovery": 1}
 LOOKBACK_DAYS = 2
+# regulators publish monthly (CHMP) or a few times a month (FDA), so discovery looks further back
+# and the history check makes sure nothing shows up twice
+DISCOVERY_LOOKBACK_DAYS = 30
+LAREB_LOOKBACK_DAYS = 30  # a couple of signals a month, the history check stops repeats
+PHASE3_COMPLETED_WITHIN_DAYS = 730  # results get posted years late, I only want recent trials
+# molecule of the day from the discovery card only when 3D and RDKit can cope, so no antibodies
+MAX_HEAVY_ATOMS = 100
 PUBMED_MAX_RESULTS = 60  # newest first, so with 30 the cap cut off papers before ranking saw them
 
-# search terms for the morning brief, tuned for a hospital pharmacist.
+# clinic lane: interactions, PK, TDM and dosing, tuned for a hospital pharmacist.
 # MeSH terms are noexp on purpose: exploded "drug interactions" pulls in drug synergism, so pesticide papers
 _TOPICS = (
     # interactions
@@ -53,10 +65,7 @@ _TOPICS = (
     'AND (renal[Title/Abstract] OR kidney[Title/Abstract] OR hepatic[Title/Abstract] OR pregnan*[Title/Abstract] '
     'OR paediatric[Title/Abstract] OR pediatric[Title/Abstract] OR neonat*[Title/Abstract] OR elderly[Title/Abstract] '
     'OR "older adults"[Title/Abstract] OR obes*[Title/Abstract] OR "critically ill"[Title/Abstract] '
-    'OR "intensive care"[Title/Abstract])) '
-    # new approvals
-    'OR "drug approval"[MeSH Terms:noexp] OR ((FDA[Title] OR EMA[Title] OR "European Medicines Agency"[Title]) '
-    'AND approv*[Title] AND (drug*[Title] OR therap*[Title] OR medicine*[Title]))'
+    'OR "intensive care"[Title/Abstract]))'
 )
 # fresh records have no MeSH yet, so "animals NOT humans" only drops the ones already indexed as animal only.
 # the title list catches the unindexed ones
@@ -69,6 +78,18 @@ _NOT_HUMAN = (
 )
 _NOT_PAPERS = 'comment[Publication Type] OR "published erratum"[Publication Type] OR "retraction of publication"[Publication Type]'
 PUBMED_QUERY = f"({_TOPICS}) AND english[Language] NOT ({_NOT_HUMAN}) NOT ({_NOT_PAPERS})"
+
+# discovery lane: first in human, first in class and approvals. Reviews out, those are not news
+_DISCOVERY = (
+    '"first-in-human"[Title/Abstract] OR "first in human"[Title/Abstract] OR "first-in-class"[Title/Abstract] '
+    'OR "first in class"[Title/Abstract] OR "new molecular entit*"[Title/Abstract] '
+    'OR "drug approval"[MeSH Terms:noexp] OR ((FDA[Title] OR EMA[Title] OR "European Medicines Agency"[Title]) '
+    'AND approv*[Title] AND (drug*[Title] OR therap*[Title] OR medicine*[Title]))'
+)
+PUBMED_DISCOVERY_QUERY = (
+    f"({_DISCOVERY}) AND english[Language] NOT ({_NOT_HUMAN}) "
+    f'NOT ({_NOT_PAPERS} OR review[Publication Type] OR "systematic review"[Publication Type])'
+)
 TRIALS_QUERY = "drug interaction OR pharmacokinetics"
 
 # api keys, only read from the environment, never hardcoded
@@ -82,6 +103,9 @@ NTFY_TOPIC = os.getenv("NTFY_TOPIC", "")
 APP_URL = os.getenv("APP_URL", "")
 
 HTTP_TIMEOUT = 30
+# say who I am. fda.gov sends the default python-requests agent to an abuse page, an honest name is fine
+HTTP_HEADERS = {"User-Agent": "halflife/0.1 (personal pharmacology news digest; "
+                              "https://github.com/DjamelZair/halflife_present)"}
 
 
 DEMO_DIR_NAME = "demo"  # demo runs go here, never in a dated folder, and git ignores it

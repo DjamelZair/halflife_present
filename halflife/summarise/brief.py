@@ -25,6 +25,7 @@ class Card:
     peer_reviewed: bool
     original_title: str  # so he can always check the paper itself
     drugs: list = field(default_factory=list)  # generic names mentioned, used to link to the lab
+    lane: str = "clinic"  # clinic or discovery, the app shows it as a tag
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -82,6 +83,7 @@ def summarise_with_claude(items: list[Item], n: int = config.BRIEF_SIZE) -> list
             source=f"{it.source}, {it.journal}", url=it.url,
             peer_reviewed=_is_peer_reviewed(it), original_title=it.title,
             drugs=[to_inn(d) for d in c.get("drugs", [])],  # double check, in case a US name slips through
+            lane=it.lane,
         ))
     return cards
 
@@ -101,21 +103,44 @@ def summarise_fallback(items: list[Item], n: int = config.BRIEF_SIZE) -> list[Ca
             pkpd_hook="",
             source=f"{it.source}, {it.journal}", url=it.url,
             peer_reviewed=_is_peer_reviewed(it), original_title=it.title,
-            drugs=find_drugs(f"{it.title} {it.abstract}"),  # plain text match on the FDA table
+            drugs=_drugs(it),
+            lane=it.lane,
         )
         for it in items[:n]
     ]
 
 
-def build_brief(items: list[Item], n: int = config.BRIEF_SIZE) -> tuple[list[Card], str]:
-    """Returns the cards and which mode made them, so the poster can be honest about it."""
+def _drugs(it: Item) -> list[str]:
+    # regulators and trials name the drug for me, papers need a plain text match on the FDA table
+    named = [to_inn(d) for d in it.extra.get("drugs", [])]
+    return named + [d for d in find_drugs(f"{it.title} {it.abstract}") if d not in named]
+
+
+def _slots(clinic: list[Item], discovery: list[Item], n: int) -> dict[str, int]:
+    """Two clinic and one discovery card. A lane short on items hands its slots to the other one."""
+    want = dict(config.LANE_CARDS)
+    want["discovery"] = min(want["discovery"], len(discovery))
+    want["clinic"] = min(n - want["discovery"], len(clinic))
+    want["discovery"] = min(n - want["clinic"], len(discovery))
+    return want
+
+
+def build_brief(items: list[Item], n: int = config.BRIEF_SIZE,
+                exclude: set[str] | frozenset = frozenset()) -> tuple[list[Card], str]:
+    """Returns the cards and which mode made them, so the poster can be honest about it.
+    exclude holds links he already saw on an earlier day."""
+    items = [it for it in items if it.url not in exclude]
     if not items:
         return [], "empty"
     # rank first, so even without Claude the best items rise to the top
-    items = rank(items)
+    pools = {lane: rank([it for it in items if it.lane == lane]) for lane in ("clinic", "discovery")}
+    slots = _slots(pools["clinic"], pools["discovery"], n)
     if config.ANTHROPIC_API_KEY:
         try:
-            return summarise_with_claude(items, n), "claude"
+            cards = [c for lane in ("clinic", "discovery") if slots[lane]
+                     for c in summarise_with_claude(pools[lane], slots[lane])]
+            return cards, "claude"
         except Exception as e:
             log.warning("Claude summary failed, using fallback: %s", e)
-    return summarise_fallback(items, n), "fallback"
+    cards = [c for lane in ("clinic", "discovery") for c in summarise_fallback(pools[lane], slots[lane])]
+    return cards, "fallback"

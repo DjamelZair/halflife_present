@@ -7,7 +7,7 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
-from halflife import config
+from halflife import config, history
 from halflife.interactions import cyp, figures as ifig, model
 from halflife.molecules import figures as mfig, properties, pubchem
 from halflife.notify import ntfy
@@ -47,7 +47,32 @@ def illustrative_ratio(findings) -> dict:
     return best
 
 
+def small_enough(comp: pubchem.Compound) -> bool:
+    # antibodies and oligos are not in PubChem anyway, this catches the big peptides that are
+    return properties.heavy_atoms(comp.smiles) <= config.MAX_HEAVY_ATOMS
+
+
+def discovery_molecule(cards, demo: bool) -> pubchem.Compound | None:
+    """The new drug from the discovery card, when PubChem knows it and it is a small molecule."""
+    for c in cards:
+        if c.lane != "discovery":
+            continue
+        for d in c.drugs:
+            try:
+                comp = pubchem.load_sample(d) if demo else pubchem.fetch(d)
+            except Exception as e:
+                log.info("No discovery molecule from %s: %s", d, e)
+                continue
+            if small_enough(comp):
+                return comp
+            log.info("%s is too big for the 3D view, using the usual pick", d)
+    return None
+
+
 def pick_molecule(cards, demo: bool) -> pubchem.Compound | None:
+    found = discovery_molecule(cards, demo)
+    if found:
+        return found
     candidates = [d for c in cards for d in c.drugs]
     if demo:
         samples = set(pubchem.sample_names())
@@ -79,7 +104,8 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
 
     # 1. news
     items, status = collect_all(demo=demo)
-    cards, mode = build_brief(items)
+    seen = set() if demo else history.shown_urls(before=day)
+    cards, mode = build_brief(items, exclude=seen)
     picked_ids = {c.url for c in cards}
 
     # 2. molecule of the day

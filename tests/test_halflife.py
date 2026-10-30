@@ -114,8 +114,14 @@ def test_conformer_builds():
 # ranking
 
 def test_interaction_paper_ranks_first_in_sample():
-    items = rank(load_sample())
+    # lanes are ranked apart, discovery scores sit on their own scale
+    items = rank([it for it in load_sample() if it.lane == "clinic"])
     assert "rivaroxaban" in items[0].title.lower()
+
+
+def test_ema_outranks_other_discovery_sources_in_sample():
+    items = rank([it for it in load_sample() if it.lane == "discovery"])
+    assert [it.source for it in items] == ["EMA", "FDA", "ClinicalTrials.gov"]
 
 
 def test_animal_study_is_penalised():
@@ -186,3 +192,174 @@ def test_latest_output_prefers_live_over_demo(tmp_path, monkeypatch):
     (tmp_path / "2026-10-29").mkdir()
     (tmp_path / "2026-10-30").mkdir()
     assert config.latest_output_dir().name == "2026-10-30"  # "demo" sorts after dates, must not win
+
+
+# discovery lane and the Dutch sources, all offline with trimmed copies of real records
+
+def _ema_row(**kw):
+    row = {"category": "Human", "name_of_medicine": "Rasonque", "ema_product_number": "EMEA/H/C/006500",
+           "active_substance": "daraxonrasib", "international_non_proprietary_name_common_name": "Daraxonrasib",
+           "opinion_status": "Positive", "opinion_adopted_date": "15/10/2026", "marketing_authorisation_date": "",
+           "generic": "No", "biosimilar": "No", "orphan_medicine": "Yes",
+           "therapeutic_indication": "Rasonque is indicated for the treatment of adult patients with metastatic "
+                                     "pancreatic adenocarcinoma.&nbsp;More text.",
+           "medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rasonque"}
+    row.update(kw)
+    return row
+
+
+def test_ema_uses_the_inn_never_the_brand():
+    from halflife.sources.ema import parse_medicines
+    [it] = parse_medicines([_ema_row()], since="2026-10-01")
+    assert it.title == "Daraxonrasib recommended by EMA for adult patients with metastatic pancreatic adenocarcinoma"
+    assert "rasonque" not in f"{it.title} {it.abstract}".lower()
+    assert it.lane == "discovery" and it.extra["drugs"] == ["daraxonrasib"]
+    assert it.extra["flags"][:2] == ["new active substance", "orphan"]
+
+
+def test_ema_skips_generics_biosimilars_negatives_and_old_news():
+    from halflife.sources.ema import parse_medicines
+    rows = [_ema_row(generic="Yes"), _ema_row(biosimilar="Yes"), _ema_row(opinion_status="Negative"),
+            _ema_row(opinion_adopted_date="15/08/2026"), _ema_row(category="Veterinary")]
+    assert parse_medicines(rows, since="2026-10-01") == []
+
+
+def test_ema_strips_salts_and_knows_old_substances():
+    from halflife.sources.ema import parse_medicines
+    rows = [_ema_row(name_of_medicine="Kizfizo", active_substance="temozolomide", orphan_medicine="No",
+                     therapeutic_indication="Kizfizo is indicated for glioblastoma."),
+            _ema_row(name_of_medicine="Temodal", active_substance="temozolomide",
+                     opinion_adopted_date="", marketing_authorisation_date="26/01/1999"),
+            _ema_row(name_of_medicine="Foundayo", active_substance="orforglipron hemicalcium")]
+    items = {it.extra["drugs"][0]: it for it in parse_medicines(rows, since="2026-10-01")}
+    assert set(items) == {"temozolomide", "orforglipron"}
+    assert "new active substance" not in items["temozolomide"].extra["flags"]
+    assert "new active substance" in items["orforglipron"].extra["flags"]
+
+
+FDA_PAGE = """<table><tr><th>No.</th><th>Drug Name</th><th>Active Ingredient</th><th>Approval Date</th>
+<th>FDA-approved use on approval date*</th></tr>
+<tr><td>47.</td><td>Hibsago</td><td>bepirovirsen<br>&nbsp;</td><td>10/20/2026</td>
+<td>To treat chronic hepatitis B virus infection in certain adults</td></tr>
+<tr><td>45.</td><td>Emcitate</td><td>tiratricol</td><td>9/28/2026</td><td>To treat MCT8 deficiency</td></tr></table>"""
+
+
+def test_fda_page_gives_inn_headlines_without_brands():
+    from halflife.sources.fda_novel import _rows_to_items, parse_page
+    rows = parse_page(FDA_PAGE)
+    assert [r["ingredient"] for r in rows] == ["bepirovirsen", "tiratricol"]
+    [it] = _rows_to_items(rows, since="2026-10-01", page_url="https://www.fda.gov/x")
+    assert it.title == "Bepirovirsen approved by the FDA for chronic hepatitis B virus infection in certain adults"
+    assert "hibsago" not in it.title.lower() and it.lane == "discovery"
+
+
+def test_fda_falls_back_to_openfda_when_the_page_parses_empty(monkeypatch, caplog):
+    from halflife.sources import fda_novel
+
+    class Page:
+        text = "<html>redesigned, no table</html>"
+        def raise_for_status(self): pass
+
+    monkeypatch.setattr(fda_novel.requests, "get", lambda *a, **k: Page())
+    monkeypatch.setattr(fda_novel, "fetch_openfda", lambda since: ["backup used"])
+    assert fda_novel.fetch() == ["backup used"]
+    assert "zero rows" in caplog.text
+
+
+def test_a_failing_source_never_stops_the_morning(monkeypatch):
+    from halflife.sources import collect
+
+    def broken():
+        raise ConnectionError("FDA and openFDA both down")
+
+    monkeypatch.setattr(collect, "SOURCES", {"FDA": broken, "Clinic": lambda: [Item("PubMed", "t", "a", "u", "")]})
+    items, status = collect.collect_all()
+    assert len(items) == 1 and "FDA" in status["errors"]
+
+
+LAREB_RSS = b"""<rss><channel>
+<item><id>12239</id><title>Kans op leverschade bij ocrelizumab  </title><description>Mensen die ocrelizumab
+gebruiken hebben een hoger risico op leverschade.</description><atc>L04AG08 </atc>
+<pubDate> Thu, 08 Oct 2026 11:15:09 G10T </pubDate><link>https://www.lareb.nl/news/kans-op-leverschade/</link></item>
+<item><id>1</id><title>Coronavaccinatie? Doe mee aan ons vragenlijstonderzoek!</title><description>x</description>
+<atc>J07BN01</atc><pubDate>Mon, 12 Oct 2026 10:00:00 GMT</pubDate><link>https://www.lareb.nl/news/a/</link></item>
+<item><id>2</id><title>Nieuwe website</title><description>x</description><atc></atc>
+<pubDate>Mon, 12 Oct 2026 10:00:00 GMT</pubDate><link>https://www.lareb.nl/news/b/</link></item>
+</channel></rss>"""
+
+
+def test_lareb_keeps_signals_only_and_reads_the_broken_date():
+    from halflife.sources.lareb import parse_rss
+    [it] = parse_rss(LAREB_RSS, since="2026-10-01")
+    assert it.title == "Kans op leverschade bij ocrelizumab"
+    assert it.date == "2026-10-08" and it.lane == "clinic"
+    assert parse_rss(LAREB_RSS, since="2026-10-09") == []
+
+
+def test_phase3_keeps_drug_names_and_drops_placebo():
+    from halflife.sources.trials import parse_phase3
+    study = {"protocolSection": {
+        "identificationModule": {"nctId": "NCT06192108", "briefTitle": "Orforglipron compared with dapagliflozin"},
+        "statusModule": {"resultsFirstPostDateStruct": {"date": "2026-10-16"}},
+        "descriptionModule": {"briefSummary": "A phase 3 study."},
+        "armsInterventionsModule": {"interventions": [
+            {"type": "DRUG", "name": "Orforglipron"}, {"type": "DRUG", "name": "Placebo"},
+            {"type": "DRUG", "name": "Calaspargase pegol (S95015)"}, {"type": "OTHER", "name": "Quality of life"}]}}}
+    [it] = parse_phase3([study])
+    assert it.extra["drugs"] == ["orforglipron", "calaspargase pegol"]
+    assert it.url.endswith("?tab=results") and it.lane == "discovery"
+
+
+# lanes in the brief
+
+def _items(n_clinic, n_discovery):
+    clinic = [Item("PubMed", f"Drug-drug interaction study {i}", "pharmacokinetics in patients",
+                   f"https://c/{i}", "2026") for i in range(n_clinic)]
+    disc = [Item("EMA", f"Drug {i} recommended by EMA", "x", f"https://d/{i}", "2026", lane="discovery")
+            for i in range(n_discovery)]
+    return clinic + disc
+
+
+def test_brief_has_two_clinic_and_one_discovery_card():
+    from halflife.summarise.brief import build_brief
+    cards, _ = build_brief(_items(5, 3))
+    assert [c.lane for c in cards] == ["clinic", "clinic", "discovery"]
+
+
+def test_brief_fills_up_with_clinic_when_discovery_is_empty():
+    from halflife.summarise.brief import build_brief
+    cards, _ = build_brief(_items(5, 0))
+    assert [c.lane for c in cards] == ["clinic"] * 3
+    cards, _ = build_brief(_items(1, 4))  # and the other way round
+    assert [c.lane for c in cards] == ["clinic", "discovery", "discovery"]
+
+
+def test_brief_never_repeats_what_he_already_saw():
+    from halflife.summarise.brief import build_brief
+    cards, _ = build_brief(_items(5, 2), exclude={"https://d/0", "https://c/0"})
+    urls = {c.url for c in cards}
+    assert "https://d/0" not in urls and "https://c/0" not in urls
+    assert "https://d/1" in urls
+
+
+def test_history_reads_earlier_days_only(tmp_path, monkeypatch):
+    from datetime import date
+    from halflife import history
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    for name, url in (("2026-10-29", "https://old"), ("2026-10-30", "https://today"), ("demo", "https://demo")):
+        (tmp_path / name / "data").mkdir(parents=True)
+        (tmp_path / name / "data" / "brief.json").write_text(json.dumps({"cards": [{"url": url}]}))
+    assert history.shown_urls(before=date(2026, 10, 30)) == {"https://old"}
+
+
+def test_molecule_comes_from_the_discovery_card_when_small(monkeypatch):
+    from halflife import pipeline
+    from halflife.molecules.pubchem import Compound
+    from halflife.summarise.brief import Card
+    smiles = {"daraxonrasib": "CC(=O)Nc1ccc(O)cc1",       # stand in, only the size matters here
+              "bigpeptide": "C" * 120}
+    monkeypatch.setattr(pipeline.pubchem, "fetch", lambda d: Compound(name=d, smiles=smiles[d], source="test"))
+    card = lambda drugs, lane: Card("t", "", "", "", "EMA", "u", True, "t", drugs=drugs, lane=lane)
+    assert pipeline.discovery_molecule([card(["daraxonrasib"], "discovery")], demo=False).name == "daraxonrasib"
+    assert pipeline.discovery_molecule([card(["bigpeptide"], "discovery")], demo=False) is None
+    assert pipeline.discovery_molecule([card(["daraxonrasib"], "clinic")], demo=False) is None

@@ -42,6 +42,15 @@ Topic tags, same in both modes, dark text `#070D22` on a jewel fill:
 Interaction `#FF5C8A`, TDM `#FFB547`, Biologics `#8FD3FF`. Add new topics from the same jewel family
 (`#B45CD6` plum, `#3D5BD9` cobalt) rather than inventing new colours.
 
+Lane tags, same in both modes and the same dark text, on top of the topic tags (decided 30 October 2026):
+
+| Lane | Fill | Shown |
+|---|---|---|
+| Discovery | `#B45CD6` plum | on the discovery card (new approvals, first in human, phase 3 results) |
+| Toxicology | `#3D5BD9` cobalt | reserved, no working source yet (EUDA blocks automated requests) |
+
+Clinic cards carry no lane tag, only their topic tag. Each card in `brief.json` has a `lane` field.
+
 Type: **Space Grotesk** (logo, headings, card headlines, numbers) and **Inter** (everything else).
 Radius: cards 20 px, interaction card 22 px, pills fully round. Touch targets at least 44 px.
 

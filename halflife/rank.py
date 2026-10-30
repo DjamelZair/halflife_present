@@ -22,6 +22,21 @@ WEIGHTS = {
     r"approval|approved|phase (ii|iii|3|2)": 1,
 }
 
+# discovery lane: the source sets the order (EMA counts most in the Netherlands), keywords break ties
+DISCOVERY_SOURCES = {"EMA": 30, "FDA": 20, "ClinicalTrials.gov": 10, "PubMed": 0}
+DISCOVERY_WEIGHTS = {
+    r"new active substance": 5,  # EMA flag I set myself, a new molecule beats a new formulation
+    r"first.in.class": 4,
+    r"first.in.human": 3,
+    r"\b(orphan|prime|advanced therapy|conditional)\b": 2,  # EMA flags end up in the text
+    r"phase (iii|3)": 2,
+    r"overall survival|mortality|hospitali[sz]ation": 1,
+}
+
+# Lareb writes in Dutch, so the English keywords miss. A signal about a medicine is clinic news
+# by definition, this puts it level with a good interaction paper
+LAREB_SCORE = 12
+
 # things that are interesting but further from daily practice
 PENALTIES = {
     r"\brats?\b|\bmice\b|murine|zebrafish": -2,
@@ -30,8 +45,16 @@ PENALTIES = {
 
 
 def score(item: Item) -> int:
-    text = f"{item.title} {item.abstract}".lower()
-    s = sum(w for pat, w in WEIGHTS.items() if re.search(pat, text))
+    text = f"{item.title} {item.abstract} {' '.join(item.extra.get('flags', []))}".lower()
+    if item.lane == "discovery":
+        s = DISCOVERY_SOURCES.get(item.source, 0)
+        s += sum(w for pat, w in DISCOVERY_WEIGHTS.items() if re.search(pat, text))
+        if item.source == "ClinicalTrials.gov" and not item.extra.get("drugs"):
+            s -= 3  # a phase 3 without a named drug is radiotherapy or a vaccine schedule, not a new medicine
+    elif item.source == "Lareb":
+        s = LAREB_SCORE
+    else:
+        s = sum(w for pat, w in WEIGHTS.items() if re.search(pat, text))
     s += sum(w for pat, w in PENALTIES.items() if re.search(pat, text))
     if item.source in {"bioRxiv", "medRxiv"}:
         s -= 1  # preprints are fine, but peer reviewed wins a tie

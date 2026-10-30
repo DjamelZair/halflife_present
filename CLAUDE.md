@@ -15,6 +15,19 @@ The person building it (the repo owner) wants the **easiest version** first.
 * Hosting: GitHub Actions for the daily job. The app moves from Streamlit to a **static web app on GitHub Pages**
   (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
   chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
+* **Two lanes** (decided 30 October 2026): Clinic (interactions, PK, TDM, dosing) gives 2 cards, Discovery
+  (new approvals, first in class or first in human, phase 3 results) gives 1. A lane short on items hands its
+  slots to the other. Every card has a `lane` field. Nothing is shown twice: `history.py` reads earlier briefs.
+  * Clinic sources: PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, Lareb signals (RSS items with an ATC code,
+    titles kept in Dutch).
+  * Discovery sources, in priority order: EMA (medicines JSON, positive opinions and EU authorisations, no
+    generics, biosimilars or negative opinions), FDA novel approvals page with openFDA as backup when the page
+    parses to zero rows, ClinicalTrials.gov phase 3 with recent results, PubMed first in human.
+  * Molecule of the day comes from the discovery card when PubChem knows it and it has at most
+    `MAX_HEAVY_ATOMS`, otherwise the old logic.
+  * Skipped after a live check on 30 October 2026: EUDA (Cloudflare challenge on every URL, so the Toxicology
+    lane waits), CBG-MEB (no machine readable feed, the RSS link only exists in a JavaScript popup).
+    Never work around a bot block. fda.gov only needs the honest `config.HTTP_HEADERS` user agent.
 * Out of scope for now: notes helper, case of the week, Dutch translation, brand names.
 
 ## Design rules
@@ -38,7 +51,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 17 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 34 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
@@ -46,7 +59,9 @@ ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
 **First live run on 30 October 2026** (`--no-push`): all four news sources and PubChem work
 (PubMed 28, bioRxiv 7, medRxiv 2, ClinicalTrials.gov 20). One fix was needed: PubMed took the DOI
 from the paper's reference list, so `parse_articles` now only reads `PubmedData/ArticleIdList`.
-ntfy is still untested. Use a virtualenv in `.venv/`, it is ignored by git.
+The ntfy push reached the topic on 30 October 2026, the phone check is the owner's. When no pair
+comes from the news, `cyp.daily_pair` picks one from the FDA table by date.
+Use a virtualenv in `.venv/`, it is ignored by git.
 
 ## Next steps, in order
 1. Setup: `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pytest -q`.
@@ -54,7 +69,7 @@ ntfy is still untested. Use a virtualenv in `.venv/`, it is ignored by git.
    `figures/sources_overview.png` (a zero bar means a source is broken). Preprint DOIs now use the
    openRxiv prefix `10.64898`, that is expected.
 3. Tune `PUBMED_QUERY` in `config.py` and the weights in `rank.py` after a few days of real output.
-4. Test the push: set `NTFY_TOPIC` in `.env`, run without `--no-push`, check the phone.
+4. Push tested on 30 October 2026. `NTFY_TOPIC` lives in `.env` locally and goes into the GitHub secrets.
 5. Push to GitHub, add secrets, run the workflow by hand once.
 6. Build the web app from `docs/DESIGN.md`: `web/` folder, one page with Today, Molecule and Lab views, three.js
    molecule hero, dark and light mode, data from `outputs/<latest>/data/brief.json` plus a small 3D structure file

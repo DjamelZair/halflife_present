@@ -1,0 +1,56 @@
+[
+  {
+    "source": "EMA",
+    "title": "Daraxonrasib recommended by EMA for adult patients with metastatic pancreatic adenocarcinoma who have received at least one prior systemic therapy",
+    "abstract": "Treatment of adult patients with metastatic pancreatic adenocarcinoma who have received at least one prior systemic therapy.",
+    "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rasonque",
+    "date": "2026-10-15",
+    "journal": "CHMP opinion",
+    "identifier": "EMA EMEA/H/C/007122",
+    "extra": {
+      "drugs": [
+        "daraxonrasib"
+      ],
+      "flags": [
+        "new active substance",
+        "orphan"
+      ],
+      "atc": "L01XX"
+    },
+    "lane": "discovery"
+  },
+  {
+    "source": "FDA",
+    "title": "Pritelivir approved by the FDA for adults with weakened immune systems who have mucocutaneous lesions caused by herpes simplex virus infection and have not responded to other therapies",
+    "abstract": "FDA novel drug approval on 2026-10-09. Approved use: adults with weakened immune systems who have mucocutaneous lesions caused by herpes simplex virus infection and have not responded to other therapies.",
+    "url": "https://www.fda.gov/drugs/novel-drug-approvals-fda/novel-drug-approvals-2026",
+    "date": "2026-10-09",
+    "journal": "Novel drug approval",
+    "identifier": "FDA pritelivir 2026-10-09",
+    "extra": {
+      "drugs": [
+        "pritelivir"
+      ]
+    },
+    "lane": "discovery"
+  },
+  {
+    "source": "ClinicalTrials.gov",
+    "title": "A Study of Orforglipron (LY3502970) Compared With Dapagliflozin in Adult Participants With Type 2 Diabetes and Inadequate Glycemic Control With Metformin",
+    "abstract": "The main purpose of this study is to assess the safety and efficacy of orforglipron compared with dapagliflozin in improving blood sugar control in participants with type 2 diabetes (T2D) with inadequate glycemic control using metformin. The study will last approximately 46 weeks.",
+    "url": "https://clinicaltrials.gov/study/NCT06192108?tab=results",
+    "date": "2026-10-16",
+    "journal": "Phase 3 results",
+    "identifier": "NCT06192108",
+    "extra": {
+      "drugs": [
+        "orforglipron",
+        "dapagliflozin"
+      ],
+      "phases": [
+        "PHASE3"
+      ]
+    },
+    "lane": "discovery"
+  }
+]
