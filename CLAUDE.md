@@ -12,14 +12,19 @@ The person building it (the repo owner) wants the **easiest version** first.
   cards show the title and first two sentences of the abstract. The Claude path in
   `summarise/brief.py` stays in place for later, it only activates when `ANTHROPIC_API_KEY` is set.
 * Push via **ntfy** (no account, secret topic). No Telegram.
-* Hosting: GitHub Actions for the daily job, Streamlit Community Cloud for the app.
+* Hosting: GitHub Actions for the daily job. The app moves from Streamlit to a **static web app on GitHub Pages**
+  (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
+  chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
 * Out of scope for now: notes helper, case of the week, Dutch translation, brand names.
 
 ## Design rules
-* Clean and airy: near white background, dark navy main colour, soft blue fills, one warm accent used
-  sparingly, rounded cards and pill buttons, Poppins. Reference was a white and red lab landing page;
-  we swapped red for navy because he likes navy.
-* All colours live in `config.PALETTE` and `.streamlit/config.toml`. Never hardcode colours elsewhere.
+* **The design is decided: read `docs/DESIGN.md` before touching any front end.** Direction "Midnight lab":
+  dark mode (deep space navy) is the default, a white light mode via a toggle. Glossy jewel coloured 3D molecule
+  in a space scene as the hero, jewel topic tags, Space Grotesk plus Inter.
+* All colours live in one tokens file for the web app (and `config.PALETTE` for the Python figures).
+  Never hardcode colours elsewhere.
+* The old Poppins, light navy poster style is replaced. `report/poster.py` and the matplotlib figures should
+  follow the new tokens when they are next touched.
 * Every run writes `outputs/YYYY-MM-DD/` with `figures/`, `data/` and `poster.html`. Never only CSVs,
   always figures too.
 
@@ -51,9 +56,13 @@ ClinicalTrials.gov, PubChem and ntfy. Endpoints follow the documented APIs, but 
      `record/SDF?record_type=3d`.
 3. Tune `PUBMED_QUERY` in `config.py` and the weights in `rank.py` after a few days of real output.
 4. Test the push: set `NTFY_TOPIC` in `.env`, run without `--no-push`, check the phone.
-5. Push to GitHub, add secrets, run the workflow by hand once, then deploy on Streamlit Cloud and set `APP_URL`.
-6. Delete the demo folder in `outputs/` once a live run exists (it is marked `"demo": true`).
-7. Note: the cron is fixed at 06:23 UTC, so the push comes an hour later in summer time.
+5. Push to GitHub, add secrets, run the workflow by hand once.
+6. Build the web app from `docs/DESIGN.md`: `web/` folder, one page with Today, Molecule and Lab views, three.js
+   molecule hero, dark and light mode, data from `outputs/<latest>/data/brief.json` plus a small 3D structure file
+   the pipeline writes per day. Deploy with GitHub Pages and set `APP_URL` to it.
+7. Shorter headlines in plain mode (rules in `docs/DESIGN.md`), or add the Claude API key.
+8. Delete the demo folder in `outputs/` once a live run exists (it is marked `"demo": true`).
+9. Note: the cron is fixed at 06:23 UTC, so the push comes an hour later in summer time.
 
 ## Helpful skills
 From github.com/K-Dense-AI/claude-scientific-skills, only these were used as references:
