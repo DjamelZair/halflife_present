@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-31",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 46,
+      "clinic/bioRxiv": 6,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/PubMed": 12,
+      "discovery/ClinicalTrials.gov": 42
+    },
+    "errors": {}
+  },
+  "cards": [
+    {
+      "title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
+      "what": "Interindividual variability in drug response remains a critical challenge in contemporary pharmacotherapy, and cytochrome P450 (CYP450) genetic polymorphisms are a principal determinant of this heterogeneity. The CYP450 superfamily mediates the oxidative biotransformation of 70-80% of clinically prescribed medications.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Pharmacogenomics",
+      "url": "https://doi.org/10.1080/14622416.2026.2746620",
+      "peer_reviewed": true,
+      "original_title": "From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Kans op leverschade bij ocrelizumab",
+      "what": "Mensen die ocrelizumab gebruiken hebben een hoger risico op leverschade. Dit blijkt uit onderzoeken van de fabrikant van ocrelizumab.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "Lareb, Pharmacovigilance signal (Dutch)",
+      "url": "https://www.lareb.nl/news/kans-op-leverschade-bij-ocrelizumab/",
+      "peer_reviewed": true,
+      "original_title": "Kans op leverschade bij ocrelizumab",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Navepegritide recommended by EMA for achondroplasia in children",
+      "what": "Treatment of achondroplasia in children",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/yuviwel",
+      "peer_reviewed": true,
+      "original_title": "Navepegritide recommended by EMA for achondroplasia in children",
+      "drugs": [
+        "navepegritide"
+      ],
+      "lane": "discovery"
+    }
+  ],
+  "molecule": {
+    "name": "naloxegol",
+    "smiles": "COCCOCCOCCOCCOCCOCCOCCO[C@H]1CC[C@]2([C@H]3CC4=C5[C@]2([C@H]1OC5=C(C=C4)O)CCN3CC=C)O",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/56959087",
+    "Formula": "C34H53NO11",
+    "Molecular weight": 651.8,
+    "logP": 1.86,
+    "H bond donors": 2,
+    "H bond acceptors": 12,
+    "TPSA": 126.8,
+    "Rotatable bonds": 24,
+    "Rings": 5,
+    "Rule of five violations": 2
+  },
+  "pair": {
+    "a": "ivabradine",
+    "b": "isavuconazole",
+    "sentences": [
+      "isavuconazole is a moderate inhibitor of CYP3A and ivabradine is a sensitive substrate of CYP3A, so ivabradine exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 4.0,
+    "category": "moderate increase"
+  }
+}
