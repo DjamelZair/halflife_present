@@ -183,6 +183,7 @@ def test_demo_run_writes_all_outputs(tmp_path, monkeypatch):
               "figures/concentration_curve.png", "figures/sources_overview.png"):
         assert (out / f).exists(), f
     assert result["pair"]["a"] in {"ceritinib", "rivaroxaban"}
+    assert "abstract" not in (out / "data/items.csv").read_text().splitlines()[0]  # repo goes public
 
 
 def test_latest_output_prefers_live_over_demo(tmp_path, monkeypatch):

@@ -140,8 +140,9 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     overview.sources_figure(items, picked_ids={i.identifier or i.title for i in items if i.url in picked_ids},
                             path=figures["sources"])
 
-    # 5. data files, csv for a quick look and json for the app
-    pd.DataFrame([i.to_dict() for i in items]).to_csv(data_dir / "items.csv", index=False)
+    # 5. data files, csv for a quick look and json for the app.
+    # no full abstracts in the repo, they belong to the publishers. The cards keep their two sentences
+    pd.DataFrame([i.to_dict() for i in items]).drop(columns="abstract").to_csv(data_dir / "items.csv", index=False)
     pd.DataFrame([c.to_dict() for c in cards]).to_csv(data_dir / "brief.csv", index=False)
     summary = {"date": day.isoformat(), "mode": mode, "demo": demo, "status": status,
                "cards": [c.to_dict() for c in cards], "molecule": molecule, "pair": pair}
