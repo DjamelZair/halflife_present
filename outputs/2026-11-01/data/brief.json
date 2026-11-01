@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-01",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 40,
+      "clinic/bioRxiv": 5,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 8,
+      "discovery/ClinicalTrials.gov": 38
+    },
+    "errors": {}
+  },
+  "cards": [
+    {
+      "title": "SGLT2 inhibitor-induced genitourinary infections and the consequent antimicrobial-antidiabetic drug interactions: A narrative review of clinical and pharmacovigilance concern.",
+      "what": "Sodium glucose cotransporter 2 (SGLT2) inhibitors provide cardiovascular and renal benefits in type 2 diabetes mellitus, chronic kidney disease, and heart failure, but their use is associated with genitourinary (GU) infections and medication-safety concerns during antimicrobial treatment. This narrative review integrate evidence regarding SGLT2 inhibitor-associated GU infections, antimicrobial-antidiabetic drug interactions, pharmacovigilance, clinical management, and antimicrobial stewardship.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Diabetes research and clinical practice",
+      "url": "https://doi.org/10.1016/j.diabres.2026.113639",
+      "peer_reviewed": true,
+      "original_title": "SGLT2 inhibitor-induced genitourinary infections and the consequent antimicrobial-antidiabetic drug interactions: A narrative review of clinical and pharmacovigilance concern.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Model-informed precision dosing of vancomycin and amikacin in critically ill neonates: a pre- and post-intervention study.",
+      "what": "Optimal antimicrobial dosing in neonates is complicated by extreme developmental pharmacokinetic (PK) variability. Traditional therapeutic drug monitoring (TDM) fails to achieve PK/pharmacodynamic (PK/PD) target attainment in this vulnerable population.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Frontiers in pharmacology",
+      "url": "https://doi.org/10.3389/fphar.2026.1985125",
+      "peer_reviewed": true,
+      "original_title": "Model-informed precision dosing of vancomycin and amikacin in critically ill neonates: a pre- and post-intervention study.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Daraxonrasib recommended by EMA for adult patients with metastatic pancreatic adenocarcinoma who have received at least one prior systemic therapy",
+      "what": "Treatment of adult patients with metastatic pancreatic adenocarcinoma who have received at least one prior systemic therapy.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rasonque",
+      "peer_reviewed": true,
+      "original_title": "Daraxonrasib recommended by EMA for adult patients with metastatic pancreatic adenocarcinoma who have received at least one prior systemic therapy",
+      "drugs": [
+        "daraxonrasib"
+      ],
+      "lane": "discovery"
+    }
+  ],
+  "molecule": {
+    "name": "daraxonrasib",
+    "smiles": "CCN1C2=C3C=C(C=C2)C4=CSC(=N4)C[C@@H](C(=O)N5CCC[C@H](N5)C(=O)OCC(CC3=C1C6=C(N=CC(=C6)N7CCN(CC7)C)[C@H](C)OC)(C)C)NC(=O)[C@H]8C[C@@H]8C",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/164726578",
+    "Formula": "C44H58N8O5S",
+    "Molecular weight": 811.1,
+    "logP": 5.61,
+    "H bond donors": 2,
+    "H bond acceptors": 11,
+    "TPSA": 134.2,
+    "Rotatable bonds": 7,
+    "Rings": 8,
+    "Rule of five violations": 3
+  },
+  "pair": {
+    "a": "aprepitant",
+    "b": "sotorasib",
+    "sentences": [
+      "sotorasib is a moderate inducer of CYP3A and aprepitant is a moderate sensitive substrate of CYP3A, so aprepitant exposure can be lower."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.42,
+    "category": "moderate decrease"
+  }
+}
