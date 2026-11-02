@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-02",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 30,
+      "clinic/bioRxiv": 4,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 7,
+      "discovery/ClinicalTrials.gov": 40
+    },
+    "errors": {}
+  },
+  "cards": [
+    {
+      "title": "Practical Considerations for the Design, Conduct, and Reporting of Clinical Pharmacokinetic Drug-Drug Interaction Studies in Drug Development.",
+      "what": "Clinical pharmacokinetic drug-drug interaction (PK-DDI) studies are frequently required in drug development when metabolizing enzymes and transporters determine pharmacokinetics. Drugs can be victims, perpetrators, or victims and perpetrators, of PK-DDIs, so the clinical consequences of these interactions, particularly the risks of severe adverse effects and therapeutic failures leading to poor clinical outcomes, must be well understood prior to regulatory filings.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Journal of clinical pharmacology",
+      "url": "https://doi.org/10.1002/jcph.70326",
+      "peer_reviewed": true,
+      "original_title": "Practical Considerations for the Design, Conduct, and Reporting of Clinical Pharmacokinetic Drug-Drug Interaction Studies in Drug Development.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve to Minimum Inhibitory Concentration at a Children's and Women's Tertiary Hospital.",
+      "what": "Guidelines for therapeutic drug monitoring (TDM) of vancomycin recommend monitoring the ratio of area under the curve to minimum inhibitory concentration (AUC/MIC), with a target of 400-600 for both adults and children, rather than trough-based monitoring. AUC/MIC-based TDM for vancomycin was implemented at the study centre in April 2021.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, The Canadian journal of hospital pharmacy",
+      "url": "https://doi.org/10.4212/cjhp.3962",
+      "peer_reviewed": true,
+      "original_title": "Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve to Minimum Inhibitory Concentration at a Children's and Women's Tertiary Hospital.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults",
+      "what": "Treatment of obesity and type 2 diabetes mellitus in adults",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/foundayo",
+      "peer_reviewed": true,
+      "original_title": "Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults",
+      "drugs": [
+        "orforglipron"
+      ],
+      "lane": "discovery"
+    }
+  ],
+  "molecule": {
+    "name": "orforglipron",
+    "smiles": "C[C@H]1C[C@]1(C2=NOC(=O)N2)N3C4=C(C=C(C=C4)[C@H]5CCOC(C5)(C)C)C=C3C(=O)N6CCC7=NN(C(=C7[C@@H]6C)N8C=CN(C8=O)C9=C(C1=C(C=C9)N(N=C1)C)F)C1=CC(=C(C(=C1)C)F)C",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/137319706",
+    "Formula": "C48H48F2N10O5",
+    "Molecular weight": 883.0,
+    "logP": 7.44,
+    "H bond donors": 1,
+    "H bond acceptors": 8,
+    "TPSA": 155.9,
+    "Rotatable bonds": 7,
+    "Rings": 11,
+    "Rule of five violations": 2
+  },
+  "pair": {
+    "a": "melatonin",
+    "b": "rifampicin",
+    "sentences": [
+      "rifampicin is a moderate inducer of CYP1A2 and melatonin is a sensitive substrate of CYP1A2, so melatonin exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.36,
+    "category": "moderate decrease"
+  }
+}
