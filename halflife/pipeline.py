@@ -7,7 +7,7 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
-from halflife import config, history, schedule, topics
+from halflife import config, history, schedule, source_log, topics
 from halflife.interactions import cyp, figures as ifig, model
 from halflife.molecules import figures as mfig, properties, pubchem, structure
 from halflife.notify import ntfy
@@ -112,6 +112,10 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
 
     # 1. news
     items, status = collect_all(demo=demo)
+    source_history = None
+    if not demo:
+        source_history = source_log.record(day.isoformat(), status)
+        status["zero_streaks"] = source_log.zero_streaks(source_history)
     seen = set() if demo else history.shown_urls(before=day)
     cards, mode = build_brief(items, exclude=seen)
     picked_ids = {c.url for c in cards}
@@ -149,7 +153,7 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     # 4. overview figure, the small EDA part
     figures["sources"] = figs_dir / "sources_overview.png"
     overview.sources_figure(items, picked_ids={i.identifier or i.title for i in items if i.url in picked_ids},
-                            path=figures["sources"])
+                            path=figures["sources"], history=source_history)
 
     # 5. data files, csv for a quick look and json for the app.
     # no full abstracts in the repo, they belong to the publishers. The cards keep their two sentences

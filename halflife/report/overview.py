@@ -3,9 +3,10 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-from matplotlib.patches import Patch
+import pandas as pd
+from matplotlib.patches import Patch, Rectangle
 
-from halflife import style
+from halflife import source_log, style
 from halflife.rank import score
 from halflife.sources.base import Item
 
@@ -27,10 +28,43 @@ SOURCES = {
 LANE_COLOURS = {"clinic": P["navy"], "discovery": P["discovery"], "toxicology": P["toxicology"]}
 
 
-def sources_figure(items: list[Item], picked_ids: set[str], path: Path | None = None):
+def _history_panel(ax, table) -> None:
+    """Items per source for the last days. Red means nothing came in, an empty cell means no run that day."""
+    days, sources = list(table.columns), list(table.index)[::-1]
+    for y, source in enumerate(sources):
+        for x, day in enumerate(days):
+            value = table.loc[source, day]
+            if pd.isna(value):
+                continue
+            zero = value == 0
+            ax.add_patch(Rectangle((x, y), 0.94, 0.86, color=P["accent"] if zero else P["mist"]))
+            ax.text(x + 0.47, y + 0.43, str(int(value)), ha="center", va="center", fontsize=7,
+                    color=P["white"] if zero else P["navy"])
+    ax.set_xlim(0, len(days))
+    ax.set_ylim(0, len(sources))
+    ax.set_xticks([x + 0.47 for x in range(len(days))])
+    ax.set_xticklabels([day[5:] for day in days], fontsize=7, rotation=45 if len(days) > 7 else 0)
+    ax.set_yticks([y + 0.43 for y in range(len(sources))])
+    ax.set_yticklabels(sources, fontsize=8)
+    ax.tick_params(length=0)
+    ax.grid(False)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.set_title("Items per source, last days. Red is zero")
+
+
+def sources_figure(items: list[Item], picked_ids: set[str], path: Path | None = None, history=None):
     style.apply()
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 0.6 + 0.42 * min(max(4, len(items)), 15)),
-                                   gridspec_kw={"width_ratios": [1, 1.6], "wspace": 0.9})
+    table = source_log.last_days(history) if history is not None else pd.DataFrame()
+    top = 0.6 + 0.42 * min(max(4, len(items)), 15)
+    if table.empty:
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, top), gridspec_kw={"width_ratios": [1, 1.6], "wspace": 0.9})
+    else:
+        bottom = 0.9 + 0.28 * len(table)
+        fig = plt.figure(figsize=(10, top + bottom))
+        grid = fig.add_gridspec(2, 2, width_ratios=[1, 1.6], height_ratios=[top, bottom], wspace=0.9, hspace=0.45)
+        ax1, ax2 = fig.add_subplot(grid[0, 0]), fig.add_subplot(grid[0, 1])
+        _history_panel(fig.add_subplot(grid[1, :]), table)
 
     # always show every source, a zero tells me a source might be broken
     counts = {key: 0 for key in SOURCES}

@@ -583,7 +583,7 @@ def test_headline_examples():
 def test_health_problems():
     from halflife.health import problems
     status = {"demo": False, "errors": {"PubMed": "timeout"}, "sources": {"Preprints": 0, "EUDA": 0, "Lareb": 0, "EMA": 5}}
-    assert problems(status) == ["PubMed failed: timeout", "Preprints returned no items"]  # EUDA and Lareb are quiet by nature
+    assert problems(status) == ["PubMed failed: timeout", "Preprints returned no items"]  # zero is normal for EUDA
     assert problems({"demo": False, "errors": {}, "sources": {"EMA": 5}}) == []
     assert problems({"demo": True, "errors": {"PubMed": "x"}, "sources": {}}) == []  # a demo never alerts
 
@@ -626,3 +626,52 @@ def test_alerts_stay_silent_without_a_topic_and_never_raise(monkeypatch):
     assert admin.send("t", "m", topic="") is False
     assert admin.send("t", "m", topic="x") is False  # the brief must survive a broken alert
     assert admin.rearm_no_run_alarm("x") is False
+
+
+# source health
+
+def test_source_log_keeps_one_row_per_source_per_day(tmp_path, monkeypatch):
+    from halflife import source_log
+    monkeypatch.setattr(config, "SOURCE_HISTORY", tmp_path / "h.csv")
+    source_log.record("2026-11-03", {"sources": {"EMA": 5}, "errors": {}})
+    source_log.record("2026-11-03", {"sources": {"EMA": 7, "FDA": 2}, "errors": {}})  # a second run replaces the first
+    log = source_log.record("2026-11-04", {"sources": {"EMA": 1}, "errors": {"FDA": "down"}})
+    assert len(log) == 4
+    assert log[(log.date == "2026-11-03") & (log.source == "EMA")]["items"].item() == 7
+    assert source_log.load()[(lambda d: (d.date == "2026-11-04") & (d.source == "FDA"))]["failed"].item()
+
+
+def test_zero_streaks_count_failures_and_survive_a_missed_day(tmp_path, monkeypatch):
+    from halflife import source_log
+    monkeypatch.setattr(config, "SOURCE_HISTORY", tmp_path / "h.csv")
+    source_log.record("2026-11-01", {"sources": {"A": 3, "B": 0, "C": 1}, "errors": {}})
+    source_log.record("2026-11-02", {"sources": {"A": 0, "B": 0, "C": 1}, "errors": {}})
+    log = source_log.record("2026-11-04", {"sources": {"B": 0, "C": 2}, "errors": {"A": "down"}})  # no run on the 3rd
+    assert source_log.zero_streaks(log) == {"A": 2, "B": 3, "C": 0}
+
+
+def test_zero_alerts_escalate_on_the_second_day():
+    from halflife.health import problems
+    day = lambda **k: {"demo": False, "errors": {}, "sources": k, "zero_streaks": {n: 1 if v == 0 else 0 for n, v in k.items()}}
+    assert problems(day(EMA=0)) == ["EMA returned no items"]
+    two = day(EMA=0, Lareb=0, EUDA=0)
+    two["zero_streaks"] = {"EMA": 2, "Lareb": 2, "EUDA": 9}
+    assert problems(two) == ["EMA has had no items for 2 days running", "Lareb has had no items for 2 days"]
+    three = day(EMA=0, Lareb=0)
+    three["zero_streaks"] = {"EMA": 3, "Lareb": 3}
+    assert problems(three) == ["EMA has had no items for 3 days running"]  # Lareb said it once, that is enough
+    assert problems(day(EMA=0, Lareb=0)) == ["EMA returned no items"]  # Lareb stays quiet on day one
+    failed = {"errors": {"EMA": "down"}, "sources": {}, "zero_streaks": {"EMA": 2}}
+    assert problems(failed) == ["EMA failed: down (2 days running)"]
+
+
+def test_overview_figure_shows_the_history(tmp_path, monkeypatch):
+    from halflife import source_log
+    from halflife.report import overview
+    monkeypatch.setattr(config, "SOURCE_HISTORY", tmp_path / "h.csv")
+    source_log.record("2026-11-03", {"sources": {"EMA": 5, "FDA": 0}, "errors": {}})
+    log = source_log.record("2026-11-04", {"sources": {"EMA": 4}, "errors": {"FDA": "down"}})
+    assert source_log.last_days(log).loc["FDA", "2026-11-04"] == 0
+    path = tmp_path / "o.png"
+    overview.sources_figure(load_sample(), set(), path=path, history=log)
+    assert path.stat().st_size > 0

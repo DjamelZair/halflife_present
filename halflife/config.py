@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 SAMPLE_DIR = DATA_DIR / "sample"
 OUTPUT_ROOT = ROOT / "outputs"
+SOURCE_HISTORY = OUTPUT_ROOT / "source_history.csv"  # items per source per day, kept in the repo
 CYP_TABLE = DATA_DIR / "cyp_reference.csv"
 
 # clean white look with dark navy as the main colour, he likes navy
@@ -106,8 +107,10 @@ APP_URL = os.getenv("APP_URL", "")
 ADMIN_NTFY_TOPIC = os.getenv("ADMIN_NTFY_TOPIC", "")  # my own alerts, never the topic he subscribes to
 ACTIONS_URL = "https://github.com/DjamelZair/halflife_present/actions"
 NO_RUN_ALARM_HOURS = 50  # two days and a bit, ntfy schedules up to 3 days ahead
-# zero items is normal for these, EUDA most days and Lareb some months. their parsers raise when a page breaks
-QUIET_SOURCES = {"EUDA", "Lareb"}
+# zero items is normal for EUDA most days, its parser raises when the page breaks. no alert for zero at all
+ZERO_IS_NORMAL = {"EUDA"}
+# Lareb can have a month without a signal. no alert on the first day, one notice on the second
+QUIET_SOURCES = {"Lareb"}
 # the job runs the evening before, the push is scheduled for this time
 PUSH_TIMEZONE = "Europe/Amsterdam"
 PUSH_HOUR = 7
