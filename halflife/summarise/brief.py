@@ -26,6 +26,7 @@ class Card:
     original_title: str  # so he can always check the paper itself
     drugs: list = field(default_factory=list)  # generic names mentioned, used to link to the lab
     lane: str = "clinic"  # clinic or discovery, the app shows it as a tag
+    topic: str = ""  # the coloured tag on a clinic card, see topics.py
 
     def to_dict(self) -> dict:
         return asdict(self)

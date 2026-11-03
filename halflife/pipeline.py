@@ -7,9 +7,9 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
-from halflife import config, history
+from halflife import config, history, topics
 from halflife.interactions import cyp, figures as ifig, model
-from halflife.molecules import figures as mfig, properties, pubchem
+from halflife.molecules import figures as mfig, properties, pubchem, structure
 from halflife.notify import ntfy
 from halflife.report import overview, poster
 from halflife.sources.collect import collect_all
@@ -107,6 +107,8 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     seen = set() if demo else history.shown_urls(before=day)
     cards, mode = build_brief(items, exclude=seen)
     picked_ids = {c.url for c in cards}
+    for c in cards:
+        c.topic = topics.topic_for(c.lane, c.source, f"{c.title} {c.what}")
 
     # 2. molecule of the day
     figures, molecule = {}, None
@@ -149,6 +151,9 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     (data_dir / "brief.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     if comp and comp.sdf_3d:
         (data_dir / "molecule_3d.sdf").write_text(comp.sdf_3d, encoding="utf-8")
+    viewer = structure.viewer_json(comp.name, comp.sdf_3d, comp.smiles) if comp else None
+    if viewer:
+        (data_dir / "molecule.json").write_text(json.dumps(viewer), encoding="utf-8")
 
     # 6. poster and push
     poster_path = poster.build(out, cards, mode, figures, molecule, pair, day)

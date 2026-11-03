@@ -1,0 +1,129 @@
+/* every colour, font and size of the app lives here. values come from docs/DESIGN.md,
+   the rest of the app and the 3D scene only ever read these variables */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../fonts/space-grotesk-latin-wght-normal.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* jewels, the same in both modes */
+  --jewel-pink: #FF5C8A;
+  --jewel-amber: #FFB547;
+  --jewel-ice: #8FD3FF;
+  --jewel-plum: #B45CD6;
+  --jewel-cobalt: #3D5BD9;
+  --jewel-pearl: #E6ECF7;
+  --tag-text: #070D22;
+  --tag-text-on-cobalt: #FFFFFF;
+
+  /* atoms, chemically meaningful, read by the 3D scene */
+  --atom-c: #1E2A5C;
+  --atom-o: var(--jewel-pink);
+  --atom-n: var(--jewel-pearl);
+  --atom-s: var(--jewel-amber);
+  --atom-cl: var(--jewel-plum);
+  --atom-f: var(--jewel-ice);
+  --atom-p: var(--jewel-amber);
+  --atom-br: var(--jewel-plum);
+  --atom-i: var(--jewel-plum);
+  --atom-h: var(--jewel-pearl);
+  --atom-other: var(--jewel-cobalt);
+  --bond: #8FA6D6;
+  --star: #FFFFFF;
+
+  /* type */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.625rem;
+  --text-hero: 2.75rem;
+
+  /* space */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+  --gutter: 20px;
+
+  /* shape */
+  --radius-card: 20px;
+  --radius-interaction: 22px;
+  --radius-pill: 999px;
+  --touch: 44px;
+  --hero-height: 470px;
+  --column: 560px;
+  --tabbar-height: 56px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 160ms;
+  --duration-slow: 600ms;
+}
+
+/* dark is the default, even when the phone itself is in light mode */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #070D22;
+  --hero: #070D22;
+  --text: #FFFFFF;
+  --text-secondary: #A3B1CC;
+  --accent: #8FD3FF;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-line: rgba(255, 255, 255, 0.09);
+  --card-shadow: none;
+  --chip-bg: rgba(255, 255, 255, 0.06);
+  --chip-line: rgba(255, 255, 255, 0.12);
+  --interaction-bg: rgba(255, 92, 138, 0.08);
+  --interaction-line: rgba(255, 92, 138, 0.28);
+  --tabbar-bg: rgba(7, 13, 34, 0.86);
+  --tabbar-line: rgba(255, 255, 255, 0.09);
+  --hero-scrim: rgba(7, 13, 34, 0);
+  --bokeh-opacity: 0.2;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --page: #FFFFFF;
+  --hero: #FFFFFF;
+  --text: #0B1F3A;
+  --text-secondary: #4A5875;
+  --accent: #2F55C8;
+  --card-bg: #FFFFFF;
+  --card-line: #E3E9F2;
+  --card-shadow: 0 10px 30px rgba(11, 31, 58, 0.07);
+  --chip-bg: #F3F6FB;
+  --chip-line: #E3E9F2;
+  --interaction-bg: #0B1F3A; /* the one dark accent, it stays dark in light mode */
+  --interaction-line: #0B1F3A;
+  --tabbar-bg: rgba(255, 255, 255, 0.9);
+  --tabbar-line: #E3E9F2;
+  --hero-scrim: rgba(255, 255, 255, 0);
+  --bokeh-opacity: 0.2;
+}
+
+/* the interaction card looks the same in both modes on the inside, its text is always on a dark surface */
+:root {
+  --interaction-text: #FFFFFF;
+  --interaction-secondary: #A3B1CC;
+  --interaction-number: #FF8FAE;
+  --interaction-chip-bg: rgba(255, 255, 255, 0.06);
+  --interaction-chip-line: rgba(255, 255, 255, 0.12);
+  --button-bg: #FFFFFF;
+  --button-text: #0B1F3A;
+}

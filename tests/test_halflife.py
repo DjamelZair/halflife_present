@@ -418,3 +418,31 @@ def test_euda_keeps_only_recent_nps_documents_and_links_to_euda():
     # no EUDA link on the record, then the library record that credits EUDA
     no_link = parse_record(RECORD_PAGE.split("<a ")[0])
     assert to_item(entry, no_link).url == "https://www.drugsandalcohol.ie/45831/"
+
+
+# web app data
+
+def test_topic_rules():
+    from halflife.topics import topic_for
+    assert topic_for("clinic", "PubMed, J", "A drug-drug interaction study of TDM") == "Interaction"  # first match wins
+    assert topic_for("clinic", "PubMed, J", "Therapeutic drug monitoring for vancomycin") == "TDM"
+    assert topic_for("clinic", "Lareb, Signal", "Boezemfibrilleren bij omega 3") == "Signal"
+    assert topic_for("clinic", "PubMed, J", "A hospital audit") == "Clinic"
+    assert topic_for("discovery", "EMA, CHMP opinion", "A drug-drug interaction") == ""  # only the lane tag
+
+
+def test_viewer_json_has_real_atoms_and_bonds():
+    from halflife.molecules.structure import viewer_json
+    mol = viewer_json("caffeine", smiles="Cn1c(=O)c2c(ncn2C)n(C)c1=O")
+    assert mol["coords"] == "RDKit conformer"
+    heavy = [a for a in mol["atoms"] if a[0] != "H"]
+    assert len(heavy) == 14 and sum(a[0] == "N" for a in heavy) == 4 and sum(a[0] == "O" for a in heavy) == 2
+    assert {b[2] for b in mol["bonds"]} == {1, 2}  # kekulized, no aromatic 1.5 left for the viewer
+    assert abs(sum(a[1] for a in heavy)) < 0.01  # centred on the heavy atoms
+
+
+def test_python_lane_colours_match_the_tokens_file():
+    # the colours may only live in two places, so they must never drift apart
+    tokens = (config.ROOT / "web/css/tokens.css").read_text()
+    assert f"--jewel-plum: {config.PALETTE['discovery']}" in tokens
+    assert f"--jewel-cobalt: {config.PALETTE['toxicology']}" in tokens
