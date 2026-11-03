@@ -18,6 +18,10 @@ The person building it (the repo owner) wants the **easiest version** first.
 * `outputs/source_history.csv` holds the items per source per day (`source_log.py`), the overview figure shows it.
 * Topic tags go by the title, the opening sentences only count for terms that name a topic outright (`topics.py`).
   Headlines never drop population words, even when that makes them longer (`summarise/headline.py`).
+* Transporters (P-gp, BCRP, OATP1B1/1B3, OCT2, MATE) come from the same FDA page: `data/transporter_reference.csv`,
+  refreshed by hand with `scripts/update_fda_tables.py`, parser in `interactions/fda_page.py`. OAT1/OAT3 are on the
+  page but left out for now. They count for the Lab and the interaction of the day. The static model covers enzymes,
+  so a pair linked only by a transporter gets no ratio. FDA footnotes stay, like rifampicin as a single dose.
 * Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages**, `web/index.html` at the main address, the portfolio page at `/about.html`. It replaced Streamlit
   (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
   chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
@@ -58,11 +62,11 @@ The person building it (the repo owner) wants the **easiest version** first.
 * Python, modular, one job per module.
 * Comments read like the owner wrote them: short, first person, casual. No dashes as punctuation in
   comments, docs or UI text. British spelling in prose.
-* No invented facts. Interaction roles only from `data/cyp_reference.csv` (copied from the FDA page).
+* No invented facts. Interaction roles only from `data/cyp_reference.csv` and `data/transporter_reference.csv` (both from the FDA page).
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 135 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 142 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.

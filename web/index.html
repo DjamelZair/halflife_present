@@ -108,7 +108,7 @@
 
 <main id="view-lab" data-view="lab" class="column lab" hidden>
   <h1>Lab</h1>
-  <p class="lab-intro">Pick two drugs to see their roles in the FDA table, then explore the effect with the ICH M12 static model.</p>
+  <p class="lab-intro">Pick two drugs to see their enzyme and transporter roles in the FDA table, then explore enzyme effects with the ICH M12 static model.</p>
 
   <div class="pickers">
     <label>First drug<input id="lab-a" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
@@ -122,7 +122,8 @@
     <div class="role-group"><h2 id="lab-name-a"></h2><ul class="chips" id="lab-roles-a"></ul></div>
     <div class="role-group"><h2 id="lab-name-b"></h2><ul class="chips" id="lab-roles-b"></ul></div>
     <ul class="findings" id="lab-findings"></ul>
-    <a class="text-link" id="lab-source" target="_blank" rel="noopener">FDA table of CYP substrates, inhibitors and inducers</a>
+    <a class="text-link" id="lab-source" target="_blank" rel="noopener">FDA table of enzyme and transporter interactions</a>
+    <p class="note" id="lab-source-date"></p>
   </section>
 
   <section id="lab-model" aria-label="Illustrative model" hidden>

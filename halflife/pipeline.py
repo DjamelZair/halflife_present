@@ -30,7 +30,7 @@ def pick_pair(cards, day: date) -> tuple[str, str]:
         drugs = c.drugs
         for i in range(len(drugs)):
             for j in range(i + 1, len(drugs)):
-                if cyp.check_pair(drugs[i], drugs[j]):
+                if cyp.interacts(drugs[i], drugs[j]):
                     return drugs[i], drugs[j]
     return cyp.daily_pair(day)
 
@@ -136,19 +136,22 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     # 3. interaction of the day
     a, b = pick_pair(cards, day)
     findings = cyp.check_pair(a, b)
-    ill = illustrative_ratio(findings)
-    ratio = ill["ratio"]
+    transporter_findings = cyp.check_transporters(a, b)
     figures["network"] = figs_dir / "interaction_network.png"
-    figures["aucr"] = figs_dir / "auc_ratio.png"
-    figures["concentration"] = figs_dir / "concentration_curve.png"
     ifig.network_figure(a, b, figures["network"])
-    inhibition = ratio > 1  # the fm curve figure shows inhibition, so only mark it then
-    ifig.aucr_figure(ill["fm"] if inhibition else None, ill["i_over_ki"] if inhibition else None, figures["aucr"])
-    ifig.concentration_figure(ratio, figures["concentration"])
-    pair = {"a": a, "b": b, "sentences": [f.sentence() for f in findings],
-            "fm": ill["fm"], "i_over_ki": ill["i_over_ki"], "induction_fold": ill["induction_fold"],
-            "illustrative_auc_ratio": round(ratio, 2),
-            "category": model.category(ratio)}
+    pair = {"a": a, "b": b, "sentences": [f.sentence() for f in [*findings, *transporter_findings]],
+            "fm": None, "i_over_ki": None, "induction_fold": None, "illustrative_auc_ratio": None, "category": None}
+    # the static model is about enzymes. a pair linked only by a transporter gets no number, a made up one is worse
+    if findings:
+        ill = illustrative_ratio(findings)
+        ratio = ill["ratio"]
+        figures["aucr"] = figs_dir / "auc_ratio.png"
+        figures["concentration"] = figs_dir / "concentration_curve.png"
+        inhibition = ratio > 1  # the fm curve figure shows inhibition, so only mark it then
+        ifig.aucr_figure(ill["fm"] if inhibition else None, ill["i_over_ki"] if inhibition else None, figures["aucr"])
+        ifig.concentration_figure(ratio, figures["concentration"])
+        pair.update({"fm": ill["fm"], "i_over_ki": ill["i_over_ki"], "induction_fold": ill["induction_fold"],
+                     "illustrative_auc_ratio": round(ratio, 2), "category": model.category(ratio)})
 
     # 4. overview figure, the small EDA part
     figures["sources"] = figs_dir / "sources_overview.png"

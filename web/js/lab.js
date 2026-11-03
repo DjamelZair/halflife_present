@@ -1,6 +1,6 @@
 // the Lab screen: two drugs, what the FDA table says about them, and the ICH M12 sliders
 
-import { aucRatio, category, checkPair, concentrationCurve, illustrativeInputs, sentence } from "./m12.js";
+import { aucRatio, category, checkPair, checkTransporters, concentrationCurve, illustrativeInputs, sentence, transporterSentence } from "./m12.js";
 import { drawCurveChart, drawFmChart } from "./charts.js";
 
 const byId = (id) => document.getElementById(id);
@@ -26,7 +26,7 @@ function resolve(name) {
   const key = name.trim().toLowerCase();
   if (!key) return "";
   const inn = names.get(key) ?? key; // somebody may still type rifampin, the table says rifampicin
-  return cyp.rows.find((r) => r.drug.toLowerCase() === inn)?.drug ?? null;
+  return [...cyp.rows, ...cyp.transporters].find((r) => r.drug.toLowerCase() === inn)?.drug ?? null;
 }
 
 function values() {
@@ -62,10 +62,13 @@ function resetSliders(findings) {
 }
 
 function roleChips(name, target) {
-  const rows = cyp.rows.filter((r) => r.drug === name);
-  target.replaceChildren(...rows.map((r) => {
+  const rows = [
+    ...cyp.rows.filter((r) => r.drug === name).map((r) => `${capitalise(r.role)}, ${r.enzyme}`),
+    ...cyp.transporters.filter((r) => r.drug === name).map((r) => `${capitalise(r.role)}, ${r.transporter}`),
+  ];
+  target.replaceChildren(...rows.map((text) => {
     const li = document.createElement("li");
-    li.textContent = `${capitalise(r.role)}, ${r.enzyme}`;
+    li.textContent = text;
     return li;
   }));
 }
@@ -104,17 +107,21 @@ function update({ keepSliders = false } = {}) {
 
   const findings = checkPair(cyp.rows, a, b, model.roles);
   const list = byId("lab-findings");
-  list.replaceChildren(...findings.map((f) => {
+  const transporterFindings = checkTransporters(cyp.transporters, a, b);
+  const sentences = [...findings.map(sentence), ...transporterFindings.map(transporterSentence)];
+  list.replaceChildren(...sentences.map((text) => {
     const li = document.createElement("li");
-    li.textContent = capitalise(sentence(f));
+    li.textContent = capitalise(text);
     return li;
   }));
-  list.hidden = !findings.length;
-  if (!findings.length) {
-    message.textContent = "The FDA table shows no substrate with an inhibitor or inducer on a shared enzyme for this pair. The table lists examples, so this does not rule out an interaction.";
+  list.hidden = !sentences.length;
+  if (!sentences.length) {
+    message.textContent = "The FDA table shows no substrate with an inhibitor or inducer on a shared enzyme or transporter for this pair. The table lists examples, so this does not rule out an interaction.";
     return;
   }
-  message.textContent = "";
+  // the static model is about enzymes, a transporter link gets no number
+  message.textContent = findings.length ? "" : "A transporter interaction, so no ratio here. The static model in this lab covers enzymes.";
+  if (!findings.length) return;
   model_.hidden = false;
   if (keepSliders) refreshModel();
   else resetSliders(findings);
@@ -139,9 +146,10 @@ export function setupLab(cypData, modelData) {
   cyp = cypData;
   model = modelData;
   names = new Map(Object.entries(modelData.names));
-  const drugs = [...new Set(cyp.rows.map((r) => r.drug))].sort((x, y) => x.localeCompare(y));
+  const drugs = [...new Set([...cyp.rows, ...cyp.transporters].map((r) => r.drug))].sort((x, y) => x.localeCompare(y));
   byId("lab-drugs").replaceChildren(...drugs.map((d) => Object.assign(document.createElement("option"), { value: d })));
   byId("lab-source").href = cyp.url;
+  byId("lab-source-date").textContent = cyp.transporterSource;
   for (const id of ["lab-a", "lab-b"]) {
     byId(id).addEventListener("change", () => update());
     byId(id).addEventListener("input", (e) => { if (resolve(e.target.value)) update(); });

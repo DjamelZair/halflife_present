@@ -38,7 +38,9 @@ function chip(text, label) {
 }
 
 function rolesOf(cyp, drug) {
-  return cyp ? cyp.rows.filter((r) => r.drug.toLowerCase() === drug.toLowerCase()) : [];
+  if (!cyp) return [];
+  const rows = [...cyp.rows, ...cyp.transporters.map((r) => ({ drug: r.drug, enzyme: r.transporter, role: r.role }))];
+  return rows.filter((r) => r.drug.toLowerCase() === drug.toLowerCase());
 }
 
 function renderMolecule(mol, cyp, structure) {
@@ -112,8 +114,8 @@ function renderPair(pair, cyp) {
   byId("interaction").hidden = false;
   byId("pair-name").textContent = `${capitalise(pair.a)} and ${pair.b}`;
 
-  // the enzyme in the first sentence is the one the model used, the roles come from the FDA table only
-  const enzyme = pair.sentences?.[0]?.match(/of (CYP\w+)/)?.[1];
+  // the enzyme or transporter in the first sentence, the roles come from the FDA table only
+  const enzyme = pair.sentences?.[0]?.match(/ of ([\w-]+)[, ]/)?.[1];
   const chips = [pair.a, pair.b].flatMap((drug) => {
     const role = rolesOf(cyp, drug).find((r) => r.enzyme === enzyme);
     return role ? [chip(`${capitalise(role.role)} of ${role.enzyme}`, drug)] : [];
@@ -126,7 +128,7 @@ function renderPair(pair, cyp) {
     link.href = cyp.url;
     link.target = "_blank";
     link.rel = "noopener";
-    link.textContent = "FDA table of CYP substrates, inhibitors and inducers";
+    link.textContent = "FDA table of enzyme and transporter interactions";
     byId("pair-source").replaceChildren(link);
   }
   byId("pair-link").href = `#lab?a=${encodeURIComponent(pair.a)}&b=${encodeURIComponent(pair.b)}`;

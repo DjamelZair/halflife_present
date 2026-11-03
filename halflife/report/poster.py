@@ -57,11 +57,8 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
     pair_html = ""
     if pair:
         findings = "".join(f"<li>{html.escape(s)}</li>" for s in pair["sentences"]) or \
-            "<li>No substrate and inhibitor or inducer combination on the same enzyme in the FDA table.</li>"
-        pair_html = f"""
-    <section>
-      <h2>Interaction of the day: {html.escape(pair['a'])} and {html.escape(pair['b'])}</h2>
-      <div class="panel"><ul class="findings">{findings}</ul>{_img(figures['network'])}</div>
+            "<li>No substrate and inhibitor or inducer combination on the same enzyme or transporter in the FDA table.</li>"
+        model_html = f"""
       <div class="grid2">
         <div class="panel">{_img(figures['aucr'])}</div>
         <div class="panel">{_img(figures['concentration'])}</div>
@@ -70,7 +67,13 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
       textbook values that reproduce the FDA category definitions, not values for these exact drugs. Real numbers
       depend on renal clearance, transporters and dose; if a study in today's brief covers this pair, its own
       numbers win. Screening model for learning (ICH M12 static model, reversible inhibition and induction).
-      The FDA list holds examples, not every interaction. Not for patient decisions.</p>
+      The FDA list holds examples, not every interaction. Not for patient decisions.</p>""" if pair["illustrative_auc_ratio"] else """
+      <p class="note">A transporter interaction, so no illustrative number: the static model here covers enzymes.
+      The FDA list holds examples, not every interaction. Not for patient decisions.</p>"""
+        pair_html = f"""
+    <section>
+      <h2>Interaction of the day: {html.escape(pair['a'])} and {html.escape(pair['b'])}</h2>
+      <div class="panel"><ul class="findings">{findings}</ul>{_img(figures['network'])}</div>{model_html}
     </section>"""
 
     page = f"""<!doctype html>

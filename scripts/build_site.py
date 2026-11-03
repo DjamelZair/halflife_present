@@ -48,8 +48,11 @@ def molecule_json(src: Path, brief: dict) -> dict | None:
 
 def cyp_json() -> dict:
     df = pd.read_csv(config.CYP_TABLE)
+    transporters = pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)
     return {"source": df["source"].iloc[0], "url": FDA_TABLE_URL,
-            "rows": df[["drug", "enzyme", "role"]].to_dict(orient="records")}
+            "rows": df[["drug", "enzyme", "role"]].to_dict(orient="records"),
+            "transporterSource": transporters["source"].iloc[0],
+            "transporters": transporters[["drug", "transporter", "role", "note"]].to_dict(orient="records")}
 
 
 def model_json() -> dict:

@@ -54,7 +54,7 @@ def test_daily_pair_is_a_real_interaction_and_changes_by_day():
     days = [start + timedelta(days=k) for k in range(14)]
     pairs = [cyp.daily_pair(d) for d in days]
     for victim, perpetrator in pairs:
-        assert cyp.check_pair(victim, perpetrator), (victim, perpetrator)  # same enzyme, right roles
+        assert cyp.interacts(victim, perpetrator), (victim, perpetrator)  # same enzyme or transporter, right roles
     assert cyp.daily_pair(start) == pairs[0]  # stable within a day
     assert len(set(pairs)) == len(pairs)  # no repeats in two weeks
     assert len({v for v, _ in pairs}) > 7  # and not the same victim day after day
@@ -520,9 +520,11 @@ def test_javascript_model_matches_python():
     grid = [dict(fm=fm, iOverKiLiver=li, fg=fg, iOverKiGut=gu, inductionFold=ind) for fm, li, fg, gu, ind in itertools.product(
         (0, 0.3, 0.7, 0.9, 1), (0, 0.5, 5, 50), (0.2, 0.6, 1), (0, 5, 50), (1, 3, 10)) if not (fm == 1 and li == 0 and ind == 0)]
     ratios = [0.1, 0.2, 0.3, 0.5, 0.8, 0.9, 1, 1.2, 1.25, 2, 3.2, 5, 8.5]
-    pairs = [("midazolam", "itraconazole"), ("rifampicin", "midazolam"), ("omeprazole", "phenytoin"), ("caffeine", "midazolam")]
+    pairs = [("midazolam", "itraconazole"), ("rifampicin", "midazolam"), ("omeprazole", "phenytoin"), ("caffeine", "midazolam"),
+             ("digoxin", "verapamil"), ("metformin", "dolutegravir"), ("atorvastatin", "rifampicin"), ("fexofenadine", "clarithromycin")]
     rows = pd.read_csv(config.CYP_TABLE)[["drug", "enzyme", "role"]].to_dict(orient="records")
-    payload = {"grid": grid, "ratios": ratios, "curveRatios": [0.36, 1, 8.5], "pairs": pairs, "rows": rows, "model": site.model_json()}
+    transporters = pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)[["drug", "transporter", "role", "note"]].to_dict(orient="records")
+    payload = {"grid": grid, "ratios": ratios, "curveRatios": [0.36, 1, 8.5], "pairs": pairs, "rows": rows, "transporters": transporters, "model": site.model_json()}
     run = subprocess.run(["node", str(config.ROOT / "tests/m12_check.mjs")], input=json.dumps(payload), capture_output=True, text=True, check=True)
     js = json.loads(run.stdout)
 
@@ -537,6 +539,7 @@ def test_javascript_model_matches_python():
     for (a, b), result in zip(pairs, js["pairs"]):
         findings = cyp.check_pair(a, b)
         assert result["sentences"] == [f.sentence() for f in findings]
+        assert result["transporters"] == [f.sentence() for f in cyp.check_transporters(a, b)]
         best = illustrative_ratio(findings)
         assert result["inputs"]["ratio"] == pytest.approx(best["ratio"], rel=1e-9)
         assert result["inputs"]["fm"] == best["fm"]
@@ -788,3 +791,97 @@ def test_a_hospital_name_is_not_a_population():
              "Inhibitory Concentration at a Children's and Women's Tertiary Hospital.")
     assert short(title) == "Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve"
     assert keeps_population("a study at a Children's Hospital", "a study")
+
+
+# transporters. the odd cells below are copied from the live FDA page
+
+FDA_INTERACTIONS_PAGE = """
+<table><tr><th>Drug or Other Substance</th><th>CYP Strg INH</th><th>TRNSP INH</th><th>TRNSP SUB</th></tr>
+<tr><td>amiodarone</td><td></td><td>P-gp inhibitor</td><td></td></tr>
+<tr><td>rifampin</td><td></td><td>OATP1B1 <sup>13</sup> ; OATP1B3 <sup>13</sup> inhibitor</td><td></td></tr>
+<tr><td>rolapitant <sup>17</sup></td><td></td><td>P-gp; BCRP inhibitor</td><td></td></tr>
+<tr><td>Loperamide</td><td></td><td></td><td>P-gp transporter substrate</td></tr>
+<tr><td>Pirtobrutinib</td><td></td><td>BCRP and P-gp transporters inhibitor</td><td></td></tr>
+<tr><td>ranolazine</td><td></td><td>P-gp ; OCT2; MATE1; MATE2-K inhibitor</td><td></td></tr>
+<tr><td>resmetirom</td><td></td><td>BCRP and OATP1B transporters inhibitor</td><td>OATP1B transporter substrate</td></tr>
+<tr><td>teriflunomide</td><td></td><td>BCRP; OATP1B1 inhibitor; OAT3 inhibitor</td><td></td></tr>
+<tr><td>adefovir <sup>1</sup></td><td></td><td></td><td>OAT1 substrate</td></tr>
+<tr><td>midazolam</td><td>x</td><td></td><td></td></tr></table>
+<h2>Footnotes</h2><p>1 These drugs are active moieties.</p><p>13 Single dose</p>
+<p>17 Intravenously administered rolapitant does not inhibit BCRP and P-gp.</p>
+<h2>Content current as of:</h2><p><time datetime="2026-05-29T14:00:00Z">05/29/2026</time></p>
+"""
+
+
+def _parsed(name):
+    from halflife.interactions.fda_page import parse_transporters
+    return [r for r in parse_transporters(FDA_INTERACTIONS_PAGE) if r["fda_name"] == name]
+
+
+def test_fda_page_odd_cells():
+    tr = lambda name: sorted(r["transporter"] for r in _parsed(name))
+    assert tr("amiodarone") == ["P-gp"]
+    assert tr("pirtobrutinib") == ["BCRP", "P-gp"]  # "and", "transporters", capital in the name
+    assert tr("ranolazine") == ["MATE1", "MATE2-K", "OCT2", "P-gp"]  # a space before the semicolon
+    assert tr("teriflunomide") == ["BCRP", "OATP1B1"]  # inhibitor mid cell, OAT3 is not covered
+    assert tr("adefovir") == []  # OAT only
+    assert sorted(r["role"] for r in _parsed("resmetirom") if r["transporter"] == "OATP1B1") == ["inhibitor", "substrate"]  # the family
+    assert _parsed("loperamide")[0]["role"] == "substrate"
+
+
+def test_fda_page_keeps_the_footnotes_that_matter():
+    assert all(r["note"] == "Single dose" for r in _parsed("rifampin"))
+    assert sorted(r["transporter"] for r in _parsed("rifampin")) == ["OATP1B1", "OATP1B3"]  # the 13 is no transporter
+    assert "Intravenously administered" in _parsed("rolapitant")[0]["note"]
+
+
+def test_fda_page_gives_its_own_date_and_complains_when_it_changes():
+    from halflife.interactions.fda_page import current_as_of, parse_transporters
+    assert current_as_of(FDA_INTERACTIONS_PAGE) == "2026-05-29"
+    with pytest.raises(ValueError):
+        parse_transporters("<html>no tables</html>")
+    with pytest.raises(ValueError):
+        parse_transporters("<table><tr><th>Drug</th></tr></table>")
+
+
+def test_transporter_table_is_in_the_repo_with_source_and_date():
+    t = cyp.load_transporters()
+    assert set(t["transporter"]) == {"P-gp", "BCRP", "OATP1B1", "OATP1B3", "OCT2", "MATE1", "MATE2-K"}
+    assert t["source"].str.contains(r"page current as of \d{4}-\d{2}-\d{2}, retrieved \d{4}-\d{2}-\d{2}").all()
+    from halflife.names import US_TO_INN
+    assert not set(t["key"]) & set(US_TO_INN)  # glibenclamide, ciclosporin, rifampicin, not the US names
+    assert {"glibenclamide", "ciclosporin", "rifampicin"} <= set(t["key"])
+    assert not t["drug"].str.contains(r"\d\s*$").any()  # no footnote numbers left in the names
+
+
+def test_transporter_findings():
+    digoxin = cyp.check_transporters("digoxin", "verapamil")
+    assert [f.transporters for f in digoxin] == [["P-gp"]] and digoxin[0].victim == "digoxin"
+    assert "verapamil is an inhibitor of P-gp and digoxin is a substrate of P-gp" in digoxin[0].sentence()
+    assert cyp.check_transporters("verapamil", "digoxin")[0].victim == "digoxin"  # either order
+    assert cyp.check_transporters("metformin", "dolutegravir")[0].transporters == ["OCT2"]
+    both = cyp.check_transporters("fexofenadine", "clarithromycin")[0]
+    assert set(both.transporters) == {"P-gp", "OATP1B1", "OATP1B3"} and "substrate of them" in both.sentence()
+    assert "Single dose" in cyp.check_transporters("atorvastatin", "rifampicin")[0].sentence()  # repeated doses induce
+    assert cyp.check_transporters("midazolam", "caffeine") == []
+    assert cyp.check_transporters("digoxin", "digoxin") == []
+    assert cyp.interacts("digoxin", "verapamil") and not cyp.interacts("caffeine", "digoxin")
+
+
+def test_daily_pairs_now_include_transporters_but_no_combinations():
+    pairs = cyp.all_pairs()
+    assert ("digoxin", "verapamil") in pairs
+    assert not [p for p in pairs if " and " in p[1] and "lopinavir" in p[1]]
+
+
+def test_a_transporter_pair_gets_no_made_up_ratio(tmp_path, monkeypatch):
+    from halflife import pipeline
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    monkeypatch.setattr(pipeline, "pick_pair", lambda cards, day: ("digoxin", "verapamil"))
+    pair = pipeline.run(demo=True, push=False)["pair"]
+    assert "digoxin" in pair["sentences"][0] and "P-gp" in pair["sentences"][0]
+    assert pair["illustrative_auc_ratio"] is None and pair["category"] is None
+    out = tmp_path / config.DEMO_DIR_NAME
+    assert (out / "figures/interaction_network.png").exists()
+    assert not (out / "figures/auc_ratio.png").exists()  # no fake curve either
+    assert "no illustrative number" in (out / "poster.html").read_text()

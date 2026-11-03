@@ -1,6 +1,6 @@
 // runs the javascript model on the cases python sends in, python compares the answers in test_halflife.py
 import { readFileSync } from "node:fs";
-import { aucRatio, category, checkPair, concentrationCurve, illustrativeInputs, sentence } from "../web/js/m12.js";
+import { aucRatio, category, checkPair, checkTransporters, concentrationCurve, illustrativeInputs, sentence, transporterSentence } from "../web/js/m12.js";
 
 const input = JSON.parse(readFileSync(0, "utf8"));
 const output = {
@@ -12,7 +12,8 @@ const output = {
   }),
   pairs: input.pairs.map(([a, b]) => {
     const findings = checkPair(input.rows, a, b, input.model.roles);
-    return { sentences: findings.map(sentence), inputs: illustrativeInputs(findings, input.model.defaults) };
+    return { sentences: findings.map(sentence), inputs: illustrativeInputs(findings, input.model.defaults),
+             transporters: checkTransporters(input.transporters, a, b).map(transporterSentence) };
   }),
 };
 console.log(JSON.stringify(output));

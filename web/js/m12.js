@@ -59,6 +59,29 @@ export function checkPair(rows, a, b, roles) {
   return findings;
 }
 
+// transporters: FDA lists inhibitors and substrates, one finding per direction with all shared transporters together
+export function checkTransporters(rows, a, b) {
+  const of = (drug, role) => rows.filter((r) => r.drug.toLowerCase() === drug.toLowerCase() && r.role === role);
+  const findings = [];
+  for (const [victim, perpetrator] of [[a, b], [b, a]]) {
+    const substrate = of(victim, "substrate");
+    const inhibitor = of(perpetrator, "inhibitor");
+    const shared = inhibitor.filter((r) => substrate.some((s) => s.transporter === r.transporter));
+    if (shared.length) {
+      findings.push({ victim: substrate[0].drug, perpetrator: inhibitor[0].drug, transporters: shared.map((r) => r.transporter),
+                      note: [...new Set(shared.map((r) => r.note).filter(Boolean))].join(" ") });
+    }
+  }
+  return findings;
+}
+
+export function transporterSentence(f) {
+  const list = f.transporters;
+  const names = list.length > 1 ? `${list.slice(0, -1).join(", ")} and ${list[list.length - 1]}` : list[0];
+  const text = `${f.perpetrator} is an inhibitor of ${names} and ${f.victim} is a substrate of ${list.length > 1 ? "them" : names}, so ${f.victim} exposure can be higher.`;
+  return f.note ? `${text} FDA note on ${f.perpetrator}: ${f.note}` : text;
+}
+
 export function sentence(f) {
   const change = f.direction === "up" ? "higher" : "lower";
   return `${f.perpetrator} is a ${f.perpetratorRole} of ${f.enzyme} and ${f.victim} is a ${f.victimRole} of ${f.enzyme}, so ${f.victim} exposure can be ${change}.`;

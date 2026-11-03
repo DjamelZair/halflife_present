@@ -15,6 +15,7 @@ SAMPLE_DIR = DATA_DIR / "sample"
 OUTPUT_ROOT = ROOT / "outputs"
 SOURCE_HISTORY = OUTPUT_ROOT / "source_history.csv"  # items per source per day, kept in the repo
 CYP_TABLE = DATA_DIR / "cyp_reference.csv"
+TRANSPORTER_TABLE = DATA_DIR / "transporter_reference.csv"
 
 # clean white look with dark navy as the main colour, he likes navy
 # one place to change it, everything else reads from here

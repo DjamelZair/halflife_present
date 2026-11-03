@@ -23,8 +23,16 @@ def load_table() -> pd.DataFrame:
     return df
 
 
+@lru_cache(maxsize=1)
+def load_transporters() -> pd.DataFrame:
+    df = pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)
+    df["key"] = df["drug"].str.lower()
+    return df
+
+
 def all_drugs() -> list[str]:
-    return sorted(load_table()["drug"].unique(), key=str.lower)
+    names = set(load_table()["drug"]) | set(load_transporters()["drug"])
+    return sorted(names, key=str.lower)
 
 
 def roles_for(drug: str) -> pd.DataFrame:
@@ -83,6 +91,40 @@ def check_pair(a: str, b: str) -> list[PairFinding]:
     return findings
 
 
+@dataclass
+class TransporterFinding:
+    """FDA lists transporter inhibitors and substrates, there are no inducers and no strength categories here."""
+    victim: str
+    perpetrator: str
+    transporters: list
+    note: str = ""  # an FDA footnote that matters, rifampicin only counts for a single dose
+    direction: str = "up"
+
+    def sentence(self) -> str:
+        names = ", ".join(self.transporters[:-1]) + " and " + self.transporters[-1] if len(self.transporters) > 1 else self.transporters[0]
+        text = (f"{self.perpetrator} is an inhibitor of {names} and {self.victim} is a substrate of "
+                f"{'them' if len(self.transporters) > 1 else names}, so {self.victim} exposure can be higher.")
+        return f"{text} FDA note on {self.perpetrator}: {self.note}" if self.note else text
+
+
+def check_transporters(a: str, b: str) -> list[TransporterFinding]:
+    """One finding per direction, all transporters the two share in the same sentence."""
+    df = load_transporters()
+    findings = []
+    for victim, perpetrator in ((a, b), (b, a)):
+        substrate = df[(df["key"] == to_inn(victim).lower()) & (df["role"] == "substrate")]
+        inhibitor = df[(df["key"] == to_inn(perpetrator).lower()) & (df["role"] == "inhibitor")]
+        shared = [t for t in inhibitor["transporter"] if t in set(substrate["transporter"])]
+        if shared:
+            notes = [n for n in inhibitor[inhibitor["transporter"].isin(shared)]["note"].unique() if n]
+            findings.append(TransporterFinding(substrate["drug"].iloc[0], inhibitor["drug"].iloc[0], shared, " ".join(notes)))
+    return findings
+
+
+def interacts(a: str, b: str) -> bool:
+    return bool(check_pair(a, b) or check_transporters(a, b))
+
+
 def shared_enzymes(a: str, b: str) -> list[str]:
     ea = set(roles_for(a)["enzyme"])
     eb = set(roles_for(b)["enzyme"])
@@ -91,13 +133,18 @@ def shared_enzymes(a: str, b: str) -> list[str]:
 
 @lru_cache(maxsize=1)
 def all_pairs() -> list[tuple[str, str]]:
-    """Every (substrate, inhibitor or inducer) pair that shares an enzyme in the FDA table."""
+    """Every (substrate, inhibitor or inducer) pair that shares an enzyme or transporter in the FDA table."""
     df = load_table()
     df = df[~df["key"].isin(VAGUE)]
     victims = df[df["role"].isin(SUBSTRATE_ROLES)]
     perps = df[df["role"].isin(INHIBITOR_ROLES | INDUCER_ROLES)]
     merged = victims.merge(perps, on="enzyme", suffixes=("_v", "_p"))
     pairs = {(v, p) for v, p in zip(merged["drug_v"], merged["drug_p"]) if v != p}
+    # a combination like lopinavir and ritonavir stays out of the daily pick, "x and y and z" does not read as a pair
+    t = load_transporters()
+    t = t[~t["key"].isin(VAGUE) & ~t["key"].str.contains(" and ")]
+    joined = t[t["role"] == "substrate"].merge(t[t["role"] == "inhibitor"], on="transporter", suffixes=("_v", "_p"))
+    pairs |= {(v, p) for v, p in zip(joined["drug_v"], joined["drug_p"]) if v != p}
     # shuffled once by a hash, so neighbouring days get different enzymes and drugs.
     # hashlib and not hash(), that one changes every time Python starts
     return sorted(pairs, key=lambda vp: hashlib.sha256("|".join(vp).encode()).hexdigest())

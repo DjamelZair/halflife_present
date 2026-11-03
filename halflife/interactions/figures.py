@@ -9,15 +9,16 @@ import numpy as np
 
 from halflife import style
 from halflife.interactions import cyp, model
+from halflife.names import to_inn
 
 P = style.P
 ROLE_COLOUR = {"substrate": P["navy"], "inhibitor": P["steel"], "inducer": P["accent"]}
 
 
 def _role_group(role: str) -> str:
-    if role in cyp.SUBSTRATE_ROLES:
+    if role in cyp.SUBSTRATE_ROLES or role == "substrate":
         return "substrate"
-    return "inhibitor" if role in cyp.INHIBITOR_ROLES else "inducer"
+    return "inhibitor" if role in cyp.INHIBITOR_ROLES or role == "inhibitor" else "inducer"
 
 
 def network_figure(a: str, b: str, path: Path | None = None):
@@ -29,18 +30,22 @@ def network_figure(a: str, b: str, path: Path | None = None):
         for _, r in cyp.roles_for(drug).iterrows():
             g.add_edge(r["drug"], r["enzyme"])
             edges.append((r["drug"], r["enzyme"], _role_group(r["role"]), r["role"]))
+        for _, r in cyp.load_transporters()[lambda t: t["key"] == to_inn(drug).lower()].iterrows():
+            g.add_edge(r["drug"], r["transporter"])
+            edges.append((r["drug"], r["transporter"], _role_group(r["role"]), r["role"]))
 
     n_enz = len({e for _, e, _, _ in edges}) if edges else 1
     fig, ax = plt.subplots(figsize=(8, 1.8 + 0.8 * n_enz))
-    ax.set_title(f"{a} and {b}: shared CYP enzymes")
+    ax.set_title(f"{a} and {b}: shared enzymes and transporters")
     ax.axis("off")
     if not edges:
-        ax.text(0.5, 0.5, "Neither drug is in the FDA CYP example table.", ha="center", color=P["slate"])
+        ax.text(0.5, 0.5, "Neither drug is in the FDA example tables.", ha="center", color=P["slate"])
         return _finish(fig, path)
 
     # drugs left and right, enzymes stacked in the middle
     # shared enzymes first so the interesting part sits at the top
-    shared = set(cyp.shared_enzymes(a, b))
+    both = lambda drug: {e for d, e, _, _ in edges if d.lower() == to_inn(drug).lower()}
+    shared = both(a) & both(b)
     enzymes = sorted({e for _, e, _, _ in edges}, key=lambda e: (e not in shared, e))
     pos = {e: (0, -i) for i, e in enumerate(enzymes)}
     names = {d for d, _, _, _ in edges}
