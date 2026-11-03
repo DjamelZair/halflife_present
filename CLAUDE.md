@@ -16,6 +16,8 @@ The person building it (the repo owner) wants the **easiest version** first.
   source that normally has some (`config.ZERO_IS_NORMAL`, `config.QUIET_SOURCES`), the same two days running, a failed job, and an alarm scheduled on ntfy two
   days ahead that every run cancels and sets again (`notify/admin.py`), so it fires when the runs stop for any reason.
 * `outputs/source_history.csv` holds the items per source per day (`source_log.py`), the overview figure shows it.
+* Topic tags go by the title, the opening sentences only count for terms that name a topic outright (`topics.py`).
+  Headlines never drop population words, even when that makes them longer (`summarise/headline.py`).
 * Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages**, `web/index.html` at the main address, the portfolio page at `/about.html`. It replaced Streamlit
   (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
   chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
@@ -60,7 +62,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 55 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 135 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.

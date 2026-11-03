@@ -563,7 +563,7 @@ def test_headline_only_removes_words():
     for title in titles:
         words = short(title).rstrip("…").lower().split()
         original = re.sub(r"[.,:]", "", title.lower()).split()
-        assert len(words) <= 12
+        assert len(words) <= 14
         assert all(w.strip(",:") in original for w in words), short(title)
 
 
@@ -572,9 +572,9 @@ def test_headline_examples():
     assert short("Kans op leverschade bij ocrelizumab") == "Kans op leverschade bij ocrelizumab"  # short stays as it is
     assert short("Short title about dosing.") == "Short title about dosing"
     assert short("Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults") == \
-        "Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus"
+        "Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults"
     assert short("Linerixibat authorised in the EU for cholestatic pruritus in adult patients with primary "
-                 "biliary cholangitis (PBC)") == "Linerixibat authorised in the EU for cholestatic pruritus"
+                 "biliary cholangitis (PBC)") == "Linerixibat authorised in the EU for cholestatic pruritus in adult patients"
     assert "Evaluation" not in short("Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve")
 
 
@@ -675,3 +675,116 @@ def test_overview_figure_shows_the_history(tmp_path, monkeypatch):
     path = tmp_path / "o.png"
     overview.sources_figure(load_sample(), set(), path=path, history=log)
     assert path.stat().st_size > 0
+
+
+# topic tags, the cases are real titles from real briefs. what they got is in the comment when it was wrong
+
+TOPIC_CASES = [
+    # got PK because the opening sentences mention pharmacokinetics in passing
+    ("A prospective observational study on geriatric and pediatric prescribing patterns, medication adherence, and cost analysis",
+     "Pediatric and geriatric patients are at risk of adverse drug effects as a consequence of age factors on pharmacokinetics.", "Clinic"),
+    # got Interaction because of the enzyme
+    ("From CYP450 pharmacogenomics to personalized medicine: clinical evidence, dosing guidelines, and future perspectives", "", "Pharmacogenomics"),
+    ("Interpreting antiretroviral exposure and drug-drug interactions in pregnancy: A clinically anchored review", "", "Interaction"),
+    ("SGLT2 inhibitor-induced genitourinary infections and the consequent antimicrobial-antidiabetic drug interactions", "", "Interaction"),
+    ("Practical Considerations for the Design, Conduct, and Reporting of Clinical Pharmacokinetic Drug-Drug Interaction Studies", "", "Interaction"),
+    ("Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve", "", "TDM"),
+    ("Model-informed precision dosing of vancomycin and amikacin in critically ill neonates", "", "Dosing"),
+    ("Optimizing Polymyxin B Exposure in Carbapenem-Resistant Hospital-Acquired Pneumonia", "", "PK"),
+    ("Simplified quantification of adalimumab", "", "Biologics"),
+    # a title that does not say it, the opening sentence names the topic outright
+    ("Vancomycin in a tertiary hospital", "Guidelines for therapeutic drug monitoring recommend the ratio.", "TDM"),
+    # the wrong kinds of interaction and exposure
+    ("Protein-ligand interactions in a crystal structure", "", "Clinic"),
+    ("Radiation exposure in the catheterisation laboratory", "", "Clinic"),
+    ("Prenatal exposure to tobacco", "", "Clinic"),
+]
+
+
+@pytest.mark.parametrize("title,text,expected", TOPIC_CASES)
+def test_topic_from_real_titles(title, text, expected):
+    from halflife.topics import topic_for
+    assert topic_for("clinic", "PubMed, J", title, text) == expected
+
+
+# headlines keep who it is about
+
+POPULATION_CASES = [
+    ("Temozolomide recommended by EMA for adults with glioblastoma multiforme and children with malignant glioma", ["adults", "children"]),
+    ("Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults", ["adults"]),
+    ("Linerixibat authorised in the EU for cholestatic pruritus in adult patients with primary biliary cholangitis (PBC)", ["adult patients"]),
+    ("Navepegritide recommended by EMA for achondroplasia in children", ["children"]),
+    ("Model-informed precision dosing of vancomycin and amikacin in critically ill neonates: a pre- and post-implementation study", ["critically ill", "neonates"]),
+    ("A long descriptive title about the pharmacokinetics of a new oral anticoagulant studied in elderly people", ["elderly"]),
+    ("Population pharmacokinetics and exposure of a long acting antiretroviral drug regimen during pregnancy", ["pregnancy"]),
+    ("Drug X pharmacokinetics and safety over twelve weeks: a randomised trial in paediatric patients", ["paediatric patients"]),
+    ("A prospective observational study on geriatric and pediatric prescribing patterns, medication adherence, and cost analysis", ["geriatric", "pediatric"]),
+    ("Safety of a very long named monoclonal antibody treatment over time in adolescents with severe asthma", ["adolescents"]),
+    ("Dose adjustment of a commonly used oral antibiotic regimen for patients with severe renal impairment on dialysis", ["renal impairment", "dialysis"]),
+    ("Exposure of a widely prescribed antidepressant in human milk and in infants of breastfeeding women", ["infants", "breastfeeding", "women"]),
+]
+
+
+@pytest.mark.parametrize("title,words", POPULATION_CASES)
+def test_headline_never_drops_population_words(title, words):
+    from halflife.summarise.headline import short
+    result = short(title).lower()
+    for word in words:
+        assert word in result, result
+    assert all(w.strip(",:.…()") in re.sub(r"[.,:()]", " ", title.lower()).split() for w in result.split()), result  # only removed words
+
+
+def test_headline_and_push_keep_population_on_every_real_title():
+    import glob
+    import pandas as pd
+    from halflife.notify.ntfy import shorten
+    from halflife.summarise.headline import keeps_population, short
+    frames = [pd.read_csv(f) for f in glob.glob(str(config.OUTPUT_ROOT / "20*/data/items.csv"))]
+    titles = pd.concat(frames)["title"].dropna().unique() if frames else []
+    from halflife.names import europeanise
+    for title in titles:
+        full = europeanise(title)
+        assert keeps_population(full, short(title)), title
+        assert keeps_population(full, shorten(short(title))), title
+
+
+def test_headline_uses_the_european_name():
+    from halflife.summarise.headline import short
+    assert short("Rifampin and cyclosporine levels in transplant patients") == "Rifampicin and ciclosporin levels in transplant patients"
+
+
+# US names, every pair on its own so a typo cannot hide
+
+@pytest.mark.parametrize("us,inn", list(__import__("halflife.names", fromlist=["US_TO_INN"]).US_TO_INN.items()))
+def test_us_name_becomes_inn(us, inn):
+    from halflife.names import INN_TO_US, europeanise
+    assert to_inn(us) == inn
+    assert to_inn(us.capitalize()) == inn
+    assert inn in normalise_query(inn)
+    assert INN_TO_US[inn] in normalise_query(inn)  # a search for the European name still finds US records
+    assert europeanise(f"levels of {us} in plasma") == f"levels of {inn} in plasma"
+
+
+def test_european_names_are_left_alone():
+    from halflife.names import europeanise
+    assert europeanise("Midazolam and rifampicin") == "Midazolam and rifampicin"
+    assert europeanise("Epinephrine") == "Adrenaline"  # keeps the capital
+    assert europeanise("norepinephrine, not epinephrine") == "noradrenaline, not adrenaline"  # the longer name wins
+
+
+def test_find_drugs_sees_through_us_names():
+    assert "rifampicin" in cyp.find_drugs("Effect of rifampin on midazolam")
+
+
+def test_fda_table_uses_european_names():
+    from halflife.names import US_TO_INN
+    left = sorted(set(cyp.load_table()["key"]) & set(US_TO_INN))
+    assert not left, left
+
+
+def test_a_hospital_name_is_not_a_population():
+    from halflife.summarise.headline import keeps_population, short
+    title = ("Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve to Minimum "
+             "Inhibitory Concentration at a Children's and Women's Tertiary Hospital.")
+    assert short(title) == "Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve"
+    assert keeps_population("a study at a Children's Hospital", "a study")

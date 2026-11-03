@@ -120,7 +120,7 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     cards, mode = build_brief(items, exclude=seen)
     picked_ids = {c.url for c in cards}
     for c in cards:
-        c.topic = topics.topic_for(c.lane, c.source, f"{c.title} {c.what}")
+        c.topic = topics.topic_for(c.lane, c.source, c.title, c.what)
         c.headline = headline.short(c.title)
 
     # 2. molecule of the day

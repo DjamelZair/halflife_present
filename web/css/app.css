@@ -324,8 +324,8 @@ h2 {
   font-weight: 600;
   line-height: 1.3;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3; /* until the shorter headlines of step 7 are in */
-  line-clamp: 3;
+  -webkit-line-clamp: 4; /* a headline keeps its population words, so a few run long */
+  line-clamp: 4;
 }
 
 .card-meta {

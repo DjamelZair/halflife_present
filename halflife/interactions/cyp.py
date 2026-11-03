@@ -9,7 +9,7 @@ from functools import lru_cache
 import pandas as pd
 
 from halflife import config
-from halflife.names import to_inn
+from halflife.names import europeanise, to_inn
 
 SUBSTRATE_ROLES = {"sensitive substrate", "moderate sensitive substrate", "moderate substrate"}
 INHIBITOR_ROLES = {"strong inhibitor", "moderate inhibitor"}
@@ -38,7 +38,7 @@ VAGUE = {"oral contraceptives", "grapefruit juice"}
 
 def find_drugs(text: str) -> list[str]:
     """Spots drugs from the table in a piece of text, works without any LLM."""
-    text = text.lower()
+    text = europeanise(text).lower()  # the table has rifampicin, a US paper says rifampin
     found = []
     for name in all_drugs():
         # skip the vague entries, they would match half of all abstracts

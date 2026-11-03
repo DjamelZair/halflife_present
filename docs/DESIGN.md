@@ -93,6 +93,8 @@ Details get fine tuned later, `web/molecule-lab.html` holds the earlier style ex
 
 * Short headlines (about 9 words) make or break this design. In plain mode `summarise/headline.py` only removes
   words from the real title: trailing study design phrases, an opening like "Evaluation of", the part after a colon
-  and tail clauses. Nothing gets rewritten, the full title stays for screen readers and on the source.
+  and tail clauses. Nothing gets rewritten except US drug names, which become the INN. Population words (adults,
+  children, pregnant and so on) are never cut, in the card or the push, even when that makes the line longer. The full
+  title stays for screen readers and on the source.
 * Drug names always European generic names.
 * Every number shown comes from a source that is linked one tap away.

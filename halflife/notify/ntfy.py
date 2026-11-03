@@ -5,6 +5,7 @@ from datetime import date, datetime, timezone
 import requests
 
 from halflife import config
+from halflife.summarise import headline
 
 LINE_LENGTH = 60
 MIN_DELAY_SECONDS = 10  # ntfy refuses anything sooner, and anything over 3 days
@@ -15,7 +16,10 @@ def shorten(text: str, limit: int = LINE_LENGTH) -> str:
     text = " ".join(text.split()).rstrip(".")
     if len(text) <= limit:
         return text
-    return text[:limit + 1].rsplit(" ", 1)[0].rstrip(" ,;:") + "…"
+    cut = text[:limit + 1].rsplit(" ", 1)[0].rstrip(" ,;:")
+    if not headline.keeps_population(text, cut):
+        cut = headline.through_last_population(text)  # who it is about matters more than the line length
+    return cut if cut == text else cut + "…"
 
 
 def build_title(day: date) -> str:
