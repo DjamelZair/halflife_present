@@ -44,16 +44,18 @@ def collect_all(demo: bool = False) -> tuple[list[Item], dict]:
         items = load_sample()
         return items, {"demo": True, "counts": _count(items), "errors": {}}
 
-    items, errors = [], {}
+    items, errors, sources = [], {}, {}
     for name, fetch in SOURCES.items():
         try:
-            items.extend(fetch())
+            found = fetch()
+            items.extend(found)
+            sources[name] = len(found)  # before deduping, this is what the source itself returned
         except Exception as e:  # network hiccups happen, log it and move on
             log.warning("%s failed: %s", name, e)
             errors[name] = str(e)
 
     items = _dedupe(items)
-    return items, {"demo": False, "counts": _count(items), "errors": errors}
+    return items, {"demo": False, "counts": _count(items), "errors": errors, "sources": sources}
 
 
 def _dedupe(items: list[Item]) -> list[Item]:

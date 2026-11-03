@@ -99,9 +99,12 @@ def fetch(days: int = config.TOXICOLOGY_LOOKBACK_DAYS) -> list[Item]:
     since = (date.today() - timedelta(days=days)).isoformat()
     r = requests.get(NPS_SUBJECT, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT * 2)  # about 0.5 MB
     r.raise_for_status()
+    entries = parse_subject(r.text, min_year=date.today().year - 1)
+    if not entries:  # zero new items is normal, zero records of any age means the page changed
+        raise ValueError("no EUDA records on the NPS subject page, layout changed?")
     items = []
     # a handful a year, so opening each record page for its date costs next to nothing
-    for entry in parse_subject(r.text, min_year=date.today().year - 1):
+    for entry in entries:
         rec = requests.get(entry["record"], headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT)
         rec.raise_for_status()
         record = parse_record(rec.text)

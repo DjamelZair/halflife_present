@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write  # needed to commit the new outputs folder back to the repo
+  actions: write  # needed to keep the schedule switched on, see below
 
 jobs:
   brief:
@@ -29,6 +30,7 @@ jobs:
       - name: Run the morning brief
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
           APP_URL: ${{ secrets.APP_URL }}
           NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
@@ -44,6 +46,13 @@ jobs:
           git pull --rebase
           git push
 
+      # GitHub switches schedules off after 60 days without "repository activity" and does not say whether
+      # bot commits count, so every run also switches them on. the ntfy alarm in admin.py is the real safety net
+      - name: Keep the schedule on
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow enable daily.yml --repo "$GITHUB_REPOSITORY"
+
   # the push points at pictures on the site, so the site always follows the brief
   deploy:
     needs: brief
@@ -52,3 +61,18 @@ jobs:
       pages: write
       id-token: write
     uses: ./.github/workflows/pages.yml
+
+  # anything above went wrong: the run itself, saving the brief or the deploy
+  alert:
+    needs: [brief, deploy]
+    if: failure()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Tell me
+        env:
+          ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$ADMIN_NTFY_TOPIC" ]; then echo "No admin topic set"; exit 0; fi
+          curl -fsS -H "Title: Halflife: the evening run failed" -H "Priority: high" -H "Click: $RUN_URL" \
+            -d "Open the run to see what broke. The push may not go out tomorrow." "https://ntfy.sh/$ADMIN_NTFY_TOPIC" > /dev/null

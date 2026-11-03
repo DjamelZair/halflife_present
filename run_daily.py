@@ -8,6 +8,8 @@
 import argparse
 import logging
 
+from halflife import health
+from halflife.notify import admin
 from halflife.pipeline import run
 
 
@@ -29,6 +31,12 @@ def main() -> None:
     print(f"Pair: {p['a']} and {p['b']}, illustrative AUC ratio {p['illustrative_auc_ratio']} ({p['category']})")
     print(f"Errors per source: {result['status']['errors'] or 'none'}")
     print(f"Output: {result['output_dir']}")
+
+    if not args.demo and not args.no_push:
+        trouble = health.problems(result["status"])
+        if trouble:
+            admin.send(f"Halflife: {len(trouble)} source problem{'s' if len(trouble) > 1 else ''}", "\n".join(trouble))
+        admin.rearm_no_run_alarm()
 
 
 if __name__ == "__main__":

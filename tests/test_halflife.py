@@ -576,3 +576,53 @@ def test_headline_examples():
     assert short("Linerixibat authorised in the EU for cholestatic pruritus in adult patients with primary "
                  "biliary cholangitis (PBC)") == "Linerixibat authorised in the EU for cholestatic pruritus"
     assert "Evaluation" not in short("Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve")
+
+
+# alerts
+
+def test_health_problems():
+    from halflife.health import problems
+    status = {"demo": False, "errors": {"PubMed": "timeout"}, "sources": {"Preprints": 0, "EUDA": 0, "Lareb": 0, "EMA": 5}}
+    assert problems(status) == ["PubMed failed: timeout", "Preprints returned no items"]  # EUDA and Lareb are quiet by nature
+    assert problems({"demo": False, "errors": {}, "sources": {"EMA": 5}}) == []
+    assert problems({"demo": True, "errors": {"PubMed": "x"}, "sources": {}}) == []  # a demo never alerts
+
+
+def test_collect_counts_what_each_source_returned(monkeypatch):
+    from halflife.sources import collect
+    def broken():
+        raise RuntimeError("down")
+    monkeypatch.setattr(collect, "SOURCES", {"Good": lambda: [Item(source="x", title="t", abstract="", url="u", date="d", journal="j", identifier="i")],
+                                             "Empty": lambda: [], "Broken": broken})
+    _, status = collect.collect_all()
+    assert status["sources"] == {"Good": 1, "Empty": 0}
+    assert status["errors"] == {"Broken": "down"}
+
+
+class _FakeResponse:
+    def raise_for_status(self):
+        pass
+
+
+def test_no_run_alarm_cancels_before_it_schedules(monkeypatch):
+    from datetime import datetime, timezone
+    from halflife.notify import admin
+    calls = []
+    monkeypatch.setattr(admin.requests, "delete", lambda url, **k: calls.append(("delete", url)) or _FakeResponse())
+    monkeypatch.setattr(admin.requests, "post", lambda url, **k: calls.append(("post", url, k["headers"])) or _FakeResponse())
+    now = datetime(2026, 11, 3, 18, 0, tzinfo=timezone.utc)
+    assert admin.rearm_no_run_alarm("t", now)
+    assert calls[0] == ("delete", f"https://ntfy.sh/t/{admin.ALARM_ID}")  # a second scheduled message would not replace the first
+    assert calls[1][2]["X-Sequence-ID"] == admin.ALARM_ID
+    assert int(calls[1][2]["At"]) == int(now.timestamp()) + config.NO_RUN_ALARM_HOURS * 3600
+
+
+def test_alerts_stay_silent_without_a_topic_and_never_raise(monkeypatch):
+    from halflife.notify import admin
+    def down(*a, **k):
+        raise admin.requests.ConnectionError("no network")
+    monkeypatch.setattr(admin.requests, "post", down)
+    monkeypatch.setattr(admin.requests, "delete", down)
+    assert admin.send("t", "m", topic="") is False
+    assert admin.send("t", "m", topic="x") is False  # the brief must survive a broken alert
+    assert admin.rearm_no_run_alarm("x") is False

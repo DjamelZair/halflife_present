@@ -103,6 +103,11 @@ NCBI_API_KEY = os.getenv("NCBI_API_KEY", "")
 # ntfy topic name, pick something long and random since anyone who knows it can read it
 NTFY_TOPIC = os.getenv("NTFY_TOPIC", "")
 APP_URL = os.getenv("APP_URL", "")
+ADMIN_NTFY_TOPIC = os.getenv("ADMIN_NTFY_TOPIC", "")  # my own alerts, never the topic he subscribes to
+ACTIONS_URL = "https://github.com/DjamelZair/halflife_present/actions"
+NO_RUN_ALARM_HOURS = 50  # two days and a bit, ntfy schedules up to 3 days ahead
+# zero items is normal for these, EUDA most days and Lareb some months. their parsers raise when a page breaks
+QUIET_SOURCES = {"EUDA", "Lareb"}
 # the job runs the evening before, the push is scheduled for this time
 PUSH_TIMEZONE = "Europe/Amsterdam"
 PUSH_HOUR = 7

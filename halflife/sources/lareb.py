@@ -55,4 +55,6 @@ def parse_rss(xml: bytes, since: str) -> list[Item]:
 def fetch(days: int = config.LAREB_LOOKBACK_DAYS) -> list[Item]:
     r = requests.get(RSS, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT)
     r.raise_for_status()
+    if b"<item" not in r.content:  # zero signals this month is normal, an empty feed is not
+        raise ValueError("no items in the Lareb feed, layout changed?")
     return parse_rss(r.content, (date.today() - timedelta(days=days)).isoformat())
