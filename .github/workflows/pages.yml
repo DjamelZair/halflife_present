@@ -1,0 +1,35 @@
+name: Deploy web app
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch: {}  # lets me redeploy by hand
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write  # deploy-pages proves who it is with this
+
+# a newer deploy replaces one still waiting, the newest page is the only one I care about
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: web
+
+      - id: deployment
+        uses: actions/deploy-pages@v5
