@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-03",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 26,
+      "clinic/bioRxiv": 6,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 9,
+      "discovery/ClinicalTrials.gov": 43
+    },
+    "errors": {}
+  },
+  "cards": [
+    {
+      "title": "A prospective observational study on geriatric and pediatric prescribing patterns, medication adherence, and cost analysis in a tertiary care hospital.",
+      "what": "Pediatric and geriatric patients are at risk of adverse drug effects as a consequence of age factors on pharmacokinetics, multimorbidity, and multicomplicated therapy regimens. The purpose of this study was to assess the quality of prescriptions as far as adherence and pharmacoeconomic burden are concerned in these vulnerable groups.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Indian journal of pharmacology",
+      "url": "https://doi.org/10.4103/ijp.ijp_88_26",
+      "peer_reviewed": true,
+      "original_title": "A prospective observational study on geriatric and pediatric prescribing patterns, medication adherence, and cost analysis in a tertiary care hospital.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Optimizing Polymyxin B Exposure in Carbapenem-Resistant Organism-Associated Hospital-Acquired Pneumonia: A Retrospective Observational Study.",
+      "what": "The area under the 24-hour concentration-time curve (AUC0-24h) is a key pharmacokinetic parameter for polymyxin B (PMB), but the optimal exposure target in critically ill patients remains uncertain. This study aimed to investigate the relationship between PMB AUC0-24h and clinical efficacy in patients with carbapenem-resistant hospital-acquired pneumonia (HAP), and to identify the optimal therapeutic AUC0-24h range for PMB.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Drug design, development and therapy",
+      "url": "https://doi.org/10.2147/DDDT.S646556",
+      "peer_reviewed": true,
+      "original_title": "Optimizing Polymyxin B Exposure in Carbapenem-Resistant Organism-Associated Hospital-Acquired Pneumonia: A Retrospective Observational Study.",
+      "drugs": [],
+      "lane": "clinic"
+    },
+    {
+      "title": "Temozolomide recommended by EMA for adults with glioblastoma multiforme and children with malignant glioma",
+      "what": "Treatment of adults with glioblastoma multiforme and children with malignant glioma",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/kizfizo-0",
+      "peer_reviewed": true,
+      "original_title": "Temozolomide recommended by EMA for adults with glioblastoma multiforme and children with malignant glioma",
+      "drugs": [
+        "temozolomide"
+      ],
+      "lane": "discovery"
+    }
+  ],
+  "molecule": {
+    "name": "temozolomide",
+    "smiles": "CN1C(=O)N2C=NC(=C2N=N1)C(=O)N",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/5394",
+    "Formula": "C6H6N6O2",
+    "Molecular weight": 194.2,
+    "logP": -2.08,
+    "H bond donors": 1,
+    "H bond acceptors": 5,
+    "TPSA": 108.2,
+    "Rotatable bonds": 1,
+    "Rings": 2,
+    "Rule of five violations": 0
+  },
+  "pair": {
+    "a": "omeprazole",
+    "b": "phenytoin",
+    "sentences": [
+      "phenytoin is a moderate inducer of CYP2C19 and omeprazole is a sensitive substrate of CYP2C19, so omeprazole exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.36,
+    "category": "moderate decrease"
+  }
+}
