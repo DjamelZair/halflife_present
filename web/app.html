@@ -35,7 +35,7 @@
 
 <main id="view-today" data-view="today">
   <section class="hero" aria-labelledby="molecule-name">
-    <canvas id="scene" role="img" aria-label="Space scene"></canvas>
+    <canvas id="scene" role="img" aria-label="3D molecule"></canvas>
     <button class="pause" id="pause" type="button" hidden>
       <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
       <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5Z"/></svg>
@@ -73,24 +73,95 @@
   </div>
 </main>
 
-<main id="view-molecule" data-view="molecule" class="column placeholder" hidden>
-  <h1>Molecule</h1>
-  <p>The full screen molecule comes next.</p>
-  <p id="molecule-structure" hidden>Structure: computed 3D model (RDKit)</p>
-  <ul class="legend" aria-label="Atom colours">
-    <li><span class="swatch swatch-c"></span>Carbon</li>
-    <li><span class="swatch swatch-o"></span>Oxygen</li>
-    <li><span class="swatch swatch-n"></span>Nitrogen</li>
-    <li><span class="swatch swatch-s"></span>Sulphur</li>
-    <li><span class="swatch swatch-cl"></span>Chlorine</li>
-    <li><span class="swatch swatch-f"></span>Fluorine</li>
-  </ul>
-  <p class="legend-note">Hydrogens are hidden.</p>
+<main id="view-molecule" data-view="molecule" hidden>
+  <section class="stage" id="molecule-stage" aria-labelledby="molecule-title">
+    <div class="stage-title">
+      <h1 id="molecule-title"></h1>
+      <p id="molecule-formula"></p>
+    </div>
+    <div class="stage-controls">
+      <button class="button-quiet" id="hydrogens" type="button" aria-pressed="false">Show hydrogens</button>
+      <button class="pause" id="pause-full" type="button" hidden>
+        <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+        <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5Z"/></svg>
+      </button>
+    </div>
+  </section>
+  <div class="column sheet" id="molecule-sheet">
+    <p class="status" id="molecule-no-3d" hidden>No 3D structure today, the properties are all here.</p>
+    <p class="hint">Drag to turn it, pinch to zoom.</p>
+    <h2>Properties</h2>
+    <dl class="properties" id="molecule-properties"></dl>
+    <p class="note">Calculated with RDKit from the structure.</p>
+    <p class="note" id="molecule-structure" hidden>Structure: computed 3D model (RDKit)</p>
+    <a class="text-link" id="molecule-source" target="_blank" rel="noopener"></a>
+    <h2>Atom colours</h2>
+    <ul class="legend" id="molecule-legend" aria-label="Atom colours"></ul>
+    <p class="note" id="molecule-hydrogens-note">Hydrogens are hidden.</p>
+    <p class="disclaimer">For curiosity and learning, not for clinical decisions.</p>
+  </div>
+  <div class="column placeholder" id="molecule-empty" hidden>
+    <h1>No molecule today</h1>
+    <p>It will be back with the next brief.</p>
+  </div>
 </main>
 
-<main id="view-lab" data-view="lab" class="column placeholder" hidden>
+<main id="view-lab" data-view="lab" class="column lab" hidden>
   <h1>Lab</h1>
-  <p>The interaction lab comes next.</p>
+  <p class="lab-intro">Pick two drugs to see their roles in the FDA table, then explore the effect with the ICH M12 static model.</p>
+
+  <div class="pickers">
+    <label>First drug<input id="lab-a" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
+    <button class="button-quiet swap" id="lab-swap" type="button" aria-label="Swap the two drugs">Swap</button>
+    <label>Second drug<input id="lab-b" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
+    <datalist id="lab-drugs"></datalist>
+  </div>
+  <p class="status" id="lab-message" role="status"></p>
+
+  <section id="lab-results" aria-label="What the FDA table says" hidden>
+    <div class="role-group"><h2 id="lab-name-a"></h2><ul class="chips" id="lab-roles-a"></ul></div>
+    <div class="role-group"><h2 id="lab-name-b"></h2><ul class="chips" id="lab-roles-b"></ul></div>
+    <ul class="findings" id="lab-findings"></ul>
+    <a class="text-link" id="lab-source" target="_blank" rel="noopener">FDA table of CYP substrates, inhibitors and inducers</a>
+  </section>
+
+  <section id="lab-model" aria-label="Illustrative model" hidden>
+    <div class="ratio" aria-live="polite">
+      <p class="eyebrow">Illustrative AUC ratio</p>
+      <p class="ratio-number" id="lab-ratio"></p>
+      <p id="lab-category"></p>
+      <p class="note">Illustrative model, not a prediction. Time dependent inhibition, transporters and metabolites are left out.</p>
+    </div>
+
+    <div class="sliders">
+      <label for="slider-fm"><span>fm, share cleared by this enzyme</span><output id="value-fm"></output></label>
+      <input id="slider-fm" type="range" min="0" max="1" step="0.01">
+      <label for="slider-ikiLiver"><span>I/Ki in the liver</span><output id="value-ikiLiver"></output></label>
+      <input id="slider-ikiLiver" type="range" min="0" max="100" step="0.05">
+      <label for="slider-fg"><span>Fg, share escaping the gut</span><output id="value-fg"></output></label>
+      <input id="slider-fg" type="range" min="0.05" max="1" step="0.01">
+      <label for="slider-ikiGut"><span>I/Ki in the gut</span><output id="value-ikiGut"></output></label>
+      <input id="slider-ikiGut" type="range" min="0" max="100" step="0.05">
+      <label for="slider-induction"><span>Induction, fold</span><output id="value-induction"></output></label>
+      <input id="slider-induction" type="range" min="1" max="20" step="0.1">
+      <button class="button-quiet" id="lab-reset" type="button">Reset to the FDA role values</button>
+    </div>
+
+    <figure class="chart">
+      <figcaption>AUC ratio against fm, log scale</figcaption>
+      <svg id="chart-fm" role="img"></svg>
+    </figure>
+    <figure class="chart">
+      <figcaption>Illustrative curve for one dose</figcaption>
+      <ul class="chart-legend">
+        <li><span class="key key-before"></span>Before</li>
+        <li><span class="key key-after"></span>With the interaction</li>
+      </ul>
+      <svg id="chart-curve" role="img"></svg>
+    </figure>
+  </section>
+
+  <p class="disclaimer">For curiosity and learning, not for clinical decisions.</p>
 </main>
 
 <nav class="tabbar" aria-label="Main">

@@ -101,8 +101,8 @@
   --light-key: 1.6;
   --light-warm: 1.2;
   /* the lab charts */
-  --chart-before: #A3B1CC;
-  --chart-after: #38D9C8;
+  --chart-before: #5490EC;
+  --chart-after: #EC6440;
 }
 
 :root[data-theme="light"] {
@@ -144,8 +144,8 @@
   --light-key: 1.2;
   --light-warm: 0.7;
   /* the lab charts */
-  --chart-before: #4A5875;
-  --chart-after: #0B8378;
+  --chart-before: #2F6FE0;
+  --chart-after: #D9431F;
 }
 
 /* the interaction card looks the same in both modes on the inside, its text is always on a dark surface */

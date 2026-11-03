@@ -56,7 +56,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 44 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 45 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
@@ -74,9 +74,9 @@ Use a virtualenv in `.venv/`, it is ignored by git.
 3. Design: done.
 4. Public repo: done.
 5. Push fix: done. The job runs at 18:17 UTC, the push is scheduled for 07:30 Europe/Amsterdam the next morning.
-6. Today screen review.
-7. Molecule screen.
-8. Lab screen.
+6. Today screen: built, look to be fine tuned later.
+7. Molecule screen: built. One canvas moves between Today and Molecule.
+8. Lab screen: built. `web/js/m12.js` is checked against the python by `tests/m12_check.mjs`, numbers come through `data/model.json`.
 9. Shorter headlines.
 10. Accessibility, design review, restyle poster and figures, remove Streamlit.
 11. A test week on my phone.

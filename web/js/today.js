@@ -1,5 +1,7 @@
 // the Today screen, filled from brief.json. only textContent, so nothing from a feed can become markup
 
+import { formulaNodes } from "./molecule-screen.js";
+
 const TOPIC_TAGS = { Interaction: "tag-interaction", TDM: "tag-tdm", Biologics: "tag-biologics" };
 const LANE_TAGS = { discovery: ["Discovery", "tag-discovery"], toxicology: ["Toxicology", "tag-toxicology"] };
 
@@ -24,16 +26,6 @@ function renderDate(iso) {
   pill.hidden = false;
 }
 
-function formulaNodes(formula) {
-  // C48H48 becomes C, subscript 48, H, subscript 48
-  return formula.split(/(\d+)/).filter(Boolean).map((part) => {
-    if (!/^\d+$/.test(part)) return document.createTextNode(part);
-    const sub = document.createElement("sub");
-    sub.textContent = part;
-    return sub;
-  });
-}
-
 function chip(text, label) {
   const li = document.createElement("li");
   if (label) {
@@ -50,7 +42,6 @@ function rolesOf(cyp, drug) {
 }
 
 function renderMolecule(mol, cyp, structure) {
-  byId("molecule-structure").hidden = structure?.coords !== "RDKit conformer";
   const name = byId("molecule-name");
   const chips = byId("molecule-chips");
   const line = byId("molecule-line");
@@ -58,13 +49,13 @@ function renderMolecule(mol, cyp, structure) {
     name.textContent = "No molecule today";
     chips.hidden = true;
     line.textContent = "It will be back with the next brief.";
-    byId("scene").setAttribute("aria-label", "Empty space scene");
+    byId("scene").setAttribute("aria-label", "No molecule today");
     return;
   }
   name.textContent = capitalise(mol.name);
   byId("scene").setAttribute("aria-label", structure
     ? `3D model of ${mol.name}. Drag sideways to turn it.`
-    : `Space scene, no 3D structure of ${mol.name} today.`);
+    : `No 3D structure of ${mol.name} today.`);
 
   // every number here is one tap away from its source
   const link = document.createElement("a");

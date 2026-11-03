@@ -1,6 +1,8 @@
 """Tests that run without internet. I run these before every push: pytest -q"""
 
 import json
+import shutil
+import subprocess
 from datetime import date
 
 import pytest
@@ -504,3 +506,44 @@ def test_site_build_publishes_the_dated_picture(tmp_path):
     (src / "data/brief.json").write_text(json.dumps({"date": "2026-11-04", "cards": [], "molecule": None}))
     module.build(src, tmp_path / "site")
     assert (tmp_path / "site/data/molecule-2026-11-04.png").exists()
+
+
+# the lab's javascript has to give the same answers as the python
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node is not installed")
+def test_javascript_model_matches_python():
+    import itertools
+    import pandas as pd
+    from halflife.pipeline import illustrative_ratio
+    site = _build_site_module()
+    grid = [dict(fm=fm, iOverKiLiver=li, fg=fg, iOverKiGut=gu, inductionFold=ind) for fm, li, fg, gu, ind in itertools.product(
+        (0, 0.3, 0.7, 0.9, 1), (0, 0.5, 5, 50), (0.2, 0.6, 1), (0, 5, 50), (1, 3, 10)) if not (fm == 1 and li == 0 and ind == 0)]
+    ratios = [0.1, 0.2, 0.3, 0.5, 0.8, 0.9, 1, 1.2, 1.25, 2, 3.2, 5, 8.5]
+    pairs = [("midazolam", "itraconazole"), ("rifampicin", "midazolam"), ("omeprazole", "phenytoin"), ("caffeine", "midazolam")]
+    rows = pd.read_csv(config.CYP_TABLE)[["drug", "enzyme", "role"]].to_dict(orient="records")
+    payload = {"grid": grid, "ratios": ratios, "curveRatios": [0.36, 1, 8.5], "pairs": pairs, "rows": rows, "model": site.model_json()}
+    run = subprocess.run(["node", str(config.ROOT / "tests/m12_check.mjs")], input=json.dumps(payload), capture_output=True, text=True, check=True)
+    js = json.loads(run.stdout)
+
+    for case, value in zip(grid, js["ratios"]):
+        expected = model.auc_ratio(case["fm"], case["iOverKiLiver"], case["fg"], case["iOverKiGut"], case["inductionFold"])
+        assert value == pytest.approx(expected, rel=1e-9), case
+    assert js["categories"] == [model.category(r) for r in ratios]
+    for r, curve in zip(payload["curveRatios"], js["curves"]):
+        _, before, after = model.concentration_curve(r)
+        assert curve["before"] == pytest.approx(list(before), rel=1e-9)
+        assert curve["after"] == pytest.approx(list(after), rel=1e-9)
+    for (a, b), result in zip(pairs, js["pairs"]):
+        findings = cyp.check_pair(a, b)
+        assert result["sentences"] == [f.sentence() for f in findings]
+        best = illustrative_ratio(findings)
+        assert result["inputs"]["ratio"] == pytest.approx(best["ratio"], rel=1e-9)
+        assert result["inputs"]["fm"] == best["fm"]
+
+
+def _build_site_module():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_site", config.ROOT / "scripts/build_site.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
