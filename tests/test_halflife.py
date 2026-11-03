@@ -520,7 +520,8 @@ def test_javascript_model_matches_python():
         (0, 0.3, 0.7, 0.9, 1), (0, 0.5, 5, 50), (0.2, 0.6, 1), (0, 5, 50), (1, 3, 10)) if not (fm == 1 and li == 0 and ind == 0)]
     ratios = [0.1, 0.2, 0.3, 0.5, 0.8, 0.9, 1, 1.2, 1.25, 2, 3.2, 5, 8.5]
     pairs = [("midazolam", "itraconazole"), ("rifampicin", "midazolam"), ("omeprazole", "phenytoin"), ("caffeine", "midazolam"),
-             ("digoxin", "verapamil"), ("metformin", "dolutegravir"), ("atorvastatin", "rifampicin"), ("fexofenadine", "clarithromycin")]
+             ("digoxin", "verapamil"), ("metformin", "dolutegravir"), ("atorvastatin", "rifampicin"), ("fexofenadine", "clarithromycin"),
+             ("methotrexate", "probenecid"), ("tenofovir", "probenecid"), ("tenofovir disoproxil", "verapamil"), ("selexipag", "ciclosporin")]
     rows = pd.read_csv(config.CYP_TABLE)[["drug", "enzyme", "role"]].to_dict(orient="records")
     transporters = pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)[["drug", "transporter", "role", "note"]].to_dict(orient="records")
     payload = {"grid": grid, "ratios": ratios, "curveRatios": [0.36, 1, 8.5], "pairs": pairs, "rows": rows, "transporters": transporters, "model": site.model_json()}
@@ -806,8 +807,9 @@ FDA_INTERACTIONS_PAGE = """
 <tr><td>teriflunomide</td><td></td><td>BCRP; OATP1B1 inhibitor; OAT3 inhibitor</td><td></td></tr>
 <tr><td>adefovir <sup>1</sup></td><td></td><td></td><td>OAT1 substrate</td></tr>
 <tr><td>midazolam</td><td>x</td><td></td><td></td></tr></table>
-<h2>Footnotes</h2><p>1 These drugs are active moieties.</p><p>13 Single dose</p>
+<h2>Footnotes</h2><p>1 These drugs are active moieties. Those pro-drugs are substrates of P-gp.</p><p>13 Single dose</p>
 <p>17 Intravenously administered rolapitant does not inhibit BCRP and P-gp.</p>
+<p>21 Selexipag is a prodrug. Selexipag and ACT-333679 are also substrates of OATP1B transporter</p>
 <h2>Content current as of:</h2><p><time datetime="2026-05-29T14:00:00Z">05/29/2026</time></p>
 """
 
@@ -822,8 +824,8 @@ def test_fda_page_odd_cells():
     assert tr("amiodarone") == ["P-gp"]
     assert tr("pirtobrutinib") == ["BCRP", "P-gp"]  # "and", "transporters", capital in the name
     assert tr("ranolazine") == ["MATE1", "MATE2-K", "OCT2", "P-gp"]  # a space before the semicolon
-    assert tr("teriflunomide") == ["BCRP", "OATP1B1"]  # inhibitor mid cell, OAT3 is not covered
-    assert tr("adefovir") == []  # OAT only
+    assert tr("teriflunomide") == ["BCRP", "OAT3", "OATP1B1"]  # inhibitor mid cell
+    assert tr("adefovir") == ["OAT1"]
     assert sorted(r["role"] for r in _parsed("resmetirom") if r["transporter"] == "OATP1B1") == ["inhibitor", "substrate"]  # the family
     assert _parsed("loperamide")[0]["role"] == "substrate"
 
@@ -845,7 +847,7 @@ def test_fda_page_gives_its_own_date_and_complains_when_it_changes():
 
 def test_transporter_table_is_in_the_repo_with_source_and_date():
     t = cyp.load_transporters()
-    assert set(t["transporter"]) == {"P-gp", "BCRP", "OATP1B1", "OATP1B3", "OCT2", "MATE1", "MATE2-K"}
+    assert set(t["transporter"]) == {"P-gp", "BCRP", "OATP1B1", "OATP1B3", "OAT1", "OAT3", "OCT2", "MATE1", "MATE2-K"}
     assert t["source"].str.contains(r"page current as of \d{4}-\d{2}-\d{2}, retrieved \d{4}-\d{2}-\d{2}").all()
     from halflife.names import US_TO_INN
     assert not set(t["key"]) & set(US_TO_INN)  # glibenclamide, ciclosporin, rifampicin, not the US names
@@ -973,3 +975,44 @@ def test_a_broken_molecule_file_does_not_break_the_site(tmp_path):
     (run / "data/molecule.json").write_text("{ not json")
     rebuilt = site.molecule_json(run, {"molecule": None})
     assert rebuilt is None
+
+
+def test_methotrexate_with_probenecid():
+    found = cyp.check_transporters("methotrexate", "probenecid")
+    assert len(found) == 1 and found[0].victim == "methotrexate" and found[0].perpetrator == "probenecid"
+    assert found[0].transporters == ["OAT3"]  # probenecid blocks OAT1 and OAT3, methotrexate is listed for OAT3
+    assert found[0].sentence() == ("probenecid is an inhibitor of OAT3 and methotrexate is a substrate of OAT3, "
+                                   "so methotrexate exposure can be higher.")
+    assert cyp.check_transporters("probenecid", "methotrexate")[0].victim == "methotrexate"  # either order
+    assert cyp.interacts("methotrexate", "probenecid")
+    assert ("methotrexate", "probenecid") in cyp.all_pairs()  # it can be the interaction of the day
+
+
+def test_tenofovir_and_the_other_oat_pairs():
+    tenofovir = cyp.check_transporters("tenofovir", "probenecid")[0]
+    assert tenofovir.transporters == ["OAT1"]
+    assert "FDA note on tenofovir: These drugs are active moieties" in tenofovir.sentence()  # the note on the substrate shows too
+    assert set(cyp.check_transporters("furosemide", "probenecid")[0].transporters) == {"OAT1", "OAT3"}
+    assert cyp.check_transporters("benzylpenicillin", "probenecid")[0].transporters == ["OAT3"]  # penicillin G on the page
+
+
+def test_facts_only_found_in_fda_footnotes():
+    assert cyp.check_transporters("tenofovir disoproxil", "verapamil")[0].transporters == ["P-gp"]
+    assert cyp.check_transporters("oseltamivir", "verapamil")[0].transporters == ["P-gp"]
+    assert set(cyp.check_transporters("selexipag", "ciclosporin")[0].transporters) == {"OATP1B1", "OATP1B3"}
+
+
+def test_the_parser_stops_on_anything_it_does_not_know():
+    from halflife.interactions.fda_page import parse_cell, parse_transporters
+    with pytest.raises(ValueError, match="new transporter"):
+        parse_cell("MRP2; P-gp inhibitor")  # never again a silent gap
+    with pytest.raises(ValueError, match="footnote changed"):
+        parse_transporters(FDA_INTERACTIONS_PAGE.replace("also substrates of OATP1B transporter", "something else"))
+
+
+def test_every_transporter_on_the_page_is_covered():
+    from halflife.interactions.fda_page import TRANSPORTERS
+    t = cyp.load_transporters()
+    assert set(t["transporter"]) == set(TRANSPORTERS)
+    assert (t.groupby(["transporter", "role"]).size() > 0).all()
+    assert {"inhibitor", "substrate"} == set(t[t["transporter"] == "OAT3"]["role"])

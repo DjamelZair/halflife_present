@@ -98,13 +98,18 @@ class TransporterFinding:
     perpetrator: str
     transporters: list
     note: str = ""  # an FDA footnote that matters, rifampicin only counts for a single dose
+    victim_note: str = ""  # the same for the substrate, tenofovir is the active moiety of its pro-drugs
     direction: str = "up"
 
     def sentence(self) -> str:
         names = ", ".join(self.transporters[:-1]) + " and " + self.transporters[-1] if len(self.transporters) > 1 else self.transporters[0]
         text = (f"{self.perpetrator} is an inhibitor of {names} and {self.victim} is a substrate of "
                 f"{'them' if len(self.transporters) > 1 else names}, so {self.victim} exposure can be higher.")
-        return f"{text} FDA note on {self.perpetrator}: {self.note}" if self.note else text
+        if self.note:
+            text += f" FDA note on {self.perpetrator}: {self.note}"
+        if self.victim_note:
+            text += f" FDA note on {self.victim}: {self.victim_note}"
+        return text
 
 
 def check_transporters(a: str, b: str) -> list[TransporterFinding]:
@@ -116,8 +121,10 @@ def check_transporters(a: str, b: str) -> list[TransporterFinding]:
         inhibitor = df[(df["key"] == to_inn(perpetrator).lower()) & (df["role"] == "inhibitor")]
         shared = [t for t in inhibitor["transporter"] if t in set(substrate["transporter"])]
         if shared:
-            notes = [n for n in inhibitor[inhibitor["transporter"].isin(shared)]["note"].unique() if n]
-            findings.append(TransporterFinding(substrate["drug"].iloc[0], inhibitor["drug"].iloc[0], shared, " ".join(notes)))
+            def notes(rows):
+                return " ".join(n for n in rows[rows["transporter"].isin(shared)]["note"].unique() if n)
+            findings.append(TransporterFinding(substrate["drug"].iloc[0], inhibitor["drug"].iloc[0], shared,
+                                               notes(inhibitor), notes(substrate)))
     return findings
 
 

@@ -65,7 +65,9 @@ export function checkTransporters(rows, a, b) {
     const shared = inhibitor.filter((r) => substrate.some((s) => s.transporter === r.transporter));
     if (shared.length) {
       findings.push({ victim: substrate[0].drug, perpetrator: inhibitor[0].drug, transporters: shared.map((r) => r.transporter),
-                      note: [...new Set(shared.map((r) => r.note).filter(Boolean))].join(" ") });
+                      note: [...new Set(shared.map((r) => r.note).filter(Boolean))].join(" "),
+                      victimNote: [...new Set(substrate.filter((s) => shared.some((r) => r.transporter === s.transporter))
+                        .map((s) => s.note).filter(Boolean))].join(" ") });
     }
   }
   return findings;
@@ -75,7 +77,7 @@ export function transporterSentence(f) {
   const list = f.transporters;
   const names = list.length > 1 ? `${list.slice(0, -1).join(", ")} and ${list[list.length - 1]}` : list[0];
   const text = `${f.perpetrator} is an inhibitor of ${names} and ${f.victim} is a substrate of ${list.length > 1 ? "them" : names}, so ${f.victim} exposure can be higher.`;
-  return f.note ? `${text} FDA note on ${f.perpetrator}: ${f.note}` : text;
+  return text + (f.note ? ` FDA note on ${f.perpetrator}: ${f.note}` : "") + (f.victimNote ? ` FDA note on ${f.victim}: ${f.victimNote}` : "");
 }
 
 export function sentence(f) {

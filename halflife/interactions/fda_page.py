@@ -9,9 +9,16 @@ import re
 
 PAGE = ("https://www.fda.gov/drugs/drug-interactions-labeling/"
         "healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems")
-# the ones Halflife covers. the page also lists OAT1 and OAT3, adding them here is all it takes
-TRANSPORTERS = ("P-gp", "BCRP", "OATP1B1", "OATP1B3", "OCT2", "MATE1", "MATE2-K")
+# every transporter on the page. a name that is not here stops the update, so nothing can drop out silently
+TRANSPORTERS = ("P-gp", "BCRP", "OATP1B1", "OATP1B3", "OAT1", "OAT3", "OCT2", "MATE1", "MATE2-K")
 GROUPS = {"OATP1B": ("OATP1B1", "OATP1B3")}  # the page sometimes names the family
+# facts FDA only gives in a footnote, the table cell is empty. the text has to still be there, or the update stops
+FOOTNOTE_FACTS = [
+    {"footnote": "Those pro-drugs are substrates of P-gp", "role": "substrate", "transporters": ("P-gp",),
+     "drugs": ("adefovir dipivoxil", "oseltamivir", "tenofovir alafenamide", "tenofovir disoproxil")},
+    {"footnote": "also substrates of OATP1B transporter", "role": "substrate", "transporters": GROUPS["OATP1B"],
+     "drugs": ("selexipag",)},
+]
 
 
 def _text(cell: str) -> str:
@@ -50,7 +57,10 @@ def parse_cell(cell: str) -> tuple[list[str], list[str]]:
         token = re.sub(r"\s+\d{1,2}\s*$", "", token.strip())
         if token:
             names.extend(GROUPS.get(token, (token,)))
-    return [n for n in names if n in TRANSPORTERS], notes
+    unknown = [n for n in names if n not in TRANSPORTERS]
+    if unknown:
+        raise ValueError(f"new transporter on the FDA page: {unknown} in {cell!r}")
+    return names, notes
 
 
 def parse_drug_name(cell: str) -> tuple[str, list[str]]:
@@ -80,4 +90,10 @@ def parse_transporters(page: str) -> list[dict]:
             transporters, cell_notes = parse_cell(row[column])
             note = " ".join(notes[n] for n in dict.fromkeys(cell_notes + name_notes) if n in notes)
             out.extend({"fda_name": name, "transporter": t, "role": role, "note": note} for t in transporters)
+    for fact in FOOTNOTE_FACTS:
+        text = next((t for t in notes.values() if fact["footnote"] in t), None)
+        if text is None:
+            raise ValueError(f"an FDA footnote changed, it no longer says: {fact['footnote']}")
+        out.extend({"fda_name": drug, "transporter": t, "role": fact["role"], "note": text}
+                   for drug in fact["drugs"] for t in fact["transporters"])
     return out
