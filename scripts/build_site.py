@@ -58,6 +58,9 @@ def build(src: Path, site: Path) -> None:
         files["molecule"] = molecule
     for name, content in files.items():
         (site / "data" / f"{name}.json").write_text(json.dumps(content, ensure_ascii=False), encoding="utf-8")
+    picture = src / "figures/structure_2d.png"
+    if picture.exists():  # the push attaches this one
+        shutil.copy(picture, site / config.molecule_image_path(brief["date"]))
 
 
 if __name__ == "__main__":

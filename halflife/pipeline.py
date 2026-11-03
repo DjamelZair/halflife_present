@@ -7,7 +7,7 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
-from halflife import config, history, topics
+from halflife import config, history, schedule, topics
 from halflife.interactions import cyp, figures as ifig, model
 from halflife.molecules import figures as mfig, properties, pubchem, structure
 from halflife.notify import ntfy
@@ -97,8 +97,15 @@ def pick_molecule(cards, demo: bool) -> pubchem.Compound | None:
     return None
 
 
+def _image_url(figs_dir, day: date) -> str:
+    # the site build publishes this picture under the same name
+    if config.APP_URL and (figs_dir / "structure_2d.png").exists():
+        return f"{config.APP_URL.rstrip('/')}/{config.molecule_image_path(day.isoformat())}"
+    return ""
+
+
 def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
-    day = day or date.today()
+    day = day or (date.today() if demo else schedule.delivery_day())
     out = config.output_dir(day, demo=demo)
     figs_dir, data_dir = out / "figures", out / "data"
 
@@ -157,7 +164,10 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
 
     # 6. poster and push
     poster_path = poster.build(out, cards, mode, figures, molecule, pair, day)
-    pushed = ntfy.send(cards, molecule["name"] if molecule else None) if push else False
+    pushed = False
+    if push:
+        pushed = ntfy.send(cards, molecule["name"] if molecule else None, day, _image_url(figs_dir, day),
+                           schedule.push_time(day))
 
     summary.update({"output_dir": str(out), "poster": str(poster_path), "pushed": pushed})
     return summary

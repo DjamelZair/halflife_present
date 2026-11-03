@@ -1,6 +1,7 @@
 """Tests that run without internet. I run these before every push: pytest -q"""
 
 import json
+from datetime import date
 
 import pytest
 
@@ -446,3 +447,60 @@ def test_python_lane_colours_match_the_tokens_file():
     tokens = (config.ROOT / "web/css/tokens.css").read_text()
     assert f"--jewel-plum: {config.PALETTE['discovery']}" in tokens
     assert f"--jewel-cobalt: {config.PALETTE['toxicology']}" in tokens
+
+
+# push
+
+def _card(title="A title", lane="clinic", url="https://example.org/a"):
+    from halflife.summarise.brief import Card
+    return Card(title=title, what="", why="", pkpd_hook="", source="PubMed", url=url,
+                peer_reviewed=True, original_title=title, lane=lane)
+
+
+def test_delivery_day_handles_late_runs_and_clock_changes():
+    from datetime import datetime, timezone
+    from halflife.schedule import delivery_day, push_time
+    assert delivery_day(datetime(2026, 11, 3, 18, 17, tzinfo=timezone.utc)).isoformat() == "2026-11-04"
+    # GitHub started it ten hours late, 05:17 in Amsterdam: still the same morning
+    assert delivery_day(datetime(2026, 11, 4, 4, 17, tzinfo=timezone.utc)).isoformat() == "2026-11-04"
+    assert push_time(date(2027, 1, 15)).astimezone(timezone.utc).hour == 6  # winter, UTC+1
+    assert push_time(date(2027, 7, 15)).astimezone(timezone.utc).hour == 5  # summer, UTC+2
+
+
+def test_push_lines_cut_on_a_word():
+    from halflife.notify.ntfy import build_message, build_title, shorten
+    long = "Practical Considerations for the Design, Conduct, and Reporting of Clinical Studies."
+    assert shorten(long) == "Practical Considerations for the Design, Conduct, and…"
+    assert shorten("Short title.") == "Short title"
+    assert build_title(date(2026, 11, 4)) == "Halflife, Wednesday 4 November"
+    message = build_message([_card("One"), _card("Two", lane="discovery")], "rifampicin")
+    assert message.splitlines() == ["Clinic: One", "Discovery: Two", "Molecule of the day: rifampicin"]
+    assert build_message([], None) == ""
+
+
+def test_push_headers_with_and_without_the_optional_parts():
+    from datetime import datetime, timedelta, timezone
+    from halflife.notify.ntfy import build_headers
+    day, later = date(2026, 11, 4), datetime.now(timezone.utc) + timedelta(hours=9)
+    full = build_headers([_card(url="https://example.org/a,b")], "rifampicin", day, "https://x.org/m.png", later,
+                         "https://x.org/")
+    assert full["Actions"] == 'view, Open Halflife, "https://x.org/"; view, Top paper, "https://example.org/a,b"'
+    assert full["Attach"] == "https://x.org/m.png" and full["At"] == str(int(later.timestamp()))
+    assert full["Click"] == "https://x.org/"
+    # nothing optional, and a delivery time already gone: the push still goes, right away
+    bare = build_headers([_card(url="")], None, day, at=datetime.now(timezone.utc) - timedelta(hours=1))
+    assert set(bare) == {"Title", "Priority"}
+
+
+def test_site_build_publishes_the_dated_picture(tmp_path):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_site", config.ROOT / "scripts/build_site.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    src = tmp_path / "run"
+    (src / "data").mkdir(parents=True)
+    (src / "figures").mkdir()
+    (src / "figures/structure_2d.png").write_bytes(b"png")
+    (src / "data/brief.json").write_text(json.dumps({"date": "2026-11-04", "cards": [], "molecule": None}))
+    module.build(src, tmp_path / "site")
+    assert (tmp_path / "site/data/molecule-2026-11-04.png").exists()

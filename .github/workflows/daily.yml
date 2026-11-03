@@ -1,10 +1,11 @@
-name: Morning brief
+name: Daily brief
 
 on:
   schedule:
-    # GitHub runs cron in UTC. 06:23 UTC is 07:23 in Dutch winter time and 08:23 in summer time.
+    # GitHub runs cron in UTC and can start hours late, I have seen 10 hours. So the job runs the evening
+    # before and only schedules the push, ntfy delivers it at 07:30 Dutch time, summer and winter alike.
     # Not on the hour on purpose, GitHub delays jobs that start at :00 when it is busy.
-    - cron: "23 6 * * *"
+    - cron: "17 18 * * *"
   workflow_dispatch: {}  # lets me press "Run workflow" by hand to test
 
 permissions:
@@ -39,5 +40,15 @@ jobs:
           git config user.name "halflife-bot"
           git config user.email "halflife-bot@users.noreply.github.com"
           git add outputs/
-          git commit -m "Morning brief $(date +%F)" || echo "nothing new"
+          git commit -m "Brief for $(ls outputs | grep '^2' | tail -1)" || echo "nothing new"
+          git pull --rebase
           git push
+
+  # the push points at pictures on the site, so the site always follows the brief
+  deploy:
+    needs: brief
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

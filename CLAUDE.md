@@ -11,7 +11,7 @@ The person building it (the repo owner) wants the **easiest version** first.
 * **No Claude API key for now.** Plain mode: `rank.py` picks the three most relevant items by keywords,
   cards show the title and first two sentences of the abstract. The Claude path in
   `summarise/brief.py` stays in place for later, it only activates when `ANTHROPIC_API_KEY` is set.
-* Push via **ntfy** (no account, secret topic). No Telegram.
+* Push via **ntfy** (no account, secret topic). No Telegram. Sent the evening before with the `At` header (`halflife/schedule.py`), because GitHub cron can start hours late.
 * Hosting: GitHub Actions for the daily job. The app moves from Streamlit to a **static web app on GitHub Pages**
   (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
   chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
@@ -56,7 +56,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 37 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 44 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
@@ -69,18 +69,18 @@ comes from the news, `cyp.daily_pair` picks one from the FDA table by date.
 Use a virtualenv in `.venv/`, it is ignored by git.
 
 ## Next steps, in order
-1. Setup: `python -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pytest -q`.
-2. Live check, done once: `python run_daily.py --no-push`. Rerun it after touching a source and look at
-   `figures/sources_overview.png` (a zero bar means a source is broken). Preprint DOIs now use the
-   openRxiv prefix `10.64898`, that is expected.
-3. Tune `PUBMED_QUERY` in `config.py` and the weights in `rank.py` after a few days of real output.
-4. Push tested on 30 October 2026. `NTFY_TOPIC` lives in `.env` locally and goes into the GitHub secrets.
-5. Push to GitHub, add secrets, run the workflow by hand once.
-6. Build the web app from `docs/DESIGN.md`: `web/` folder, one page with Today, Molecule and Lab views, three.js
-   molecule hero, dark and light mode, data from `outputs/<latest>/data/brief.json` plus a small 3D structure file
-   the pipeline writes per day. Deploy with GitHub Pages and set `APP_URL` to it.
-7. Shorter headlines in plain mode (rules in `docs/DESIGN.md`), or add the Claude API key.
-8. Note: the cron is fixed at 06:23 UTC, so the push comes an hour later in summer time.
+1. Pipeline: done.
+2. Push: done.
+3. Design: done.
+4. Public repo: done.
+5. Push fix: done. The job runs at 18:17 UTC, the push is scheduled for 07:30 Europe/Amsterdam the next morning.
+6. Today screen review.
+7. Molecule screen.
+8. Lab screen.
+9. Shorter headlines.
+10. Accessibility, design review, restyle poster and figures, remove Streamlit.
+11. A test week on my phone.
+12. Christmas handover: his own ntfy topic, QR card.
 
 ## Helpful skills
 From github.com/K-Dense-AI/claude-scientific-skills, only these were used as references:

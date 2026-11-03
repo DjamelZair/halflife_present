@@ -103,6 +103,10 @@ NCBI_API_KEY = os.getenv("NCBI_API_KEY", "")
 # ntfy topic name, pick something long and random since anyone who knows it can read it
 NTFY_TOPIC = os.getenv("NTFY_TOPIC", "")
 APP_URL = os.getenv("APP_URL", "")
+# the job runs the evening before, the push is scheduled for this time
+PUSH_TIMEZONE = "Europe/Amsterdam"
+PUSH_HOUR = 7
+PUSH_MINUTE = 30
 
 HTTP_TIMEOUT = 30
 # say who I am. fda.gov sends the default python-requests agent to an abuse page, an honest name is fine
@@ -111,6 +115,11 @@ HTTP_HEADERS = {"User-Agent": "halflife/0.1 (personal pharmacology news digest; 
 
 
 DEMO_DIR_NAME = "demo"  # demo runs go here, never in a dated folder, and git ignores it
+
+
+def molecule_image_path(day: str) -> str:
+    # dated, so a failed deploy gives a missing picture and never the molecule of another day
+    return f"data/molecule-{day}.png"
 
 
 def output_dir(day: date | None = None, demo: bool = False) -> Path:

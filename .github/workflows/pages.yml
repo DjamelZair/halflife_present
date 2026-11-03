@@ -5,7 +5,10 @@ on:
     branches: [main]
     paths:
       - "web/**"
+      - "scripts/build_site.py"
+      - "data/cyp_reference.csv"
       - ".github/workflows/pages.yml"
+  workflow_call: {}  # the daily job calls this after it has saved the new brief
   workflow_dispatch: {}  # lets me redeploy by hand
 
 permissions:
@@ -26,10 +29,23 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: main  # called from the daily job this has to include the brief it just saved
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Build the site
+        run: python scripts/build_site.py
 
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: web
+          path: site
 
       - id: deployment
         uses: actions/deploy-pages@v5

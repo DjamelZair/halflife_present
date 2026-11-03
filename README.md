@@ -66,8 +66,9 @@ data/                  cyp_reference.csv (FDA), sample PubMed items and molecule
 1. **ntfy**: install the ntfy app on his phone, subscribe to a long random topic name.
 2. **GitHub secrets** (repo, Settings, Secrets and variables, Actions): `NTFY_TOPIC`, and later `APP_URL`.
    Optional: `NCBI_EMAIL`, `NCBI_API_KEY`, `ANTHROPIC_API_KEY`.
-3. **GitHub Actions**: the workflow in `.github/workflows/daily.yml` runs every morning and commits the
-   new `outputs/` folder. Press "Run workflow" once to test it.
+3. **GitHub Actions**: the workflow in `.github/workflows/daily.yml` runs every evening, commits the
+   new `outputs/` folder, deploys the site and schedules the push for 07:30 Dutch time the next morning.
+   Press "Run workflow" once to test it.
 4. **Streamlit Community Cloud**: new app from this repo, main file `app/streamlit_app.py`.
    Put the app url in the `APP_URL` secret so tapping the push opens it.
 

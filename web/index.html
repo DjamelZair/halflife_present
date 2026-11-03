@@ -34,7 +34,6 @@
   .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--ice); }
   h1 { font-family: var(--display); font-weight: 600; font-size: clamp(34px, 7vw, 54px); line-height: 1.04; margin: 0; text-wrap: balance; }
   .lead { color: var(--muted); font-size: 17px; max-width: 58ch; margin: 0; }
-  .note { color: var(--ink); max-width: 58ch; margin: 0; }
 
   .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 28px; }
   .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 14px; display: flex; flex-direction: column; gap: 2px; }
@@ -80,19 +79,18 @@
 <div class="hero">
   <canvas id="scene" aria-label="A slowly turning 3D model of rivaroxaban among stars" role="img"></canvas>
   <div class="wrap hero-text">
-    <div class="eyebrow">Christmas 2026, work in progress</div>
-    <h1>Halflife, a morning dose of pharmacology</h1>
-    <p class="lead">Every morning at 07:23 a push lands on the phone of one hospital pharmacist: three things worth knowing today, a molecule to spin, and one interaction to think about.</p>
-    <p class="note">This is where the evenings went. Made for Jelle.</p>
+    <div class="eyebrow">Personal project, in progress</div>
+    <h1>Halflife, a daily pharmacology brief</h1>
+    <p class="lead">Every morning Halflife collects new research, approvals and safety signals from European and US sources, picks three things worth knowing, shows a molecule in 3D and explains one drug interaction.</p>
   </div>
 </div>
 
 <main class="wrap">
   <div class="stats">
     <div class="stat"><b>10</b><span>news sources, Europe first</span></div>
-    <div class="stat"><b>07:23</b><span>daily push, runs on its own</span></div>
+    <div class="stat"><b>3</b><span>picks a day, runs on its own</span></div>
     <div class="stat"><b>170</b><span>CYP roles from the FDA table</span></div>
-    <div class="stat"><b>37</b><span>automatic tests passing</span></div>
+    <div class="stat"><b>44</b><span>automatic tests passing</span></div>
   </div>
 
   <section>
@@ -124,7 +122,7 @@
       <li><span class="num">2</span><div><h3>Pick three</h3><p>Two Clinic cards (interactions, PK, TDM, dosing) and one Discovery card (new approvals, new molecules). A new Lareb signal always gets a slot; a EUDA alert becomes a Toxicology card. Nothing repeats.</p></div></li>
       <li><span class="num">3</span><div><h3>Molecule of the day</h3><p>The real 3D structure from PubChem, ideally the newest drug from the Discovery card, with its properties worked out by RDKit.</p></div></li>
       <li><span class="num">4</span><div><h3>Interaction of the day</h3><p>Shared CYP enzymes from the FDA table and the ICH M12 model, with sliders to play with. European generic names only.</p></div></li>
-      <li><span class="num">5</span><div><h3>Push</h3><p>GitHub runs it all at 07:23, saves the day's poster and figures, and sends the notification.</p></div></li>
+      <li><span class="num">5</span><div><h3>Push</h3><p>GitHub runs it all, saves the day's poster and figures, and sends the notification.</p></div></li>
     </ol>
   </section>
 
@@ -134,7 +132,7 @@
     <div class="chips">
       <span class="chip">Midnight lab, dark by default</span>
       <span class="chip">White light mode</span>
-      <span class="chip">Glossy jewel molecules in space</span>
+      <span class="chip">Real 3D molecules</span>
       <span class="chip">Drag to spin</span>
     </div>
   </section>
@@ -144,7 +142,7 @@
     <div class="next">
       <div><b>The app</b><span>Today, Molecule and Lab screens with the live 3D molecule</span></div>
       <div><b>Short headlines</b><span>Cards that read in ten seconds</span></div>
-      <div><b>Under the tree</b><span>His own channel and a QR card</span></div>
+      <div><b>Daily use</b><span>Tested on real mornings before launch</span></div>
     </div>
   </section>
 

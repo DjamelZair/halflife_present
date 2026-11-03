@@ -15,9 +15,11 @@ function parseDay(iso) {
 function renderDate(iso) {
   const day = parseDay(iso);
   const label = day.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }).replace(",", "");
-  const isToday = day.toDateString() === new Date().toDateString();
+  // the evening run publishes tomorrow's brief, so only an older one gets the "From"
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const pill = byId("date");
-  pill.textContent = isToday ? label : `From ${label}`;
+  pill.textContent = day < today ? `From ${label}` : label;
   pill.dateTime = iso;
   pill.hidden = false;
 }
@@ -48,6 +50,7 @@ function rolesOf(cyp, drug) {
 }
 
 function renderMolecule(mol, cyp, structure) {
+  byId("molecule-structure").hidden = structure?.coords !== "RDKit conformer";
   const name = byId("molecule-name");
   const chips = byId("molecule-chips");
   const line = byId("molecule-line");
@@ -70,7 +73,6 @@ function renderMolecule(mol, cyp, structure) {
   link.rel = "noopener";
   link.append(...formulaNodes(mol.Formula), `, ${mol.source}`);
   line.replaceChildren(link);
-  if (structure?.coords === "RDKit conformer") line.append(", 3D from RDKit");
 
   chips.replaceChildren(
     chip(String(mol["Molecular weight"]), "MW"),
