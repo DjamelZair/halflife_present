@@ -76,21 +76,32 @@ a { color: inherit; }
 
 .date-pill { padding: var(--space-xs) var(--space-md); }
 
-.theme-toggle {
+.theme-toggle,
+.pause {
   display: grid;
   place-items: center;
   width: var(--touch);
   height: var(--touch);
-  margin-right: calc(var(--space-md) * -1);
+  padding: var(--space-xs); /* 36 px to the eye, 44 px to the thumb */
   border: 0;
   border-radius: var(--radius-pill);
-  background: none;
+  background: var(--chip-bg) content-box;
   color: var(--text);
   cursor: pointer;
   touch-action: manipulation;
 }
 
-.theme-toggle svg {
+.theme-toggle { margin-right: calc(var(--space-xs) * -1); }
+
+.pause {
+  position: absolute;
+  right: max(calc(var(--gutter) - var(--space-xs)), env(safe-area-inset-right));
+  bottom: var(--space-sm);
+  z-index: 1;
+}
+
+.theme-toggle svg,
+.pause svg {
   width: 20px;
   height: 20px;
   fill: none;
@@ -99,6 +110,10 @@ a { color: inherit; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+.icon-play { display: none; }
+.pause[data-paused] .icon-play { display: block; }
+.pause[data-paused] .icon-pause { display: none; }
 
 /* the icon shows the mode a tap gets you */
 .icon-moon { display: none; }
@@ -132,8 +147,9 @@ a { color: inherit; }
   content: "";
   position: absolute;
   inset: auto 0 0;
-  height: 150px;
-  background: linear-gradient(to top, var(--hero), var(--hero-scrim));
+  /* solid behind the title */
+  height: 200px;
+  background: linear-gradient(to top, var(--hero) 45%, var(--hero-scrim));
   pointer-events: none;
 }
 
@@ -404,6 +420,37 @@ h2 {
 }
 
 .placeholder h1 { color: var(--text); }
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--chip-line);
+  border-radius: var(--radius-pill);
+}
+
+.swatch-c { background: var(--atom-c); }
+.swatch-o { background: var(--atom-o); }
+.swatch-n { background: var(--atom-n); }
+.swatch-s { background: var(--atom-s); }
+.swatch-cl { background: var(--atom-cl); }
+.swatch-f { background: var(--atom-f); }
+
+.legend-note { font-size: var(--text-xs); }
 
 /* tab bar */
 

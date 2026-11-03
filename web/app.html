@@ -36,6 +36,10 @@
 <main id="view-today" data-view="today">
   <section class="hero" aria-labelledby="molecule-name">
     <canvas id="scene" role="img" aria-label="Space scene"></canvas>
+    <button class="pause" id="pause" type="button" hidden>
+      <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
+      <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5Z"/></svg>
+    </button>
     <div class="hero-text column">
       <p class="eyebrow">Molecule of the day</p>
       <h1 id="molecule-name"></h1>
@@ -73,6 +77,15 @@
   <h1>Molecule</h1>
   <p>The full screen molecule comes next.</p>
   <p id="molecule-structure" hidden>Structure: computed 3D model (RDKit)</p>
+  <ul class="legend" aria-label="Atom colours">
+    <li><span class="swatch swatch-c"></span>Carbon</li>
+    <li><span class="swatch swatch-o"></span>Oxygen</li>
+    <li><span class="swatch swatch-n"></span>Nitrogen</li>
+    <li><span class="swatch swatch-s"></span>Sulphur</li>
+    <li><span class="swatch swatch-cl"></span>Chlorine</li>
+    <li><span class="swatch swatch-f"></span>Fluorine</li>
+  </ul>
+  <p class="legend-note">Hydrogens are hidden.</p>
 </main>
 
 <main id="view-lab" data-view="lab" class="column placeholder" hidden>

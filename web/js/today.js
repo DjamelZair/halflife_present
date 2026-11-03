@@ -63,7 +63,7 @@ function renderMolecule(mol, cyp, structure) {
   }
   name.textContent = capitalise(mol.name);
   byId("scene").setAttribute("aria-label", structure
-    ? `3D model of ${mol.name}. Drag sideways to spin it.`
+    ? `3D model of ${mol.name}. Drag sideways to turn it.`
     : `Space scene, no 3D structure of ${mol.name} today.`);
 
   // every number here is one tap away from its source

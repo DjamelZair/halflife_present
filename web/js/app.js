@@ -45,6 +45,21 @@ async function getJson(name) {
   return response.json();
 }
 
+// anything moving for more than five seconds needs a way to stop it (WCAG 2.2.2)
+function showPause() {
+  const button = document.getElementById("pause");
+  const paint = () => {
+    button.toggleAttribute("data-paused", scene.paused);
+    button.setAttribute("aria-label", scene.paused ? "Start rotation" : "Pause rotation");
+  };
+  button.addEventListener("click", () => {
+    scene.setPaused(!scene.paused);
+    paint();
+  });
+  paint();
+  button.hidden = false;
+}
+
 async function startScene(molecule) {
   // the page must work without 3D too, so a failing scene only costs the molecule
   try {
@@ -52,6 +67,7 @@ async function startScene(molecule) {
     scene = new MoleculeScene(document.getElementById("scene"), { theme: currentTheme() });
     if (molecule) scene.setMolecule(molecule);
     scene.setActive(!document.getElementById("view-today").hidden);
+    if (molecule) showPause();
   } catch (e) {
     console.warn("No 3D scene on this device:", e);
   }

@@ -56,21 +56,38 @@ Radius: cards 20 px, interaction card 22 px, pills fully round. Touch targets at
 
 ## The molecule
 
-The look comes from the reference image: glossy, jewel like atoms on deep space, with depth of field.
-The mockup fakes it with CSS; the app should do it for real with **three.js**:
+Direction decided on 3 November 2026: a **clean** look, the molecule in clear tinted glass on a calm background.
+Details get fine tuned later, `web/molecule-lab.html` holds the earlier style experiments (not published).
 
 * Atom positions from the real 3D structure (PubChem 3D SDF, or an RDKit conformer as fallback). Never a
-  generated or decorative shape.
-* Atom colours, chemically meaningful: carbon `#1E2A5C` with a little sparkle, oxygen `#FF5C8A`,
-  nitrogen `#E6ECF7` (pearl), sulphur `#FFB547`, chlorine `#B45CD6`, others from the jewel family.
-  Hydrogens hidden by default.
-* Materials: `MeshPhysicalMaterial` with clearcoat for the gloss, a little transmission on the pearl atoms.
-  Thin silvery bonds `#8FA6D6`.
-* Scene: star points plus large soft bokeh sprites in the jewel colours; depth of field (bokeh pass) focused on
-  the middle of the molecule; gentle bloom in dark mode only.
-* Motion: slow drift and rotation, drag to spin, pinch to zoom. Respect "reduce motion" (no drift).
-* In light mode the same scene on white: no stars, softer bokeh, no bloom.
-* Performance: it must run smoothly on a phone. Cap pixel ratio at 2, pause rendering when off screen.
+  generated or decorative shape. A rigid turn shows the flattest side to the viewer. When PubChem has no 3D record,
+  the Molecule screen says "Structure: computed 3D model (RDKit)". The Today screen does not mention it.
+* Proportions: atom radius 0.25 to 0.3 of the molecule's average bond length, thin bonds, clear space between atoms.
+* Colour, tokens in `web/css/tokens.css`, hydrogens hidden by default, a legend on the Molecule screen:
+
+| Atom | Dark | Light | Token |
+|---|---|---|---|
+| carbon | blue `#6FA8FF` | `#2F6FE0` | `--atom-c` |
+| oxygen | coral `#FF7A59` | `#E8502E` | `--atom-o` |
+| nitrogen | aqua `#38D9C8` | `#0FA89A` | `--atom-n` |
+| sulphur | amber `#FFC14D` | `#D99A00` | `--atom-s` |
+| chlorine and any other | violet `#B18CFF` | `#7A4FE0` | `--atom-cl` |
+| fluorine | mint `#8CF0C8` | `#12A87A` | `--atom-f` |
+
+* Materials: `MeshPhysicalMaterial` with transmission, ior 1.5, a little iridescence, tinted per element. Bonds are
+  thin satin steel.
+* Reflections differ per atom: lamps stand close to the molecule and the environment reflection shifts with each
+  atom's position. A studio with cool and warm strip lights.
+* Scene: a calm gradient that ends in the page colour, a few very soft lights far behind. No stars, no floor, no
+  busy detail. Light mode is the same on white with a pale ice middle.
+* Focus: sharp at the front and middle, only the far side goes soft. Heavy depth of field reads as out of focus.
+* Framing: fit to the bounding sphere so every molecule fills the hero the same way. On Today a molecule over
+  7 angstrom radius is cropped to its busiest region, never shrunk. The Molecule screen shows all of it.
+* Motion: a slow sway and float, drag to spin, gentle parallax, an entrance where atoms drift in from a cloud.
+  A visible pause control (WCAG 2.2.2). "Reduce motion" starts paused and skips the entrance.
+* Performance: it must run smoothly on a phone. Pixel ratio capped at 2, rendering pauses when off screen, and slow
+  frames step the quality down: half resolution transmission, depth of field, plain see through glass, pixel
+  ratio 1.5, pixel ratio 1.
 
 ## Content rules that the design depends on
 

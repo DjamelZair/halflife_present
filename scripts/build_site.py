@@ -49,7 +49,7 @@ def cyp_json() -> dict:
 
 def build(src: Path, site: Path) -> None:
     shutil.rmtree(site, ignore_errors=True)
-    shutil.copytree(ROOT / "web", site)
+    shutil.copytree(ROOT / "web", site, ignore=shutil.ignore_patterns("molecule-lab*"))  # the lab is only for comparing on my phone
     (site / "data").mkdir()
     brief = brief_json(src)
     files = {"brief": brief, "cyp": cyp_json()}

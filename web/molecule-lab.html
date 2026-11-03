@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Molecule lab</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/tokens.css">
+<style>
+  /* a throwaway comparison page. the app is not touched until one style is picked */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--text); font: 14px/1.45 var(--font-body); overflow-x: clip; }
+  .hero { position: relative; height: var(--hero-height); overflow: hidden; background: var(--hero); }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: grab; }
+  .hero::after { content: ""; position: absolute; inset: auto 0 0; height: 150px; background: linear-gradient(to top, var(--hero) 22%, var(--hero-scrim)); pointer-events: none; }
+  .hero[data-scrim="tall"]::after { height: 190px; background: linear-gradient(to top, var(--hero) 48%, var(--hero-scrim)); }
+  .label { z-index: 1; position: absolute; left: var(--gutter); bottom: var(--space-md); pointer-events: none; }
+  .label p { margin: 0; color: var(--accent); font-size: var(--text-xs); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  .label h1 { margin: var(--space-xs) 0 0; font: 600 var(--text-hero)/1.05 var(--font-display); letter-spacing: -.02em; text-transform: capitalize; }
+  .hud { position: absolute; left: var(--gutter); right: var(--gutter); top: var(--space-md); margin: 0; color: var(--text-secondary); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+  .controls { display: flex; flex-direction: column; gap: var(--space-md); padding: var(--space-lg) var(--gutter) var(--space-3xl); max-width: var(--column); margin-inline: auto; }
+  .row { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: var(--space-xs); }
+  button { min-height: var(--touch); padding: 0 var(--space-sm); border: 1px solid var(--chip-line); border-radius: var(--radius-pill); background: var(--chip-bg); color: var(--text); font: 500 var(--text-sm) var(--font-body); cursor: pointer; touch-action: manipulation; }
+  button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--page); font-weight: 600; }
+  button:disabled { opacity: .5; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-xs); font-variant-numeric: tabular-nums; }
+  th, td { padding: var(--space-xs); border-bottom: 1px solid var(--chip-line); text-align: right; }
+  th:first-child, td:first-child { text-align: left; }
+  .note { margin: 0; color: var(--text-secondary); font-size: var(--text-xs); }
+</style>
+<script type="importmap">
+  {"imports": {"three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/"}}
+</script>
+</head>
+<body>
+<div class="hero">
+  <canvas id="c" role="img" aria-label="3D molecule"></canvas>
+  <p class="hud" id="hud" role="status" aria-live="off">Loading</p>
+  <div class="label"><p>Molecule of the day</p><h1 id="name"></h1></div>
+</div>
+<div class="controls">
+  <div class="row" role="group" aria-label="Style">
+    <button data-style="glass">A Glass</button><button data-style="hologram">B Hologram</button><button data-style="jewel">C Jewel</button>
+  </div>
+  <div class="row" role="group" aria-label="Combinations of B and C">
+    <button data-style="lit">D Lit bonds</button><button data-style="halo">E Halo</button><button data-style="core">F Core</button>
+  </div>
+  <div class="row" role="group" aria-label="Eighties neon">
+    <button data-style="neon">G Neon sign</button><button data-style="grid">H Light grid</button>
+  </div>
+  <div class="row" role="group" aria-label="Molecule">
+    <button data-mol="temozolomide">Temozolomide</button><button data-mol="orforglipron">Orforglipron</button>
+  </div>
+  <div class="row" role="group" aria-label="Mode">
+    <button data-theme-to="dark">Dark</button><button data-theme-to="light">Light</button>
+  </div>
+  <div class="row">
+    <button id="replay">Replay entrance</button><button id="pause">Pause</button>
+  </div>
+  <div class="row">
+    <button id="ladder" aria-pressed="false">Fallback ladder</button><button id="bench">Measure all</button>
+  </div>
+  <p class="note" id="benchNote">Measure all runs all eight styles on both molecules at full quality for about a minute. Please keep the phone still and send me a screenshot of the table.</p>
+  <div id="results"></div>
+</div>
+
+<script type="module">
+import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { BokehPass } from "three/addons/postprocessing/BokehPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+// experiment colours per style, they move to tokens.css once one is picked
+const TINTS = {
+  glass: { C: "#5B7CFF", O: "#FF5C8A", N: "#35D6C6", S: "#FFB547", Cl: "#B45CD6", F: "#8FD3FF", other: "#B45CD6" },
+  hologram: { C: "#8FD3FF", O: "#FF8FAE", N: "#7FF5E4", S: "#FFD08A", Cl: "#D79CFF", F: "#BFE8FF", other: "#D79CFF" },
+  jewel: { C: "#2346E0", O: "#FF2F6E", N: "#E6ECF7", S: "#FFB000", Cl: "#B02CE8", F: "#27C8FF", other: "#B02CE8" },
+};
+const NEON_TINTS = { C: "#12C8FF", O: "#FF2348", N: "#FFC21A", S: "#FF2BD6", Cl: "#FF2BD6", F: "#3DFFB0", other: "#FF2BD6" };
+const GRID_TINTS = { C: "#39D8FF", O: "#FF7A1A", N: "#EFFFFF", S: "#FFD21A", Cl: "#FF4FD8", F: "#7FFFD4", other: "#FF4FD8" };
+const NEON_ON_WHITE = { C: "#0079C2", O: "#E0002D", N: "#D08A00", S: "#C4009C", Cl: "#C4009C", F: "#00A070", other: "#C4009C" };
+const GRID_BODY = "#04141C";
+const SKY_ON_WHITE = "#CFEAF4";
+const FLOOR_ON_WHITE = "#F2F9FB";
+const LINE_ON_WHITE = "#0A9CC4";
+const STUDIO_GRID_LIGHT = "#222A3A";
+const BACK_TOP = "#010D14";
+const BACK_HORIZON = "#07414F";
+const FLOOR = "#021F29";
+const HAZE = "#0E6C8C";
+const LIGHT_HOLO = "#2F55C8";
+const JEWEL_N_ON_WHITE = "#00A8A0"; // pearl disappears on a white page
+const ICE = "#8FD3FF";
+const STRIP_COOL = "#9CC8FF";
+const STRIP_WARM = "#FFC48A";
+const WHITE = "#FFFFFF";
+const STUDIO_DARK = "#03050F";
+const STUDIO_LIGHT = "#F2F5FA";
+const STRIP_DARK = "#10182E";
+const BOND_METAL = "#AEBBD6";
+const BOND_JEWEL = "#8FA6D6";
+
+// proportions, as fractions of the molecule's own average bond length
+const ATOM_FRACTION = { C: 0.28, N: 0.27, O: 0.27, F: 0.25, S: 0.3, Cl: 0.3, other: 0.3 };
+const BOND_FRACTION = 0.035;
+const DOUBLE_FRACTION = 0.024;
+const DOUBLE_GAP_FRACTION = 0.075;
+
+const FOV = 28;
+const CROP_RADIUS = 7; // angstrom. a bigger molecule is cropped to this, never shrunk
+const ENTRANCE_S = 2.4;
+const PULSE_PERIOD_S = 4.5;
+const SWAY = 0.55; // radians either way. it floats and turns a little, drag is what really spins it
+
+const STYLES = {
+  glass: { atoms: "glass", bonds: "metal", stars: 50, starOpacity: 0.35, bokeh: 0, blur: 0.02 },
+  hologram: { atoms: "rim", bonds: "tube", stars: 90, starOpacity: 0.3, bokeh: 0, blur: 0.014, bloom: true, pulse: true },
+  jewel: { atoms: "jewel", bonds: "metal", stars: 180, starOpacity: 0.7, bokeh: 26, blur: 0.03 },
+  // the combinations: C's realistic atoms, with B's light added in a different way each time
+  lit: { atoms: "jewel", bonds: "tube", stars: 150, starOpacity: 0.6, bokeh: 22, blur: 0.028, bloom: true, pulse: true },
+  halo: { atoms: "jewel", bonds: "metal", stars: 130, starOpacity: 0.55, bokeh: 12, blur: 0.026, bloom: true, pulse: true,
+          shell: { scale: 1.14, power: 3.2, body: 0, base: 0, gain: [1.5, 1.1], flare: [3, 1.4], additive: true } },
+  // the eighties: a neon sign, and dark glossy atoms over a grid of light
+  neon: { atoms: "neon", bonds: "tube", stars: 45, starOpacity: 0.3, bokeh: 0, blur: 0.01, bloom: true, pulse: true, strike: true, trim: true,
+          bondScale: 1.5, bloomStrength: 0.42, bloomRadius: 0.55, bloomThreshold: 0.3, tints: NEON_TINTS, lightTints: NEON_ON_WHITE, hot: true, haze: true },
+  grid: { atoms: "runner", bonds: "tube", stars: 0, starOpacity: 0, bokeh: 0, blur: 0.006, focusBack: 0.35, bloom: true, pulse: true, strike: true,
+          lightHalo: { scale: 1.7, power: 2.4, strength: 0.34 },
+          bondScale: 1.4, bloomStrength: 0.24, bloomRadius: 0.25, bloomThreshold: 0.55, tints: GRID_TINTS, lightTints: NEON_ON_WHITE, hot: true,
+          floor: true, fill: 0.33, lift: 0.17,
+          shell: { scale: 1.03, power: 2.6, body: 0, base: 0, gain: [2.1, 1], flare: [1, 0.6], additive: true, band: 0.3, bandWidth: 0.1, hot: 0.6, pure: true } },
+  core: { atoms: "jewel", bonds: "tube", stars: 110, starOpacity: 0.45, bokeh: 8, blur: 0.022, bloom: true, pulse: true,
+          coreScale: 0.56, shell: { scale: 1, power: 2.6, body: 0.03, base: 0.2, gain: [1.6, 1.4], flare: [2, 1], additive: false } },
+};
+const LADDERS = {
+  glass: ["transmission half", "depth of field", "fake glass", "ratio 1.5", "ratio 1"],
+  hologram: ["depth of field", "ratio 1.5", "ratio 1", "bloom"],
+  jewel: ["depth of field", "ratio 1.5", "ratio 1"],
+  lit: ["depth of field", "ratio 1.5", "ratio 1", "bloom"],
+  halo: ["depth of field", "ratio 1.5", "ratio 1", "bloom"],
+  core: ["depth of field", "ratio 1.5", "ratio 1", "bloom"],
+  neon: ["depth of field", "ratio 1.5", "ratio 1", "bloom"],
+  grid: ["reflection", "depth of field", "ratio 1.5", "ratio 1", "bloom"],
+};
+
+const canvas = document.getElementById("c");
+const params = new URLSearchParams(location.search);
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coarse = matchMedia("(pointer: coarse)").matches;
+const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+const state = { style: params.get("style") || "glass", mol: params.get("mol") || "temozolomide",
+                theme: params.get("theme") || "dark", paused: reduceMotion, ladder: false, dropped: [] };
+document.documentElement.dataset.theme = state.theme;
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
+renderer.info.autoReset = false; // the passes render several times a frame, I want the total
+let pixelRatio = Math.min(devicePixelRatio || 1, 2);
+renderer.setPixelRatio(pixelRatio);
+
+const scene = new THREE.Scene();
+const depthScene = new THREE.Scene(); // depth of field only sees the molecule
+const camera = new THREE.PerspectiveCamera(FOV, 1, 1, 600);
+const pivot = new THREE.Group();
+const spinner = new THREE.Group();
+pivot.add(spinner);
+scene.add(pivot);
+const depthPivot = new THREE.Group();
+const depthSpinner = new THREE.Group();
+depthPivot.add(depthSpinner);
+depthScene.add(depthPivot);
+pivot.rotation.set(0.2, 0, -0.12);
+
+// a studio with cool and warm strip lights, that is all the glass and the jewels have to reflect
+function buildStudio(light) {
+  const room = new THREE.Scene();
+  room.add(new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16),
+    new THREE.MeshBasicMaterial({ color: light ? STUDIO_LIGHT : STUDIO_DARK, side: THREE.BackSide })));
+  const strip = (color, power, x, y, z, w, h) => {
+    const material = new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(power), side: THREE.DoubleSide });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), material);
+    mesh.position.set(x, y, z);
+    mesh.lookAt(0, 0, 0);
+    room.add(mesh);
+  };
+  if (light) {
+    strip(STRIP_DARK, 1, -22, 4, 14, 6, 44); // dark cards, glass on white needs dark edges to read
+    strip(STRIP_DARK, 1, 24, -2, 8, 5, 44);
+    strip(STRIP_COOL, 2, -6, 24, 16, 26, 6);
+    strip(STRIP_WARM, 2, 10, -22, 14, 26, 5);
+  } else {
+    strip(STRIP_COOL, 14, -20, 6, 16, 5, 40);
+    strip(STRIP_WARM, 10, 22, -4, 10, 4, 40);
+    strip(WHITE, 8, 2, 26, 12, 22, 4);
+    strip(STRIP_COOL, 3, 0, -4, -30, 30, 3);
+  }
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const texture = pmrem.fromScene(room, 0.012).texture;
+  pmrem.dispose();
+  return texture;
+}
+function buildLacquerStudio() {
+  const room = new THREE.Scene();
+  room.add(new THREE.Mesh(new THREE.SphereGeometry(50, 32, 16), new THREE.MeshBasicMaterial({ color: STUDIO_GRID_LIGHT, side: THREE.BackSide })));
+  const strip = (color, power, x, y, z, w, h) => {
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(color).multiplyScalar(power), side: THREE.DoubleSide }));
+    mesh.position.set(x, y, z);
+    mesh.lookAt(0, 0, 0);
+    room.add(mesh);
+  };
+  strip(WHITE, 12, -16, 16, 18, 16, 8);
+  strip(STRIP_COOL, 8, 22, 2, 12, 5, 34);
+  strip(WHITE, 4, 0, -24, 10, 30, 4);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  const texture = pmrem.fromScene(room, 0.01).texture;
+  pmrem.dispose();
+  return texture;
+}
+const studios = { dark: buildStudio(false), light: buildStudio(true), lacquer: buildLacquerStudio() };
+
+// sharp lights for the jewel highlights
+const keyLight = new THREE.DirectionalLight(WHITE, 0);
+keyLight.position.set(-6, 10, 12);
+const fillLight = new THREE.DirectionalLight(ICE, 0);
+fillLight.position.set(9, -3, 6);
+scene.add(keyLight, fillLight);
+
+function softTexture() {
+  const size = 128;
+  const c = Object.assign(document.createElement("canvas"), { width: size, height: size });
+  const ctx = c.getContext("2d");
+  const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.5, "rgba(255,255,255,0.7)");
+  g.addColorStop(0.85, "rgba(255,255,255,0.25)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+const soft = softTexture();
+
+function seeded(seed) {
+  return () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+}
+
+// the sky is built per style
+const sky = new THREE.Group();
+scene.add(sky);
+let floaters = [];
+function buildSky() {
+  sky.clear();
+  floaters = [];
+  const cfg = STYLES[state.style];
+  if (state.theme === "light" && !cfg.bokeh) return;
+  const random = seeded(11);
+  if (state.theme === "dark") {
+    const positions = new Float32Array(cfg.stars * 3);
+    for (let i = 0; i < cfg.stars; i++) positions.set([(random() - 0.5) * 300, (random() - 0.5) * 300, -70 - random() * 160], i * 3);
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    sky.add(new THREE.Points(g, new THREE.PointsMaterial({ color: WHITE, size: 0.7, map: soft, transparent: true, opacity: cfg.starOpacity, depthWrite: false })));
+  }
+  const tones = Object.values(TINTS.jewel);
+  for (let i = 0; i < cfg.bokeh; i++) {
+    const m = new THREE.SpriteMaterial({ map: soft, color: tones[i % tones.length], transparent: true, depthWrite: false,
+      opacity: (state.theme === "dark" ? 0.5 : 0.2) * (0.5 + random() * 0.5),
+      blending: state.theme === "dark" ? THREE.AdditiveBlending : THREE.NormalBlending });
+    const s = new THREE.Sprite(m);
+    const size = 0.8 + random() ** 2 * 6; // many small, a few big
+    s.scale.set(size, size, 1);
+    s.position.set((random() - 0.5) * 46, (random() - 0.35) * 44, -6 - random() * 34);
+    s.userData = { y: s.position.y, x: s.position.x, phase: random() * 6.28, speed: 0.15 + random() * 0.3 };
+    floaters.push(s);
+    sky.add(s);
+  }
+}
+
+// hologram shaders. instancing by hand, a ShaderMaterial gets the matrix but does not apply it itself
+const RIM_VERTEX = `
+  attribute float aDist;
+  varying vec3 vN; varying vec3 vV; varying float vD;
+  void main() {
+    vD = aDist;
+    vec4 p = instanceMatrix * vec4(position, 1.0);
+    vec4 mv = modelViewMatrix * p;
+    vN = normalize(normalMatrix * mat3(instanceMatrix) * normal);
+    vV = normalize(-mv.xyz);
+    gl_Position = projectionMatrix * mv;
+  }`;
+const RIM_FRAGMENT = `
+  uniform vec3 uBody; uniform vec3 uRim; uniform float uGain; uniform float uBase; uniform float uPower;
+  uniform float uFront; uniform float uFlare; uniform float uBand; uniform float uBandWidth; uniform float uHot; uniform float uStrike;
+  uniform float uStraight; uniform float uHalo;
+  varying vec3 vN; varying vec3 vV; varying float vD;
+  void main() {
+    float facing = abs(dot(normalize(vN), normalize(vV)));
+    float f = pow(1.0 - facing, uPower);
+    // a band makes a tube of light around the atom instead of a soft edge
+    if (uBand > 0.0) { float b = (facing - uBand) / uBandWidth; f = exp(-b * b); }
+    if (uHalo > 0.0) f = pow(facing, uPower) * uHalo; // strongest at the atom, nothing at its edge
+    float x = (vD - uFront) / 0.7;
+    float gain = (uGain + uFlare * exp(-x * x)) * uStrike; // the rim flares as the pulse passes this atom
+    vec3 light = mix(uRim, vec3(1.0), uHot * smoothstep(0.55, 1.0, f)); // white hot in the middle of the tube
+    // on white the colour stays pure and only the alpha fades, or the edges turn grey
+    vec3 painted = uStraight > 0.5 ? light * min(gain, 1.0) : light * f * gain;
+    gl_FragColor = vec4(uBody + painted, uBase + f * (1.0 - uBase));
+  }`;
+const TUBE_VERTEX = `
+  attribute float aDist; attribute vec3 aFrom; attribute vec3 aTo;
+  varying float vD; varying float vT; varying vec3 vFrom; varying vec3 vTo; varying vec3 vN; varying vec3 vV;
+  void main() {
+    vT = position.y + 0.5;
+    vD = aDist + vT; // how far along the molecule this bit of tube lies, in bonds
+    vFrom = aFrom; vTo = aTo;
+    vec4 mv = modelViewMatrix * instanceMatrix * vec4(position, 1.0);
+    vN = normalMatrix * mat3(instanceMatrix) * normal;
+    vV = -mv.xyz;
+    gl_Position = projectionMatrix * mv;
+  }`;
+const TUBE_FRAGMENT = `
+  uniform vec3 uColor; uniform vec3 uPulse; uniform float uFront; uniform float uBase; uniform float uTinted; uniform float uHot; uniform float uStrike; uniform float uReplace;
+  varying float vD; varying float vT; varying vec3 vFrom; varying vec3 vTo; varying vec3 vN; varying vec3 vV;
+  void main() {
+    float x = (vD - uFront) / 0.55;
+    // a neon bond runs from the colour of one atom to the colour of the other
+    vec3 color = mix(uColor, mix(vFrom, vTo, smoothstep(0.3, 0.7, vT)), uTinted);
+    float facing = abs(dot(normalize(vN), normalize(vV)));
+    color = mix(color, vec3(1.0), uHot * smoothstep(0.75, 1.0, facing));
+    float wave = exp(-x * x);
+    vec3 lit = uReplace > 0.5 ? mix(color * uBase, uPulse, wave) : color * uBase + uPulse * wave;
+    gl_FragColor = vec4(lit * uStrike, 1.0);
+  }`;
+const holoUniforms = { uFront: { value: -100 }, uStrike: { value: 1 } };
+
+function atomMaterial(element) {
+  const cfg = STYLES[state.style];
+  const dark = state.theme === "dark";
+  if (cfg.atoms === "glass") {
+    const color = new THREE.Color(TINTS.glass[element] ?? TINTS.glass.other);
+    return new THREE.MeshPhysicalMaterial({
+      color: color.clone().lerp(new THREE.Color(WHITE), 0.7),
+      roughness: 0.03, metalness: 0, transmission: 1, thickness: 0.7, ior: 1.5,
+      attenuationColor: color, attenuationDistance: dark ? 1.1 : 0.9,
+      // on a dark page glass only shows what it reflects, this inner light gives it a body
+      emissive: color, emissiveIntensity: dark ? 0.22 : 0,
+      iridescence: 0.5, iridescenceIOR: 1.3, iridescenceThicknessRange: [180, 420],
+      specularIntensity: 1, envMapIntensity: dark ? 2.4 : 1.2,
+    });
+  }
+  if (cfg.atoms === "jewel") {
+    const tint = !dark && element === "N" ? JEWEL_N_ON_WHITE : TINTS.jewel[element] ?? TINTS.jewel.other;
+    return new THREE.MeshPhysicalMaterial({
+      color: tint, roughness: 0.14, metalness: 0.12, clearcoat: 1, clearcoatRoughness: 0.04,
+      envMapIntensity: dark ? 0.8 : 0.7,
+    });
+  }
+  if (cfg.atoms === "runner") {
+    // the realism of C, in a dark lacquer. the colour of the element is in the rim of light around it
+    return new THREE.MeshPhysicalMaterial({
+      color: GRID_BODY, roughness: 0.12, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: dark ? 1.2 : 0.5,
+    });
+  }
+  if (cfg.atoms === "neon") {
+    return rimMaterial(element, { power: 2, body: dark ? 0.015 : 0.04, base: dark ? 0.18 : 0.05, gain: dark ? 1.5 : 1, flare: dark ? 0.8 : 0.4,
+                                  additive: dark, band: 0.3, bandWidth: dark ? 0.1 : 0.16, hot: dark ? 0.55 : 0, pure: true });
+  }
+  return rimMaterial(element, { power: 2.6, body: dark ? 0.05 : 0.5, base: dark ? 0.5 : 0.14,
+                                gain: dark ? 1.7 : 1.5, flare: 0, additive: false });
+}
+
+function shellMaterial(element, shell) {
+  const dark = state.theme === "dark";
+  const pick = (v) => (dark ? v[0] : v[1]);
+  return rimMaterial(element, { power: shell.power, body: shell.body, base: dark ? shell.base : shell.base * 0.5,
+                                gain: pick(shell.gain), flare: pick(shell.flare), additive: shell.additive && dark,
+                                band: shell.band, bandWidth: shell.bandWidth, hot: dark ? shell.hot : 0, pure: shell.pure, straight: shell.pure && !dark });
+}
+
+function neonTint(element) {
+  const cfg = STYLES[state.style];
+  const table = state.theme === "dark" ? cfg.tints : cfg.lightTints;
+  return table ? table[element] ?? table.other : null;
+}
+
+function rimMaterial(element, { power, body, base, gain, flare, additive, band = 0, bandWidth = 1, hot = 0, pure = false, straight = false, halo = 0 }) {
+  const dark = state.theme === "dark";
+  const tint = pure ? neonTint(element) : TINTS.hologram[element] ?? TINTS.hologram.other;
+  const rim = pure ? new THREE.Color(tint) : new THREE.Color(dark ? ICE : LIGHT_HOLO).lerp(new THREE.Color(dark ? tint : LIGHT_HOLO), 0.45);
+  return new THREE.ShaderMaterial({
+    vertexShader: RIM_VERTEX, fragmentShader: RIM_FRAGMENT, transparent: true, depthWrite: false,
+    blending: additive ? THREE.AdditiveBlending : THREE.NormalBlending,
+    side: halo ? THREE.BackSide : THREE.FrontSide, // a halo shows around the atom, never over it
+    uniforms: {
+      uBody: { value: new THREE.Color(tint).multiplyScalar(body) },
+      uRim: { value: rim }, uGain: { value: gain }, uBase: { value: base }, uPower: { value: power },
+      uFront: holoUniforms.uFront, uFlare: { value: flare }, uBand: { value: band }, uBandWidth: { value: bandWidth },
+      uHot: { value: hot }, uStrike: holoUniforms.uStrike, uStraight: { value: straight ? 1 : 0 }, uHalo: { value: halo },
+    },
+  });
+}
+
+function bondMaterial() {
+  const dark = state.theme === "dark";
+  const kind = STYLES[state.style];
+  if (kind.atoms === "glass") return new THREE.MeshPhysicalMaterial({ color: dark ? BOND_METAL : LIGHT_HOLO, metalness: 0.9, roughness: 0.2, envMapIntensity: 1.2 });
+  if (kind.bonds === "metal") return new THREE.MeshPhysicalMaterial({ color: BOND_JEWEL, metalness: 1, roughness: 0.22 });
+  const color = new THREE.Color(dark ? ICE : LIGHT_HOLO);
+  return new THREE.ShaderMaterial({
+    vertexShader: TUBE_VERTEX, fragmentShader: TUBE_FRAGMENT,
+    uniforms: { uColor: { value: color }, uPulse: { value: new THREE.Color(dark ? WHITE : TINTS.jewel.Cl).multiplyScalar(dark ? (kind.tints ? 1 : 1.6) : 1) },
+                uFront: holoUniforms.uFront, uBase: { value: kind.floor && dark ? 1.9 : kind.tints ? (dark ? 1.35 : 1) : dark ? 1.05 : 0.9 },
+                uTinted: { value: kind.tints ? 1 : 0 }, uHot: { value: kind.hot && dark ? 0.6 : 0 }, uStrike: holoUniforms.uStrike, uReplace: { value: kind.floor && !dark ? 1 : 0 } },
+  });
+}
+
+// the molecule: real coordinates, only drawn differently
+const data = {};
+let mol = null;
+
+// a rigid turn, so the coordinates stay the real ones: longest axis sideways, flattest side to the viewer.
+// a flat ring system seen edge on is just a line
+function faceTheCamera(atoms) {
+  const c = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  for (const { home } of atoms) {
+    const p = home.toArray();
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) c[i][j] += p[i] * p[j];
+  }
+  const axis = (seed, away) => {
+    let v = new THREE.Vector3(...seed);
+    for (let n = 0; n < 40; n++) {
+      const a = v.toArray();
+      v = new THREE.Vector3(...c.map((row) => row[0] * a[0] + row[1] * a[1] + row[2] * a[2]));
+      for (const other of away) v.addScaledVector(other, -v.dot(other));
+      v.normalize();
+    }
+    return v;
+  };
+  const x = axis([1, 0.3, 0.2], []);
+  const y = axis([0.2, 1, 0.3], [x]);
+  const z = new THREE.Vector3().crossVectors(x, y);
+  const turn = new THREE.Matrix4().makeBasis(x, y, z).invert();
+  atoms.forEach((a) => a.home.applyMatrix4(turn));
+}
+
+function prepare(raw) {
+  const keep = new Map();
+  raw.atoms.forEach((a, i) => { if (a[0] !== "H") keep.set(i, keep.size); });
+  const atoms = [...keep.keys()].map((i) => ({ element: raw.atoms[i][0], home: new THREE.Vector3(raw.atoms[i][1], raw.atoms[i][2], raw.atoms[i][3]) }));
+  const bonds = raw.bonds.filter(([i, j]) => keep.has(i) && keep.has(j)).map(([i, j, order]) => ({ i: keep.get(i), j: keep.get(j), order }));
+  const unit = bonds.reduce((sum, b) => sum + atoms[b.i].home.distanceTo(atoms[b.j].home), 0) / bonds.length;
+  faceTheCamera(atoms);
+
+  // bounding sphere. a large molecule is framed on its busiest region and the rest runs out of the picture
+  const radiusAll = Math.max(...atoms.map((a) => a.home.length())) + unit * 0.3;
+  const frameRadius = Math.min(radiusAll, CROP_RADIUS);
+  let centre = new THREE.Vector3();
+  if (radiusAll > CROP_RADIUS) {
+    let best = -1;
+    for (const candidate of atoms) {
+      let score = 0;
+      for (const a of atoms) {
+        if (a.home.distanceTo(candidate.home) < CROP_RADIUS) score += a.element === "C" ? 1 : 2.5; // the chemistry is in the hetero atoms
+      }
+      if (score > best) { best = score; centre = candidate.home.clone(); }
+    }
+  }
+  atoms.forEach((a) => a.home.sub(centre));
+
+  // how many bonds each atom is from the centre, the pulse walks along this
+  const steps = atoms.map(() => Infinity);
+  let start = 0;
+  atoms.forEach((a, i) => { if (a.home.length() < atoms[start].home.length()) start = i; });
+  steps[start] = 0;
+  for (let round = 0; round < atoms.length; round++) {
+    for (const b of bonds) {
+      steps[b.j] = Math.min(steps[b.j], steps[b.i] + 1);
+      steps[b.i] = Math.min(steps[b.i], steps[b.j] + 1);
+    }
+  }
+  const random = seeded(raw.name.length * 97 + 3);
+  atoms.forEach((a) => {
+    const dir = new THREE.Vector3(random() - 0.5, random() - 0.5, random() - 0.5).normalize();
+    a.cloud = dir.multiplyScalar(frameRadius * (1.4 + random() * 1.6));
+    a.delay = random() * 0.35;
+    a.phase = random() * 6.28;
+  });
+  return { name: raw.name, atoms, bonds, unit, frameRadius, radiusAll, steps, maxSteps: Math.max(...steps.filter(Number.isFinite)) };
+}
+
+const matrix = new THREE.Matrix4();
+const v1 = new THREE.Vector3();
+const v2 = new THREE.Vector3();
+const dir = new THREE.Vector3();
+const up = new THREE.Vector3(0, 1, 0);
+const quat = new THREE.Quaternion();
+const scale = new THREE.Vector3();
+
+function clearGroup(group) {
+  for (const child of [...group.children]) {
+    group.remove(child);
+    child.material?.dispose?.();
+  }
+}
+
+function buildMolecule() {
+  clearGroup(spinner);
+  clearGroup(depthSpinner);
+  const segments = coarse ? 32 : 48;
+  const sphere = new THREE.SphereGeometry(1, segments, Math.round(segments * 0.7));
+  const byElement = new Map();
+  mol.atoms.forEach((a, i) => {
+    if (!byElement.has(a.element)) byElement.set(a.element, []);
+    byElement.get(a.element).push(i);
+  });
+  const cfg = STYLES[state.style];
+  const withSteps = (list) => {
+    const geometry = sphere.clone();
+    geometry.setAttribute("aDist", new THREE.InstancedBufferAttribute(Float32Array.from(list, (i) => mol.steps[i]), 1));
+    return geometry;
+  };
+  for (const [element, list] of byElement) {
+    const mesh = new THREE.InstancedMesh(withSteps(list), atomMaterial(element), list.length);
+    mesh.frustumCulled = false;
+    const shell = cfg.shell ? new THREE.InstancedMesh(withSteps(list), shellMaterial(element, cfg.shell), list.length) : null;
+    const r = (ATOM_FRACTION[element] ?? ATOM_FRACTION.other) * mol.unit;
+    list.forEach((atomIndex, slot) => {
+      Object.assign(mol.atoms[atomIndex], { mesh, slot, r, shell });
+    });
+    spinner.add(mesh);
+    const halo = cfg.lightHalo && state.theme === "light"
+      ? new THREE.InstancedMesh(withSteps(list), rimMaterial(element, { power: cfg.lightHalo.power, body: 0, base: 0, gain: 1, flare: 0, additive: false, pure: true, straight: true, halo: cfg.lightHalo.strength }), list.length)
+      : null;
+    list.forEach((atomIndex) => { mol.atoms[atomIndex].halo = halo; });
+    if (halo) {
+      halo.frustumCulled = false;
+      halo.renderOrder = 1.5;
+      spinner.add(halo);
+    }
+    if (shell) {
+      shell.frustumCulled = false;
+      shell.renderOrder = 2; // after the jewel inside it
+      spinner.add(shell);
+    }
+    const outer = shell ?? mesh; // focus on the outside of the atom
+    const copy = new THREE.InstancedMesh(sphere, new THREE.MeshBasicMaterial(), list.length);
+    copy.instanceMatrix = outer.instanceMatrix;
+    copy.frustumCulled = false;
+    depthSpinner.add(copy);
+  }
+
+  // a double bond is two thin tubes next to each other. each tube runs from the atom nearer the centre outwards
+  mol.tubes = [];
+  const bondScale = cfg.bondScale ?? 1;
+  for (const b of mol.bonds) {
+    const [from, to] = mol.steps[b.i] <= mol.steps[b.j] ? [b.i, b.j] : [b.j, b.i];
+    if (b.order < 2) {
+      mol.tubes.push({ from, to, side: 0, radius: BOND_FRACTION * bondScale * mol.unit, dist: mol.steps[from] });
+    } else {
+      mol.tubes.push({ from, to, side: 1, radius: DOUBLE_FRACTION * bondScale * mol.unit, dist: mol.steps[from] });
+      mol.tubes.push({ from, to, side: -1, radius: DOUBLE_FRACTION * bondScale * mol.unit, dist: mol.steps[from] });
+    }
+  }
+  const tube = new THREE.CylinderGeometry(1, 1, 1, coarse ? 8 : 12, 8);
+  tube.setAttribute("aDist", new THREE.InstancedBufferAttribute(Float32Array.from(mol.tubes, (t) => t.dist), 1));
+  const ends = (key) => new THREE.InstancedBufferAttribute(Float32Array.from(mol.tubes.flatMap((t) => {
+    const hex = cfg.tints ? neonTint(mol.atoms[t[key]].element) : WHITE;
+    return new THREE.Color(hex).toArray();
+  })), 3);
+  tube.setAttribute("aFrom", ends("from"));
+  tube.setAttribute("aTo", ends("to"));
+  mol.tubeMesh = new THREE.InstancedMesh(tube, bondMaterial(), mol.tubes.length);
+  mol.tubeMesh.frustumCulled = false;
+  spinner.add(mol.tubeMesh);
+  const tubeCopy = new THREE.InstancedMesh(tube, new THREE.MeshBasicMaterial(), mol.tubes.length);
+  tubeCopy.instanceMatrix = mol.tubeMesh.instanceMatrix;
+  tubeCopy.frustumCulled = false;
+  depthSpinner.add(tubeCopy);
+  buildStage();
+}
+
+// what stands around the molecule: the haze behind a sign, or the floor of light with its reflection
+const stage = new THREE.Group();
+scene.add(stage);
+const mirror = { outer: new THREE.Group(), pivot: new THREE.Group(), spinner: new THREE.Group() };
+mirror.outer.add(mirror.pivot);
+mirror.pivot.add(mirror.spinner);
+scene.add(mirror.outer);
+let floorLines = null;
+
+function buildStage() {
+  stage.clear();
+  mirror.spinner.clear();
+  mirror.outer.visible = false;
+  floorLines = null;
+  const cfg = STYLES[state.style];
+  const dark = state.theme === "dark";
+  const size = mol.frameRadius;
+  if (cfg.haze && dark) {
+    const haze = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: HAZE, transparent: true, opacity: 0.12, depthWrite: false, blending: THREE.AdditiveBlending }));
+    haze.scale.set(size * 6, size * 6, 1);
+    haze.position.z = -size * 3;
+    stage.add(haze);
+  }
+  if (!cfg.floor) return;
+
+  const lowest = Math.min(...mol.atoms.map((a) => a.home.y));
+  const floorY = Math.max(lowest - 0.9, -size * 1.5); // just under the molecule, so its reflection shows above the title
+  const distance = camera.userData.distance ?? size * 6;
+
+  // the reflection is the same molecule again, mirrored in the floor
+  mirror.outer.position.y = 2 * floorY;
+  mirror.outer.scale.y = -1;
+  mirror.outer.visible = !has("reflection");
+  for (const child of spinner.children) {
+    const copy = new THREE.InstancedMesh(child.geometry, child.material, child.count);
+    copy.instanceMatrix = child.instanceMatrix;
+    copy.frustumCulled = false;
+    copy.renderOrder = -1; // before the floor, so the floor dims it
+    mirror.spinner.add(copy);
+  }
+
+  const plane = new THREE.Mesh(new THREE.PlaneGeometry(1400, 1400), new THREE.MeshBasicMaterial({
+    color: dark ? FLOOR : FLOOR_ON_WHITE, transparent: true, opacity: dark ? 0.66 : 0.74, depthWrite: false,
+  }));
+  plane.rotation.x = -Math.PI / 2;
+  plane.position.y = floorY;
+  plane.renderOrder = 1;
+  stage.add(plane);
+
+  // long lines of light across the floor, they come slowly towards the viewer
+  const random = seeded(23);
+  const count = 11;
+  const lineColor = dark ? new THREE.Color(GRID_TINTS.C).multiplyScalar(0.95) : new THREE.Color(LINE_ON_WHITE).lerp(new THREE.Color(WHITE), 0.25);
+  const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 0.001, 1), new THREE.MeshBasicMaterial({ color: lineColor }), count);
+  mesh.frustumCulled = false;
+  floorLines = { mesh, y: floorY, near: distance * 0.3, far: -distance * 2.4, distance,
+                 lines: Array.from({ length: count }, (_, i) => ({ u: i / count, yaw: (random() - 0.5) * (random() < 0.25 ? 0.22 : 0.03) })) };
+  stage.add(mesh);
+  placeFloorLines(0);
+
+  // a far away city at the horizon, as soft lights
+  {
+    for (let i = 0; i < 34; i++) {
+      const light = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: dark ? (random() < 0.4 ? WHITE : GRID_TINTS.C) : LINE_ON_WHITE, transparent: true,
+        opacity: (0.25 + random() * 0.35) * (dark ? 1 : 0.45), depthWrite: false, blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending }));
+      const scale = size * (0.05 + random() * 0.14);
+      light.scale.set(scale * (1 + random() * 1.6), scale, 1);
+      // mostly to the left, the molecule's side stays clean
+      light.position.set(-size * 14 + random() ** 1.4 * size * 28, floorY + random() ** 2 * size * 1.5, -distance * 3);
+      stage.add(light);
+    }
+    const haze = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: dark ? HAZE : SKY_ON_WHITE, transparent: true, opacity: dark ? 0.14 : 0.3, depthWrite: false, blending: dark ? THREE.AdditiveBlending : THREE.NormalBlending }));
+    haze.scale.set(size * 12, size * 8, 1);
+    haze.position.set(size * 1.5, 0, -size * 4);
+    stage.add(haze);
+  }
+}
+
+function placeFloorLines(t) {
+  if (!floorLines) return;
+  const { mesh, y, near, far, distance, lines } = floorLines;
+  // about the same thickness on screen at any depth. a line thinner than a pixel breaks up into dashes
+  const pixelsPerUnit = canvas.clientHeight / 2 / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+  lines.forEach((line, i) => {
+    const u = (line.u + t * 0.012) % 1;
+    const z = far + (near - far) * u ** 1.5; // a little closer together towards the horizon
+    quat.setFromAxisAngle(up, line.yaw);
+    v1.set(0, y + 0.01, z);
+    const depth = distance - z;
+    const thickness = (i % 4 === 0 ? 1.5 : 0.8) * depth * depth / (pixelsPerUnit * Math.abs(y));
+    scale.set(900, 1, thickness);
+    mesh.setMatrixAt(i, matrix.compose(v1, quat, scale));
+  });
+  mesh.instanceMatrix.needsUpdate = true;
+}
+
+// positions at entrance progress p. p = 1 is exactly the real structure
+function placeAtoms(p) {
+  const cfg = STYLES[state.style];
+  for (const a of mol.atoms) {
+    const local = THREE.MathUtils.clamp((p - a.delay) / (1 - a.delay), 0, 1);
+    const eased = 1 - (1 - local) ** 4;
+    a.now = (a.now ?? new THREE.Vector3()).copy(a.cloud).lerp(a.home, eased);
+    const r = a.r * (0.22 + 0.78 * eased);
+    const inner = r * (cfg.coreScale ?? 1);
+    a.mesh.setMatrixAt(a.slot, matrix.makeScale(inner, inner, inner).setPosition(a.now));
+    a.mesh.instanceMatrix.needsUpdate = true;
+    if (a.halo) {
+      const glow = r * cfg.lightHalo.scale;
+      a.halo.setMatrixAt(a.slot, matrix.makeScale(glow, glow, glow).setPosition(a.now));
+      a.halo.instanceMatrix.needsUpdate = true;
+    }
+    if (a.shell) {
+      const outer = r * cfg.shell.scale;
+      a.shell.setMatrixAt(a.slot, matrix.makeScale(outer, outer, outer).setPosition(a.now));
+      a.shell.instanceMatrix.needsUpdate = true;
+    }
+  }
+  // the bonds only grow once the atoms are nearly home
+  const grow = THREE.MathUtils.smoothstep(p, 0.72, 1);
+  mol.tubes.forEach((t, i) => {
+    v1.copy(mol.atoms[t.from].now);
+    v2.copy(mol.atoms[t.to].now);
+    dir.subVectors(v2, v1);
+    const length = dir.length();
+    dir.normalize();
+    quat.setFromUnitVectors(up, dir);
+    if (t.side) {
+      v1.set(dir.y, -dir.x, 0);
+      if (v1.lengthSq() < 1e-4) v1.set(1, 0, 0);
+      v1.normalize().multiplyScalar(t.side * DOUBLE_GAP_FRACTION * (cfg.bondScale ?? 1) * mol.unit);
+    } else {
+      v1.set(0, 0, 0);
+    }
+    // a neon tube stops at the ring of the atom, it does not run on through the hollow middle
+    const gapFrom = cfg.trim ? mol.atoms[t.from].r * 0.95 : 0;
+    const gapTo = cfg.trim ? mol.atoms[t.to].r * 0.95 : 0;
+    const shown = Math.max(length - gapFrom - gapTo, 1e-3);
+    v2.copy(mol.atoms[t.from].now).addScaledVector(dir, gapFrom + shown / 2).add(v1);
+    scale.set(t.radius * grow + 1e-4, shown, t.radius * grow + 1e-4);
+    mol.tubeMesh.setMatrixAt(i, matrix.compose(v2, quat, scale));
+  });
+  mol.tubeMesh.instanceMatrix.needsUpdate = true;
+}
+
+// passes
+const target = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: coarse ? 2 : 4 });
+const composer = new EffectComposer(renderer, target);
+composer.addPass(new RenderPass(scene, camera));
+const dof = new BokehPass(depthScene, camera, { focus: 40, aperture: 0.001, maxblur: 0.02 });
+// sharp front, soft back. the sky has no depth of its own, so it borrows the blur of what lies next to it,
+// otherwise a soft atom gets a hard outline against the stars
+dof.materialBokeh.fragmentShader = dof.materialBokeh.fragmentShader.replace(
+  "float factor = ( focus + viewZ );",
+  `float rawDepth = getDepth( vUv );
+   float factor = min( 0.0, focus + viewZ );
+   if ( rawDepth > 0.9999 ) {
+     factor = 0.0;
+     for ( int k = 0; k < 8; k++ ) {
+       float a = float( k ) * 0.7854;
+       vec2 probe = vUv + vec2( cos( a ), sin( a ) * aspect ) * maxblur * 0.4;
+       float d = getDepth( probe );
+       if ( d <= 0.9999 ) factor = min( factor, min( 0.0, focus + getViewZ( d ) ) );
+     }
+   }`,
+);
+composer.addPass(dof);
+// only the hologram glow goes over 1 in this HDR buffer, so a threshold of 1 makes the bloom selective
+const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.28, 0.45, 1);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+function has(step) { return state.dropped.includes(step); }
+
+function applyQuality() {
+  const dark = state.theme === "dark";
+  dof.enabled = !has("depth of field");
+  mirror.outer.visible = Boolean(STYLES[state.style].floor) && !has("reflection");
+  bloom.enabled = Boolean(STYLES[state.style].bloom) && dark && !has("bloom");
+  renderer.transmissionResolutionScale = has("transmission half") ? 0.5 : 1;
+  const target = has("ratio 1") ? 1 : has("ratio 1.5") ? 1.5 : 2;
+  const wanted = Math.min(devicePixelRatio || 1, target);
+  if (wanted !== pixelRatio) {
+    pixelRatio = wanted;
+    renderer.setPixelRatio(pixelRatio);
+    composer.setPixelRatio(pixelRatio);
+    resize();
+  }
+  if (state.style === "glass" && has("fake glass")) {
+    spinner.traverse((o) => {
+      if (o.material?.transmission) {
+        o.material.transmission = 0;
+        o.material.transparent = true;
+        o.material.opacity = 0.62;
+        o.material.needsUpdate = true;
+      }
+    });
+  }
+}
+
+// the teal night of H, brightest at the horizon. the bottom is the page colour so the hero fades into the page
+let backdrop = null;
+function hazeBackdrop() {
+  if (backdrop) return backdrop;
+  const c = Object.assign(document.createElement("canvas"), { width: 4, height: 256 });
+  const ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0, BACK_TOP);
+  g.addColorStop(0.5, BACK_HORIZON);
+  g.addColorStop(0.62, FLOOR);
+  g.addColorStop(1, css("--hero"));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 4, 256);
+  backdrop = new THREE.CanvasTexture(c);
+  backdrop.colorSpace = THREE.SRGBColorSpace;
+  return backdrop;
+}
+
+// the same night turned to day: white, a pale ice horizon, white again where it meets the page
+let paleSky = null;
+function paleBackdrop() {
+  if (paleSky) return paleSky;
+  const c = Object.assign(document.createElement("canvas"), { width: 4, height: 256 });
+  const ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0, WHITE);
+  g.addColorStop(0.42, WHITE);
+  g.addColorStop(0.56, SKY_ON_WHITE);
+  g.addColorStop(0.62, FLOOR_ON_WHITE);
+  g.addColorStop(1, WHITE);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 4, 256);
+  paleSky = new THREE.CanvasTexture(c);
+  paleSky.colorSpace = THREE.SRGBColorSpace;
+  return paleSky;
+}
+
+function applyStyle() {
+  const dark = state.theme === "dark";
+  document.documentElement.dataset.theme = state.theme;
+  scene.background = new THREE.Color(css("--hero"));
+  const cfg = STYLES[state.style];
+  const jewelAtoms = cfg.atoms === "jewel";
+  scene.environment = cfg.atoms === "rim" || cfg.atoms === "neon" ? null : cfg.floor && !dark ? studios.lacquer : studios[state.theme];
+  if (cfg.floor) scene.background = dark ? hazeBackdrop() : paleBackdrop();
+  document.querySelector(".hero").dataset.scrim = cfg.floor && !dark ? "tall" : "";
+  bloom.strength = cfg.bloomStrength ?? 0.28;
+  bloom.radius = cfg.bloomRadius ?? 0.45;
+  // bloom goes by brightness and a pure red counts as dim, so neon needs a low threshold or only the blues would glow
+  bloom.threshold = cfg.bloomThreshold ?? 1;
+  holoUniforms.uStrike.value = 1;
+  scene.environmentIntensity = 1;
+  keyLight.intensity = jewelAtoms ? (dark ? 2.2 : 1.8) : cfg.atoms === "runner" ? 0.9 : 0;
+  fillLight.intensity = jewelAtoms ? 1.1 : 0;
+  // on white, tone mapping would grey the page, so only dark mode has it
+  renderer.toneMapping = dark ? THREE.NeutralToneMapping : THREE.NoToneMapping;
+  state.dropped = [];
+  pixelRatio = Math.min(devicePixelRatio || 1, 2);
+  renderer.setPixelRatio(pixelRatio);
+  composer.setPixelRatio(pixelRatio);
+  buildSky();
+  if (mol) {
+    resize();
+    buildMolecule();
+    placeAtoms(entrance.active ? entrance.p : 1);
+  }
+  applyQuality();
+  frames.length = 0;
+  paintButtons();
+}
+
+function resize() {
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  composer.setSize(w, h);
+  if (!mol) return;
+  // the same on-screen size for every molecule: the frame radius always takes the same share of the hero
+  const cfg = STYLES[state.style];
+  const fillPx = Math.min(w * 0.56, h * (cfg.fill ?? 0.4));
+  const tan = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+  const distance = mol.frameRadius / (tan * (fillPx / (h / 2)));
+  camera.aspect = w / h;
+  camera.near = Math.max(1, distance - mol.radiusAll * 2.2);
+  camera.far = distance + 280;
+  camera.userData.distance = distance;
+  camera.setViewOffset(w, h, 0, h * (cfg.lift ?? 0.1), w, h);
+  camera.updateProjectionMatrix();
+  const blur = cfg.blur * (state.theme === "light" ? 0.55 : 1); // soft atoms wash out on white
+  // the focus plane, from the front half (-0.45) to well behind the middle (more of the molecule is sharp)
+  const focusBack = cfg.focusBack ?? -0.45;
+  dof.materialBokeh.uniforms.focus.value = distance + mol.frameRadius * focusBack;
+  dof.materialBokeh.uniforms.aperture.value = blur / (mol.frameRadius * (1 - focusBack * 0.8));
+  dof.materialBokeh.uniforms.maxblur.value = blur;
+}
+
+// motion
+const entrance = { active: false, start: 0, p: 1 };
+function playEntrance() {
+  if (reduceMotion || params.get("entrance") === "0") {
+    entrance.active = false;
+    entrance.p = 1;
+    placeAtoms(1);
+    return;
+  }
+  entrance.active = true;
+  entrance.start = performance.now();
+  entrance.p = 0;
+}
+
+let velocity = 0;
+let dragAngle = 0;
+let swayClock = 0;
+let lastX = null;
+const parallax = { x: 0, y: 0, tx: 0, ty: 0 };
+canvas.addEventListener("pointerdown", (e) => { lastX = e.clientX; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener("pointermove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  parallax.tx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+  parallax.ty = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+  parallax.touched = performance.now();
+  if (lastX === null) return;
+  const dx = e.clientX - lastX;
+  lastX = e.clientX;
+  dragAngle += dx * 0.008;
+  velocity = dx * 0.008;
+});
+const release = () => { lastX = null; };
+canvas.addEventListener("pointerup", release);
+canvas.addEventListener("pointercancel", release);
+// tilting the phone also moves the view, where the browser allows it. plain http usually does not
+addEventListener("deviceorientation", (e) => {
+  if (e.gamma === null) return;
+  parallax.tx = THREE.MathUtils.clamp(e.gamma / 25, -1, 1);
+  parallax.ty = THREE.MathUtils.clamp((e.beta - 45) / 25, -1, 1);
+  parallax.touched = performance.now();
+});
+
+// measuring
+const frames = [];
+let lastNow = 0;
+let shownAt = 0;
+const hud = document.getElementById("hud");
+
+function ladderCheck() {
+  if (!state.ladder || frames.length < 3) return;
+  const total = frames.reduce((s, v) => s + v, 0);
+  if (total < 1500) return;
+  const average = total / frames.length;
+  frames.length = 0;
+  if (average > 26) {
+    const next = LADDERS[state.style].find((s) => !state.dropped.includes(s));
+    if (next) {
+      state.dropped.push(next);
+      applyQuality();
+    }
+  }
+}
+
+function paintHud(now) {
+  if (now - shownAt < 500) return;
+  shownAt = now;
+  const recent = frames.slice(-40);
+  const ms = recent.reduce((s, v) => s + v, 0) / (recent.length || 1);
+  const info = renderer.info.render;
+  hud.textContent = `${(1000 / ms).toFixed(0)} fps, ${ms.toFixed(1)} ms, ${info.calls} draws, ${(info.triangles / 1000).toFixed(0)}k tris, ratio ${pixelRatio}`
+    + (state.dropped.length ? `, off: ${state.dropped.join(", ")}` : "");
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (document.hidden || !mol) return;
+  const elapsed = lastNow ? now - lastNow : 16;
+  lastNow = now;
+  frames.push(elapsed);
+  if (frames.length > 240) frames.shift();
+  const dt = Math.min(elapsed, 100) / 1000;
+  const t = now / 1000;
+  renderer.info.reset();
+
+  if (entrance.active) {
+    entrance.p = Math.min((now - entrance.start) / (ENTRANCE_S * 1000), 1);
+    placeAtoms(entrance.p);
+    if (entrance.p >= 1) entrance.active = false;
+    // the lights strike like an old sign: dim while the atoms fly in, a few stutters, then on
+    const stutter = Math.sin(t * 61) + Math.sin(t * 37 + 1) > 0.25;
+    holoUniforms.uStrike.value = !STYLES[state.style].strike || !entrance.active ? 1 : entrance.p < 0.6 ? 0.25 : stutter ? 1 : 0.2;
+  }
+
+  if (!state.paused) {
+    swayClock += dt;
+    pivot.position.y = Math.sin(t * 0.7) * mol.frameRadius * 0.025;
+    pivot.rotation.z = -0.12 + Math.sin(t * 0.5) * 0.02;
+  }
+  dragAngle += velocity;
+  velocity *= 0.94;
+  spinner.rotation.y = dragAngle + Math.sin(swayClock * 0.3) * SWAY;
+  depthSpinner.rotation.copy(spinner.rotation);
+  depthPivot.rotation.copy(pivot.rotation);
+  depthPivot.position.copy(pivot.position);
+  if (mirror.outer.visible) {
+    mirror.pivot.rotation.copy(pivot.rotation);
+    mirror.pivot.position.copy(pivot.position);
+    mirror.spinner.rotation.copy(spinner.rotation);
+  }
+  if (floorLines && !state.paused) placeFloorLines(t);
+
+  for (const s of floaters) {
+    if (state.paused) break;
+    s.position.y = s.userData.y + Math.sin(t * s.userData.speed + s.userData.phase) * 1.4;
+    s.position.x = s.userData.x + Math.cos(t * s.userData.speed * 0.8 + s.userData.phase) * 1;
+  }
+
+  // the pulse walks out from the centre every few seconds
+  if (STYLES[state.style].pulse && mol) {
+    const front = ((t % PULSE_PERIOD_S) / PULSE_PERIOD_S) * (mol.maxSteps + 4) - 2;
+    holoUniforms.uFront.value = state.paused ? -100 : front;
+  }
+
+  // gentle parallax. without a pointer or a tilt it sways on its own
+  if (!state.paused) {
+    if (now - (parallax.touched ?? -1e9) > 3000) {
+      parallax.tx = Math.sin(t * 0.23) * 0.6;
+      parallax.ty = Math.cos(t * 0.17) * 0.4;
+    }
+    parallax.x += (parallax.tx - parallax.x) * 0.04;
+    parallax.y += (parallax.ty - parallax.y) * 0.04;
+  }
+  const d = camera.userData.distance ?? 40;
+  camera.position.set(parallax.x * mol.frameRadius * 0.16, -parallax.y * mol.frameRadius * 0.1, d);
+  camera.lookAt(0, 0, 0);
+
+  composer.render(dt);
+  ladderCheck();
+  paintHud(now);
+}
+
+// controls
+function paintButtons() {
+  document.querySelectorAll("[data-style]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.style === state.style));
+  document.getElementById("c").setAttribute("aria-label", `3D model of ${state.mol}, style ${state.style}`);
+  document.querySelectorAll("[data-mol]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.mol === state.mol));
+  document.querySelectorAll("[data-theme-to]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeTo === state.theme));
+  document.getElementById("pause").textContent = state.paused ? "Play" : "Pause";
+  document.getElementById("ladder").setAttribute("aria-pressed", state.ladder);
+  document.getElementById("name").textContent = state.mol;
+}
+
+async function loadMolecule(name) {
+  data[name] = data[name] ?? prepare(await (await fetch(`molecule-lab/${name}.json`)).json());
+  state.mol = name;
+  mol = data[name];
+  resize();
+  buildMolecule();
+  placeAtoms(0);
+  playEntrance();
+  paintButtons();
+}
+
+const setStyle = (style) => { state.style = style; applyStyle(); };
+const setTheme = (theme) => { state.theme = theme; applyStyle(); };
+
+document.querySelectorAll("[data-style]").forEach((b) => b.addEventListener("click", () => setStyle(b.dataset.style)));
+document.querySelectorAll("[data-mol]").forEach((b) => b.addEventListener("click", () => loadMolecule(b.dataset.mol)));
+document.querySelectorAll("[data-theme-to]").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.themeTo)));
+document.getElementById("replay").addEventListener("click", () => {
+  const was = reduceMotion;
+  if (!was) playEntrance();
+});
+document.getElementById("pause").addEventListener("click", () => { state.paused = !state.paused; paintButtons(); });
+document.getElementById("ladder").addEventListener("click", () => {
+  state.ladder = !state.ladder;
+  state.dropped = [];
+  applyStyle();
+});
+
+// every style on both molecules, full quality, the first second does not count because shaders compile then
+function sampleFrames(ms) {
+  return new Promise((resolve) => {
+    const out = [];
+    let last = performance.now();
+    const begin = last;
+    const step = (now) => {
+      out.push(now - last);
+      last = now;
+      if (now - begin < ms) requestAnimationFrame(step);
+      else resolve(out);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+// what a frame really costs. readPixels has to wait until the GPU is done, the frame clock alone can
+// look like a perfect 60 while the work piles up behind it
+function gpuCost(count = 30) {
+  const gl = renderer.getContext();
+  const pixel = new Uint8Array(4);
+  const times = [];
+  for (let i = 0; i < count; i++) {
+    const begin = performance.now();
+    renderer.info.reset();
+    composer.render(0);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+    times.push(performance.now() - begin);
+  }
+  times.sort((a, b) => a - b);
+  return +times[Math.floor(count / 2)].toFixed(1);
+}
+
+async function measureAll(seconds = 3) {
+  const before = { style: state.style, mol: state.mol, ladder: state.ladder, paused: state.paused };
+  state.ladder = false;
+  state.paused = false;
+  const rows = [];
+  for (const name of ["temozolomide", "orforglipron"]) {
+    await loadMolecule(name);
+    entrance.active = false;
+    placeAtoms(1);
+    for (const style of Object.keys(STYLES)) {
+      setStyle(style);
+      await sampleFrames(1200);
+      const ms = (await sampleFrames(seconds * 1000)).slice(1).sort((a, b) => a - b);
+      const mean = ms.reduce((s, v) => s + v, 0) / ms.length;
+      const gpuMs = gpuCost();
+      rows.push({ style, gpuMs, molecule: name, fps: +(1000 / mean).toFixed(1), meanMs: +mean.toFixed(1),
+                  p95Ms: +ms[Math.floor(ms.length * 0.95)].toFixed(1), draws: renderer.info.render.calls,
+                  ratio: pixelRatio, width: canvas.width, height: canvas.height });
+    }
+  }
+  state.ladder = before.ladder;
+  state.paused = before.paused;
+  await loadMolecule(before.mol);
+  setStyle(before.style);
+  return rows;
+}
+
+document.getElementById("bench").addEventListener("click", async (e) => {
+  e.target.disabled = true;
+  e.target.textContent = "Measuring";
+  const rows = await measureAll();
+  const gl = renderer.getContext();
+  const ext = gl.getExtension("WEBGL_debug_renderer_info");
+  const table = document.createElement("table");
+  table.innerHTML = "<tr><th>Style</th><th>Molecule</th><th>fps</th><th>p95 ms</th><th>GPU ms</th><th>draws</th></tr>";
+  for (const r of rows) {
+    const tr = table.insertRow();
+    for (const v of [r.style, r.molecule, r.fps, r.p95Ms, r.gpuMs, r.draws]) tr.insertCell().textContent = v;
+  }
+  const device = document.createElement("p");
+  device.className = "note";
+  device.textContent = `${ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : "GPU unknown"}, ${rows[0].width} by ${rows[0].height} px, pixel ratio ${rows[0].ratio}`;
+  document.getElementById("results").replaceChildren(table, device);
+  e.target.disabled = false;
+  e.target.textContent = "Measure all";
+});
+
+new ResizeObserver(resize).observe(canvas);
+window.lab = { setStyle, setTheme, loadMolecule, measureAll, gpuCost, applyQuality, LADDERS, renderer, state, entrance };
+applyStyle();
+await loadMolecule(state.mol);
+requestAnimationFrame(loop);
+window.lab.ready = true;
+</script>
+</body>
+</html>

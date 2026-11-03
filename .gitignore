@@ -8,3 +8,4 @@ venv/
 outputs/demo/
 .playwright-mcp/
 site/
+site2/

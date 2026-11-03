@@ -26,21 +26,6 @@
   --tag-text: #070D22;
   --tag-text-on-cobalt: #FFFFFF;
 
-  /* atoms, chemically meaningful, read by the 3D scene */
-  --atom-c: #1E2A5C;
-  --atom-o: var(--jewel-pink);
-  --atom-n: var(--jewel-pearl);
-  --atom-s: var(--jewel-amber);
-  --atom-cl: var(--jewel-plum);
-  --atom-f: var(--jewel-ice);
-  --atom-p: var(--jewel-amber);
-  --atom-br: var(--jewel-plum);
-  --atom-i: var(--jewel-plum);
-  --atom-h: var(--jewel-pearl);
-  --atom-other: var(--jewel-cobalt);
-  --bond: #8FA6D6;
-  --star: #FFFFFF;
-
   /* type */
   --font-display: "Space Grotesk", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
@@ -94,7 +79,30 @@
   --tabbar-bg: rgba(7, 13, 34, 0.86);
   --tabbar-line: rgba(255, 255, 255, 0.09);
   --hero-scrim: rgba(7, 13, 34, 0);
-  --bokeh-opacity: 0.2;
+  /* the molecule, read by the 3D scene: clear tinted glass on a calm background */
+  --atom-c: #6FA8FF;
+  --atom-o: #FF7A59;
+  --atom-n: #38D9C8;
+  --atom-s: #FFC14D;
+  --atom-cl: #B18CFF;
+  --atom-f: #8CF0C8;
+  --atom-h: #C9D6EA;
+  --bond: #AEBBD6;
+  --sky-top: #070D22;
+  --sky-middle: #0F3550;
+  --bokeh-a: #2E7FB0;
+  --bokeh-b: #E8794A;
+  --bokeh-opacity: 0.16;
+  --studio-room: #050A1A;
+  --strip-main: #FFFFFF;
+  --strip-cool: #9CC8FF;
+  --strip-warm: #FFB98A;
+  --glass-glow: 0.2;
+  --light-key: 1.6;
+  --light-warm: 1.2;
+  /* the lab charts */
+  --chart-before: #A3B1CC;
+  --chart-after: #38D9C8;
 }
 
 :root[data-theme="light"] {
@@ -114,7 +122,30 @@
   --tabbar-bg: rgba(255, 255, 255, 0.9);
   --tabbar-line: #E3E9F2;
   --hero-scrim: rgba(255, 255, 255, 0);
-  --bokeh-opacity: 0.2;
+  /* the same glass by day */
+  --atom-c: #2F6FE0;
+  --atom-o: #E8502E;
+  --atom-n: #0FA89A;
+  --atom-s: #D99A00;
+  --atom-cl: #7A4FE0;
+  --atom-f: #12A87A;
+  --atom-h: #8493AD;
+  --bond: #5B6F96;
+  --sky-top: #FFFFFF;
+  --sky-middle: #E4F1F8;
+  --bokeh-a: #8CC4E0;
+  --bokeh-b: #F5B79A;
+  --bokeh-opacity: 0.22;
+  --studio-room: #C4CCDA;
+  --strip-main: #FFFFFF;
+  --strip-cool: #BBD9FF;
+  --strip-warm: #FFD2B3;
+  --glass-glow: 0;
+  --light-key: 1.2;
+  --light-warm: 0.7;
+  /* the lab charts */
+  --chart-before: #4A5875;
+  --chart-after: #0B8378;
 }
 
 /* the interaction card looks the same in both modes on the inside, its text is always on a dark surface */

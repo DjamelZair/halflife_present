@@ -37,8 +37,8 @@ The person building it (the repo owner) wants the **easiest version** first.
 
 ## Design rules
 * **The design is decided: read `docs/DESIGN.md` before touching any front end.** Direction "Midnight lab":
-  dark mode (deep space navy) is the default, a white light mode via a toggle. Glossy jewel coloured 3D molecule
-  in a space scene as the hero, jewel topic tags, Space Grotesk plus Inter.
+  dark mode (deep space navy) is the default, a white light mode via a toggle. Clean glass 3D molecule on a calm background
+  as the hero, jewel topic tags, Space Grotesk plus Inter.
 * All colours live in one tokens file for the web app (and `config.PALETTE` for the Python figures).
   Never hardcode colours elsewhere.
 * The old Poppins, light navy poster style is replaced. `report/poster.py` and the matplotlib figures should
