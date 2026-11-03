@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT))  # so this script finds the halflife package
 
 from halflife import config, topics  # noqa: E402
 from halflife.molecules import structure  # noqa: E402
+from halflife.summarise import headline  # noqa: E402
 from halflife.interactions import cyp, model  # noqa: E402
 from halflife.names import US_TO_INN  # noqa: E402
 from halflife.pipeline import FM_BY_ROLE, INDUCTION_BY_ROLE, IKI_BY_ROLE  # noqa: E402
@@ -27,8 +28,9 @@ FDA_TABLE_URL = ("https://www.fda.gov/drugs/drug-interactions-labeling/"
 
 def brief_json(src: Path) -> dict:
     brief = json.loads((src / "data/brief.json").read_text(encoding="utf-8"))
-    # runs from before the topic field still get their tag
+    # runs from before these fields still get them
     for c in brief["cards"]:
+        c["headline"] = c.get("headline") or headline.short(c["title"])
         c["topic"] = c.get("topic") or topics.topic_for(c["lane"], c["source"], f"{c['title']} {c['what']}")
     return brief
 

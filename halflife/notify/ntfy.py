@@ -23,7 +23,7 @@ def build_title(day: date) -> str:
 
 
 def build_message(cards: list, molecule: str | None) -> str:
-    lines = [f"{c.lane.capitalize()}: {shorten(c.title)}" for c in cards]
+    lines = [f"{c.lane.capitalize()}: {shorten(c.headline or c.title)}" for c in cards]
     if molecule:
         lines.append(f"Molecule of the day: {molecule}")
     return "\n".join(lines)

@@ -91,8 +91,8 @@ Details get fine tuned later, `web/molecule-lab.html` holds the earlier style ex
 
 ## Content rules that the design depends on
 
-* Short headlines (about 8 words) make or break this design. In plain mode the app only has the paper title, so
-  either add the Claude API key, or shorten titles with simple rules (drop trailing study design phrases,
-  cut at the first colon) until then.
+* Short headlines (about 9 words) make or break this design. In plain mode `summarise/headline.py` only removes
+  words from the real title: trailing study design phrases, an opening like "Evaluation of", the part after a colon
+  and tail clauses. Nothing gets rewritten, the full title stays for screen readers and on the source.
 * Drug names always European generic names.
 * Every number shown comes from a source that is linked one tap away.

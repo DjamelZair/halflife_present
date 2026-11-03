@@ -1,6 +1,7 @@
 """Tests that run without internet. I run these before every push: pytest -q"""
 
 import json
+import re
 import shutil
 import subprocess
 from datetime import date
@@ -547,3 +548,31 @@ def _build_site_module():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+# headlines
+
+def test_headline_only_removes_words():
+    from halflife.summarise.headline import short
+    titles = [
+        "Global research trends in clinical studies of ginseng: a bibliometric and text-as-data analysis.",
+        "Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve to Minimum "
+        "Inhibitory Concentration at a Children's and Women's Tertiary Hospital.",
+        "Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults",
+    ]
+    for title in titles:
+        words = short(title).rstrip("…").lower().split()
+        original = re.sub(r"[.,:]", "", title.lower()).split()
+        assert len(words) <= 12
+        assert all(w.strip(",:") in original for w in words), short(title)
+
+
+def test_headline_examples():
+    from halflife.summarise.headline import short
+    assert short("Kans op leverschade bij ocrelizumab") == "Kans op leverschade bij ocrelizumab"  # short stays as it is
+    assert short("Short title about dosing.") == "Short title about dosing"
+    assert short("Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus in adults") == \
+        "Orforglipron recommended by EMA for obesity and type 2 diabetes mellitus"
+    assert short("Linerixibat authorised in the EU for cholestatic pruritus in adult patients with primary "
+                 "biliary cholangitis (PBC)") == "Linerixibat authorised in the EU for cholestatic pruritus"
+    assert "Evaluation" not in short("Evaluation of Therapeutic Drug Monitoring for Vancomycin with Ratio of Area Under the Curve")

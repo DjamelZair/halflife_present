@@ -90,7 +90,9 @@ function renderCards(brief) {
     tag.classList.add(tagClass);
     node.querySelector(".card").href = card.url;
     node.querySelector(".card-number").textContent = String(i + 1).padStart(2, "0");
-    node.querySelector(".card-title").textContent = card.title.replace(/\.$/, "");
+    node.querySelector(".card-title").textContent = card.headline || card.title.replace(/\.$/, "");
+    // the headline only cuts words, the full title stays for screen readers and is on the source
+    node.querySelector(".card").setAttribute("aria-label", `${tagText}. ${card.title}. ${card.source}`);
     node.querySelector(".card-meta").textContent = card.source;
     return node;
   }));
