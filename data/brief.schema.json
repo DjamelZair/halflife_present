@@ -46,7 +46,31 @@
             "Formula": { "type": "string", "minLength": 1 },
             "Molecular weight": { "type": "number" },
             "logP": { "type": "number" },
-            "TPSA": { "type": "number" }
+            "TPSA": { "type": "number" },
+            "reason": {
+              "type": "object",
+              "required": ["kind", "text"],
+              "properties": { "kind": { "type": "string" }, "text": { "type": "string", "minLength": 1 }, "url": { "type": ["string", "null"] } }
+            },
+            "atc_status": { "enum": ["assigned", "none", "unknown"] },
+            "atc": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["code", "levels"],
+                "properties": { "code": { "type": "string" }, "levels": { "type": "array" }, "substance": { "type": ["string", "null"] } }
+              }
+            },
+            "used_for": {
+              "oneOf": [
+                { "type": "null" },
+                { "type": "object", "required": ["text", "source"], "properties": { "text": { "type": "string", "minLength": 1 } } }
+              ]
+            },
+            "mechanisms": {
+              "type": "array",
+              "items": { "type": "object", "required": ["text", "source"] }
+            }
           }
         }
       ]

@@ -450,6 +450,110 @@ h2 {
 .swatch-f { background: var(--atom-f); }
 .swatch-h { background: var(--atom-h); }
 
+/* what the molecule is: ATC, used for, how it works */
+
+.drug-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.atc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.atc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.atc-chip {
+  min-height: var(--touch);
+  padding-inline: var(--space-md);
+  border: 1px solid var(--chip-line);
+  border-radius: var(--radius-pill);
+  background: var(--chip-bg);
+  color: var(--text);
+  font: 600 var(--text-sm) / 1 var(--font-body);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.atc-chip[aria-expanded="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.atc-levels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--card-line);
+  border-radius: var(--radius-card);
+  background: var(--card-bg);
+}
+
+.atc-levels b {
+  display: inline-block;
+  min-width: 68px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.atc-none { color: var(--text-secondary); }
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.fact h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fact-text { margin: 0; }
+
+.fact-clamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5; /* the whole text is on the Molecule screen */
+  line-clamp: 5;
+}
+
+.fact-source {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  margin-block: calc(var(--space-sm) * -1);
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  text-underline-offset: 3px;
+}
+
+#drug-info-more { margin-top: var(--space-xs); }
+
+.why-today { color: var(--text-secondary); }
+
+.why-today a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch);
+  text-underline-offset: 3px;
+}
+
 /* molecule screen */
 
 .stage {

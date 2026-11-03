@@ -1,0 +1,1428 @@
+{
+"http": {
+"https://www.ebi.ac.uk/chembl/api/data/molecule.json?limit=1&pref_name__iexact=RIVAROXABAN": {
+"status": 200,
+"json": {
+"molecules": [
+{
+"atc_classifications": [
+"B01AF01"
+],
+"availability_type": 1,
+"biotherapeutic": null,
+"black_box_warning": 1,
+"chemical_probe": 0,
+"chirality": 1,
+"cross_references": [
+{
+"xref_id": "rivaroxaban",
+"xref_name": "rivaroxaban",
+"xref_src": "DailyMed"
+},
+{
+"xref_id": "human/EPAR/rivaroxaban-accord",
+"xref_name": "rivaroxaban-accord",
+"xref_src": "EMA"
+},
+{
+"xref_id": "human/EPAR/xarelto",
+"xref_name": "xarelto",
+"xref_src": "EMA"
+},
+{
+"xref_id": "human/EPAR/rivaroxaban-viatris-previously-rivaroxaban-mylan",
+"xref_name": "rivaroxaban-viatris-previously-rivaroxaban-mylan",
+"xref_src": "EMA"
+}
+],
+"dosed_ingredient": true,
+"first_approval": 2008,
+"first_in_class": 1,
+"helm_notation": null,
+"inorganic_flag": 0,
+"max_phase": "4.0",
+"molecule_chembl_id": "CHEMBL198362",
+"molecule_hierarchy": {
+"active_chembl_id": "CHEMBL198362",
+"molecule_chembl_id": "CHEMBL198362",
+"parent_chembl_id": "CHEMBL198362"
+},
+"molecule_properties": {
+"alogp": "2.52",
+"aromatic_rings": 2,
+"full_molformula": "C19H18ClN3O5S",
+"full_mwt": "435.89",
+"hba": 6,
+"hbd": 1,
+"heavy_atoms": 29,
+"mw_freebase": "435.89",
+"np_likeness_score": "-1.79",
+"num_ro5_violations": 0,
+"psa": "88.18",
+"qed_weighted": "0.78",
+"ro3_pass": "N",
+"rtb": 5
+},
+"molecule_structures": {
+"canonical_smiles": "O=C(NC[C@H]1CN(c2ccc(N3CCOCC3=O)cc2)C(=O)O1)c1ccc(Cl)s1",
+"molfile": "\n     RDKit          2D\n\n 29 32  0  0  0  0  0  0  0  0999 V2000\n    7.4051    4.1132    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.7920    4.6652    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    8.1897    4.3681    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9635    5.4722    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.3612    5.1751    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    7.7481    5.7271    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.4381    3.9004    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.6096    4.7073    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.0512    3.3483    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.3942    4.9623    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.8358    3.6033    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.0073    4.4103    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.3504    6.0242    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6535    3.6454    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.9860    4.1304    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.3985    2.8608    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.3186    3.6454    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    2.5735    2.8608    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.9860    4.9554    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0886    2.1934    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4242    1.4397    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.9392    0.7723    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8623   -0.6959    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n    2.4143   -1.3090    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2748    0.0186    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.1680   -0.9734    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.0818   -0.1529    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.1188    0.8585    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2428   -2.1159    0.0000 Cl  0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\n  1  3  1  0\n  4  2  1  0\n 12  2  1  0\n  3  5  1  0\n  4  6  1  0\n  4 13  2  0\n  6  5  1  0\n  7  8  1  0\n  7  9  2  0\n  7 14  1  0\n 10  8  2  0\n 11  9  1  0\n 10 12  1  0\n 11 12  2  0\n 15 14  1  0\n 16 14  1  0\n 15 17  1  0\n 15 19  2  0\n 16 18  1  0\n 18 17  1  0\n 18 20  1  6\n 20 21  1  0\n 22 21  1  0\n 22 25  1  0\n 22 28  2  0\n 24 23  1  0\n 25 23  1  0\n 24 26  2  0\n 24 29  1  0\n 25 27  2  0\n 26 27  1  0\nM  END\n> <chembl_id>\nCHEMBL198362\n\n> <chembl_pref_name>\nRIVAROXABAN",
+"standard_inchi": "InChI=1S/C19H18ClN3O5S/c20-16-6-5-15(29-16)18(25)21-9-14-10-23(19(26)28-14)13-3-1-12(2-4-13)22-7-8-27-11-17(22)24/h1-6,14H,7-11H2,(H,21,25)/t14-/m0/s1",
+"standard_inchi_key": "KGFYHTZWPPHNLQ-AWEZNQCLSA-N"
+},
+"molecule_synonyms": [
+{
+"molecule_synonym": "BAY 59-7939",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "BAY 59-7939"
+},
+{
+"molecule_synonym": "BAY-59-7939",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "BAY-59-7939"
+},
+{
+"molecule_synonym": "JNJ-39039039",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "JNJ-39039039"
+},
+{
+"molecule_synonym": "JNJ39039039",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "JNJ39039039"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "ATC",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "BNF",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "EMA",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "FDA",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "INN",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "JAN",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "MERCK_INDEX",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "OTHER",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "USAN",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban",
+"syn_type": "USP",
+"synonyms": "RIVAROXABAN"
+},
+{
+"molecule_synonym": "Rivaroxaban accord",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIVAROXABAN ACCORD"
+},
+{
+"molecule_synonym": "Rivaroxaban viatris (previously rivaroxaban mylan)",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIVAROXABAN VIATRIS (PREVIOUSLY RIVAROXABAN MYLAN)"
+},
+{
+"molecule_synonym": "Xarelto",
+"syn_type": "TRADE_NAME",
+"synonyms": "XARELTO"
+}
+],
+"molecule_type": "Small molecule",
+"natural_product": 1,
+"oral": true,
+"orphan": 0,
+"parenteral": false,
+"polymer_flag": 0,
+"pref_name": "RIVAROXABAN",
+"prodrug": 0,
+"structure_type": "MOL",
+"therapeutic_flag": true,
+"topical": false,
+"usan_stem": "-xaban",
+"usan_stem_definition": "antithrombotics, blood coagulation factor XA inhibitors",
+"usan_substem": "-xaban",
+"usan_year": 2006,
+"veterinary": 0,
+"withdrawn_flag": false
+}
+],
+"page_meta": {
+"limit": 1,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/mechanism.json?limit=20&molecule_chembl_id=CHEMBL198362": {
+"status": 200,
+"json": {
+"mechanisms": [
+{
+"action_type": "INHIBITOR",
+"binding_site_comment": null,
+"direct_interaction": 1,
+"disease_efficacy": 1,
+"max_phase": 4,
+"mec_id": 1375,
+"mechanism_comment": null,
+"mechanism_of_action": "Coagulation factor X inhibitor",
+"mechanism_refs": [
+{
+"ref_id": "setid=10db92f9-2300-4a80-836b-673e1ae91610#nlm34090-1",
+"ref_type": "DailyMed",
+"ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610#nlm34090-1"
+}
+],
+"molecular_mechanism": 1,
+"molecule_chembl_id": "CHEMBL198362",
+"parent_molecule_chembl_id": "CHEMBL198362",
+"record_id": 1392858,
+"selectivity_comment": null,
+"site_id": null,
+"target_chembl_id": "CHEMBL244",
+"variant_sequence": null
+}
+],
+"page_meta": {
+"limit": 20,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/atc_class/B01AF01.json?": {
+"status": 200,
+"json": {
+"level1": "B",
+"level1_description": "BLOOD AND BLOOD FORMING ORGANS",
+"level2": "B01",
+"level2_description": "ANTITHROMBOTIC AGENTS",
+"level3": "B01A",
+"level3_description": "ANTITHROMBOTIC AGENTS",
+"level4": "B01AF",
+"level4_description": "Direct factor Xa inhibitors",
+"level5": "B01AF01",
+"who_name": "rivaroxaban"
+}
+},
+"https://www.ema.europa.eu/en/medicines/human/EPAR/xarelto?": {
+"status": 200,
+"text": "<h2>Overview</a></li><li><a href=\"/en/human-regulatory-overview/research-development\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69491\" aria-selected=\"false\">Research and development</a></li><li><a href=\"/en/human-regulatory-overview/marketing-authorisation\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69601\" aria-selected=\"false\">Marketing authorisation</a></li><li><a href=\"/en/human-regulatory-overview/post-authorisation\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70358\" aria-selected=\"false\">Post-authorisation</a></li><li><a href=\"/en/human-regulatory-overview/medical-devices\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70079\" aria-selected=\"false\">Medical devices</a></li><li><a href=\"/en/human-regulatory-overview/herbal-medicinal-products\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69717\" aria-selected=\"false\">Herbal products</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/veterinary-regulatory-overview\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-924\" role=\"button\" data-drupal-link-system-path=\"node/82419\" aria-selected=\"false\">Veterinary regulatory</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-924\"\n  ><li><a href=\"/en/veterinary-regulatory-overview\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82419\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/veterinary-regulatory-overview/research-development-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69449\" aria-selected=\"false\">Research and development</a></li><li><a href=\"/en/veterinary-regulatory-overview/marketing-authorisation-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69313\" aria-selected=\"false\">Marketing authorisation</a></li><li><a href=\"/en/veterinary-regulatory-overview/post-authorisation-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68838\" aria-selected=\"false\">Post-authorisation</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/committees\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-646\" role=\"button\" data-drupal-link-system-path=\"node/82424\" aria-selected=\"false\">Committees</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-646\"\n  ><li><a href=\"/en/committees\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82424\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/committees/how-committees-work\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68348\" aria-selected=\"false\">How the committees work</a></li><li><a href=\"/en/committees/committee-medicinal-products-human-use-chmp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4879\" aria-selected=\"false\">CHMP</a></li><li><a href=\"/en/committees/committee-veterinary-medicinal-products-cvmp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4882\" aria-selected=\"false\">CVMP</a></li><li><a href=\"/en/committees/pharmacovigilance-risk-assessment-committee-prac\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4886\" aria-selected=\"false\">PRAC</a></li><li><a href=\"/en/committees/committee-orphan-medicinal-products-comp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4881\" aria-selected=\"false\">COMP</a></li><li><a href=\"/en/committees/committee-herbal-medicinal-products-hmpc\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4883\" aria-selected=\"false\">HMPC</a></li><li><a href=\"/en/committees/committee-advanced-therapies-cat\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4878\" aria-selected=\"false\">CAT</a></li><li><a href=\"/en/committees/paediatric-committee-pdco\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4885\" aria-selected=\"false\">PDCO</a></li><li><a href=\"/en/committees/working-parties-other-groups\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69598\" aria-selected=\"false\">Working parties and other groups</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/news-events\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-567\" role=\"button\" data-drupal-link-system-path=\"node/82423\" aria-selected=\"false\">News &amp; events</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-567\"\n  ><li><a href=\"/en/news-events\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82423\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/news\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4\" aria-selected=\"false\">News</a></li><li><a href=\"/en/events/upcoming-events\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/8\" aria-selected=\"false\">Events</a></li><li><a href=\"/en/news-events/whats-new\" class=\"dropdown-item\" data-drupal-link-system-path=\"news-events/whats-new\" aria-selected=\"false\">What&#039;s new</a></li><li><a href=\"/en/news-events/committee-highlights\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68454\" aria-selected=\"false\">Committee highlights</a></li><li><a href=\"/en/news-and-events/publications\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69163\" aria-selected=\"false\">Publications</a></li><li><a href=\"/en/news-events/press-social-media\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70061\" aria-selected=\"false\">Press and social media</a></li><li><a href=\"/en/news-events/podcast-inside-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/270105\" aria-selected=\"false\">Podcast: Inside EMA</a></li><li><a href=\"/en/news-events/ema-campaigns\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/271491\" aria-selected=\"false\">Campaigns</a></li><li><a href=\"/en/news-events/speeches\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/283545\" aria-selected=\"false\">Speeches</a></li><li><a href=\"/en/news-events/open-consultations\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/10\" aria-selected=\"false\">Open consultations</a></li><li><a href=\"/en/news-events/rss-feeds\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4876\" aria-selected=\"false\">RSS feeds</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/partners-networks\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-611\" role=\"button\" data-drupal-link-system-path=\"node/82420\" aria-selected=\"false\">Partners &amp; networks</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-611\"\n  ><li><a href=\"/en/partners-networks\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82420\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/partners-networks/eu-partners\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69559\" aria-selected=\"false\">EU partners</a></li><li><a href=\"/en/partners-networks/international-activities\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69859\" aria-selected=\"false\">International activities</a></li><li><a href=\"/en/partners-networks/patients-consumers\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4888\" aria-selected=\"false\">Patients and consumers</a></li><li><a href=\"/en/partners-networks/healthcare-professionals\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4889\" aria-selected=\"false\">Healthcare professionals</a></li><li><a href=\"/en/partners-networks/academia\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69725\" aria-selected=\"false\">Academia</a></li><li><a href=\"/en/partners-networks/pharmaceutical-industry\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4891\" aria-selected=\"false\">Pharmaceutical industry</a></li><li><a href=\"/en/partners-networks/networks\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68770\" aria-selected=\"false\">Networks</a></li><li><a href=\"/en/partners-networks/health-technology-assessment-bodies\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68799\" aria-selected=\"false\">Health technology assessment bodies</a></li><li><a href=\"/en/partners-networks/one-health-approach\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/254796\" aria-selected=\"false\">One Health approach</a></li><li><a href=\"/en/partners-networks/animal-health-professionals\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4890\" aria-selected=\"false\">Animal health professionals</a></li><li><a href=\"/en/partners-networks/one-substance-one-assessment-osoa-eu-collaboration-chemicals-related-data\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/273127\" aria-selected=\"false\">One substance - one assessment</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/about-us\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-294\" role=\"button\" data-drupal-link-system-path=\"node/82421\" aria-selected=\"false\">About us</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-294\"\n  ><li><a href=\"/en/about-us\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82421\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/about-us/what-we-do\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69654\" aria-selected=\"false\">What we do</a></li><li><a href=\"/en/about-us/who-we-are\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69649\" aria-selected=\"false\">Who we are</a></li><li><a href=\"/en/about-us/how-we-work\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69885\" aria-selected=\"false\">How we work</a></li><li><a href=\"/en/about-us/fees-payable-european-medicines-agency\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70027\" aria-selected=\"false\">Fees</a></li><li><a href=\"/en/about-us/support-smes\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69589\" aria-selected=\"false\">Support to SMEs</a></li><li><a href=\"/en/about-us/annual-reports-work-programmes\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70025\" aria-selected=\"false\">Annual reports and work programmes</a></li><li><a href=\"/en/about-us/history-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68954\" aria-selected=\"false\">History of EMA</a></li><li><a href=\"/en/about-us/careers\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69992\" aria-selected=\"false\">Careers</a></li><li><a href=\"/en/about-us/procurement-grants\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69872\" aria-selected=\"false\">Procurement</a></li><li><a href=\"/en/about-us/about-website\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70271\" aria-selected=\"false\">About this website</a></li><li><a href=\"/en/about-us/data-protection-privacy-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68881\" aria-selected=\"false\">Data protection and privacy</a></li><li><a href=\"/en/about-us/contacts-european-medicines-agency\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68696\" aria-selected=\"false\">Contacts</a></li></ul>\n        \n                </li>\n                    </ul>\n\n  \n\n\n\n  \n</div></div></nav><div class=\"container\">  \n<div id=\"block-system-breadcrumb-block\">            \n  \n    \n  <nav class=\"my-2-5\" aria-label=\"Breadcrumbs\">\n      <ol class=\"breadcrumb\"><li\n            class=\"breadcrumb-item d-none d-md-block\"><a href=\"/en/homepage\">Home</a>\n</li><li\n            class=\"breadcrumb-item\"><a href=\"https://www.ema.europa.eu/en/medicines\"><svg\n   class=\"d-md-none ms-0 me-2 me-2-5 bi icon--s\"\n><use xlink:href=\"/themes/custom/ema_theme/resources/icons/ema-bcl-bs-icons_202501.svg#arrow-left\"/></svg>Medicines</a>\n</li>            <li\n            class=\"breadcrumb-item d-none d-md-block active\"aria-current=\"page\">Xarelto</li></ol>\n    </nav>\n</div>\n\n</div></header><main id=\"main-content\" class=\"main-content-wrapper\" role=\"main\" aria-label=\"Main content\"><div class=\"container-fluid mt-3\">\n          <div class=\"row\"><div class=\"region-pre-content col-12 pb-lg-2 mb-lg-2 px-0\">  <div data-drupal-messages-fallback class=\"hidden\"></div>\n\n<div id=\"block-ema-content-banner--2\">\n      \n    \n    <div class=\"node ema-medicine content-banner ema-medicine--content-banner mb-4-75 bcl-content-banner with-status ema-light-blue\"><article class=\"bg-transparent border-0 card container\"><div class=\"row\"><div class=\"right-col\"><div class=\"card-body container-fluid\">\n    <div class=\"row\">\n      <div class=\"col\">          <div class=\"heading-title\"><h1 class=\"content-banner-title card-title bcl-heading\">\n<span>Xarelto</span>\n</h1></div><div class=\"heading-actions align-self-stretch d-flex justify-content-end\"><div class=\"action-bar\"><div class=\"ema-social-media-share button\"><script type=\"application/json\">{\"service\":\"share\",\"version\":\"2.0\",\"more\":[\"email\",\"linkedin\",\"bluesky\",\"facebook\",\"whatsapp\",\"blogger\",\"digg\",\"gmail\",\"netvibes\",\"pinterest\",\"pocket\",\"printfriendly\",\"qzone\",\"reddit\",\"threads\",\"tumblr\",\"typepad\",\"viadeo\",\"weibo\",\"yahoomail\",\"yammer\"],\"selection\":false,\"stats\":true,\"target\":\"_blank\"}</script></div>\n<a href=\"/en/individual-human-medicine.xml/66822\" class=\"btn btn-outline-primary ema-rss-button\" target=\"_blank\" title=\"RSS feed for Xarelto\"><span class=\"rss-icon\"></span> RSS</a></div></div><div class=\"heading-status\"><div\n    data-medicine-status=\"authorised\"\n    data-medicine-icon=\"check-circle-fill\"\n    data-medicine-color=\"status-success\"\n    class=\"medicine-status\">\n\n    <h2 class=\"h5 status-title\">Authorised</h2>\n    <div class=\"status-message\"><p>This medicine is authorised for use in the European Union</p></div>\n  </div></div><div class=\"card-content-block\"><div class=\"card-content-wrapper\">    <div class=\"content\"><div class=\"fst-italic\">rivaroxaban</div></div></div><div class=\"d-flex flex-column flex-lg-row justify-content-between gap-3\"><div class=\"card-badge-wrapper d-flex flex-row flex-wrap gap-3 align-items-start\"><span class=\"bundle-name badge rounded-pill bg-primary\"><span class=\"label\">Medicine</span></span><span class=\"ema-bg-category badge rounded-pill badge-outline-primary\"><span class=\"label\">Human</span></span><span class=\"ema-bg-medicine-status badge rounded-pill bg-success\"><span class=\"label\">Authorised</span></span></div></div></div>\n      </div>\n    </div>\n  </div></div></div></article>\n</div>\n</div>\n\n</div></div>\n        </div>\n\n        <div class=\"container\">\n          <div class=\"row\"><div class=\"region-content col-12 \"><div class=\"region-content-main row\">\n                <div class=\"col-12\">  <div id=\"block-system-main-block\" class=\"main-content\">\n  \n    \n          <article class=\"content-with-sidebar node ema-medicine ema-medicine--full container\"><div class=\"row\">\n    <div class=\"bcl-sidebar col-md-3\">\n<nav aria-label=\"Page contents\" class=\"bcl-inpage-navigation position-sticky dynamic-active\" id=\"bcl-inpage-navigation\">\n  <button\n   aria-expanded=\"false\" aria-controls=\"bcl-inpage-navigation-dropdown\" type=\"button\" data-bs-toggle=\"dropdown\" class=\"dropdown-toggle h2 d-md-none\"\n>Page contents<svg\n   class=\"bi icon--s\"\n><use xlink:href=\"/themes/custom/ema_theme/resources/icons/ema-bcl-bs-icons_202501.svg#chevron-down\"/></svg></button><h2 class=\"mb-0 d-none d-md-block bcl-heading\">Page contents</h2><div class=\"dropdown-menu\" id=\"bcl-inpage-navigation-dropdown\">\n\n                    \n                              \n        \n  \n    \n    <ul class=\"nav nav-pills flex-column\">                                                                    \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#overview\">Overview</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-info\">Product information</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-details\">Product details</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#authorisation-details\">Authorisation details</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#assessment-history\">Assessment history</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#news-on\">News on Xarelto</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#more-information-on-xarelto-1436\">More information on Xarelto</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#related-content-795\">Related content</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#related-medicines\">More information on Xarelto</a>\n\n        \n                </li>\n                    </ul>\n\n  </div>\n</nav>\n</div>\n\n    <div class=\"col-md-9\"><div class=\"ema-node-content-wrapper node-sections\">        \n    \n    \n    <div class=\"ema-statuses-timeline\">\n      <ul class=\"timeline\">\n                        <li class=\"status checked first\">Application under evaluation</li>\n                        <li class=\"status checked\">CHMP opinion</li>\n                        <li class=\"status current last\">European Commission decision</li></ul>\n    </div>\n            \n                  \n        \n  <div id=\"ema-inpage-item-overview\" data-section=\"overview\" class=\"section overview main-section\"><h2 id=\"overview\" class=\"h2 rounded-title\">Overview</h2>\n\n\n            <div class=\"field text-long ema-medicine__field-ema-introduction\"><p>Xarelto is an anticoagulant medicine (a medicine that prevents blood clotting) used:</p>\n<ul>\n<li data-list-item-id=\"e19c95c6c5b62afeefbfab945142eac24\">to treat deep vein thrombosis (DVT, a blood clot in a deep vein, usually in the leg) and pulmonary embolism (a clot in a blood vessel supplying the lungs), and to prevent DVT and pulmonary embolism from recurring in adults;</li>\n<li data-list-item-id=\"e1e4e6903e153915a22c3c83e360fef33\">to prevent venous thromboembolism (VTE, the formation of blood clots in the veins) in adults who are undergoing surgery to replace a hip or knee;</li>\n<li data-list-item-id=\"eaf5cc1aeb60390eae0d5323eae0b3dee\">to treat VTE and prevent VTE from recurring in children and adolescents aged less than 18 years;</li>\n<li data-list-item-id=\"e912ad79383e3ceb8468285c11a79e80d\">to prevent stroke (caused by a blood clot in the brain) and systemic embolism (a blood clot in another organ) in adults with non-valvular atrial fibrillation (irregular rapid contractions of the upper chambers of the heart);</li>\n<li data-list-item-id=\"eef6eae02e4f9c0165ea9cc87b12e4a47\">to prevent atherothrombotic events (such as heart attack, stroke or death from heart disease) in adults:\n<ul>\n<li data-list-item-id=\"ea4c2790c1de4820eba7d3c56e199f5f5\">after an acute coronary syndrome, when it is used with an antiplatelet medicine (which prevents the formation of blood clots). Acute coronary syndrome consists of conditions such as unstable angina (a severe type of chest pain) and heart attack;</li>\n<li data-list-item-id=\"edd282bdb27cdb6a8edb7a2b67d31391b\">at high risk of ischaemic events (problems caused by restricted blood supply) who have coronary artery disease (disease caused by obstructed blood supply to the heart muscle) or peripheral artery disease (disease caused by defective blood flow in the arteries). It is used with aspirin.</li>\n</ul>\n</li>\n</ul>\n<p>Xarelto contains the active substance rivaroxaban.</p>\n</div>\n      <div class=\"mt-3\">\n        \n\n  \n\n  \n  <div class=\"accordion d-flex flex-column\" id=\"accordion-bcl-accordion\">\n        \n        \n                          <div class=\"accordion-buttons d-flex flex-row align-items-center justify-content-end gap-3 mb-3\">\n                <button class=\"btn btn-primary\" type=\"button\" role=\"button\" data-trigger=\"expand-section\" aria-label=\"Expand content in section\">Expand section</button>\n\n                <button class=\"btn btn-outline-primary\" type=\"button\" role=\"button\" data-trigger=\"collapse-section\" aria-label=\"Collapse content in section\">Collapse section</button>\n      </div>\n\n            <script type=\"text/javascript\">\n                document.querySelectorAll('#accordion-bcl-accordion [data-trigger]').forEach((button) => {\n                    button.addEventListener('click', event => {\n            const item = event.target,\n              action = item.getAttribute('data-trigger'),\n              old_action_texts = item.querySelectorAll('.action-text'),\n              action_text = document.createElement('span'),\n              accordion = item.closest('#accordion-bcl-accordion'),\n              accordion_items = accordion.querySelectorAll('.accordion-collapse'),\n              action_message = (action === 'expand-section' ? \"Expanded content in section\" : \"Collapsed content in section\");\n\n                        old_action_texts.forEach((old_action_text) => {\n              old_action_text.remove();\n            });\n\n                        action_text.classList.add('visually-hidden');\n            action_text.classList.add('action-text');\n            action_text.setAttribute('role', 'alert');\n            action_text.setAttribute('aria-live', 'polite');\n            action_text.setAttribute('aria-atomic', true);\n            item.appendChild(action_text);\n            action_text.textContent = action_message;\n\n                        accordion_items.forEach((accordion_item) => {\n              if (action === 'expand-section') {\n                bootstrap.Collapse.getOrCreateInstance(accordion_item, {toggle: false}).show();\n              }\n              else if (action === 'collapse-section') {\n                bootstrap.Collapse.getOrCreateInstance(accordion_item, {toggle: false}).hide();\n              }\n            });\n          }, false);\n        });\n      </script>\n    \n        <div class=\"accordion-items-wrapper\">\n                                                        <div class=\"accordion-item\">\n                              <h3 class=\"accordion-header\" id=\"heading-bcl-accordion-1\">\n                        <button\n   class=\"accordion-button collapsed\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapse-bcl-accordion-1\" aria-controls=\"collapse-bcl-accordion-1\" aria-expanded=\"false\" type=\"button\"\n>\n<span>"
+},
+"https://www.ebi.ac.uk/chembl/api/data/molecule.json?limit=1&pref_name__iexact=METHOTREXATE": {
+"status": 200,
+"json": {
+"molecules": [
+{
+"atc_classifications": [
+"L04AX03",
+"L01BA01"
+],
+"availability_type": 1,
+"biotherapeutic": null,
+"black_box_warning": 1,
+"chemical_probe": 0,
+"chirality": 1,
+"cross_references": [
+{
+"xref_id": "methotrexate",
+"xref_name": "methotrexate",
+"xref_src": "DailyMed"
+},
+{
+"xref_id": "human/EPAR/nordimet",
+"xref_name": "nordimet",
+"xref_src": "EMA"
+},
+{
+"xref_id": "human/EPAR/jylamvo",
+"xref_name": "jylamvo",
+"xref_src": "EMA"
+}
+],
+"dosed_ingredient": true,
+"first_approval": 1953,
+"first_in_class": 0,
+"helm_notation": null,
+"inorganic_flag": 0,
+"max_phase": "4.0",
+"molecule_chembl_id": "CHEMBL34259",
+"molecule_hierarchy": {
+"active_chembl_id": "CHEMBL34259",
+"molecule_chembl_id": "CHEMBL34259",
+"parent_chembl_id": "CHEMBL34259"
+},
+"molecule_properties": {
+"alogp": "0.27",
+"aromatic_rings": 3,
+"full_molformula": "C20H22N8O5",
+"full_mwt": "454.45",
+"hba": 10,
+"hbd": 5,
+"heavy_atoms": 33,
+"mw_freebase": "454.45",
+"np_likeness_score": "-0.53",
+"num_ro5_violations": 0,
+"psa": "210.54",
+"qed_weighted": "0.29",
+"ro3_pass": "N",
+"rtb": 9
+},
+"molecule_structures": {
+"canonical_smiles": "CN(Cc1cnc2nc(N)nc(N)c2n1)c1ccc(C(=O)N[C@@H](CCC(=O)O)C(=O)O)cc1",
+"molfile": "\n     RDKit          2D\n\n 33 35  0  0  0  0  0  0  0  0999 V2000\n   11.3841   -6.8938    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   10.6966   -5.6311    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    9.9507   -6.8597    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.9604   -6.0406    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.6528   -7.2887    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.3938   -6.0455    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.2291   -7.2546    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.2026   -8.4003    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.2633   -5.6164    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4957   -7.9713    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    8.5270   -6.8304    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.7546   -9.1901    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0840   -6.8061    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.7693   -8.3711    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.6338   -7.9127    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.9290   -7.9908    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.7957   -7.2399    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.3527   -7.2156    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.1880   -9.2145    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2584   -8.3515    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4567   -9.6143    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    8.5270   -6.0016    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.6485   -7.0840    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   10.6528   -8.1078    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    5.6311   -8.4100    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.9290   -7.1814    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.3527   -8.0200    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.6652   -6.7768    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.1251   -5.6506    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0672   -7.9323    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.3456   -8.3369    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.0379   -9.5948    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0986   -5.9724    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  6  1  0\n  3  5  2  0\n  4  2  2  0\n  5  1  1  0\n  6  1  2  0\n  7  3  1  0\n  8 16  1  0\n  9  4  1  0\n 10  8  1  0\n 11  7  2  0\n 14 12  1  6\n 13 17  1  0\n 14 10  1  0\n 15 31  1  0\n 16 26  1  0\n 17 11  1  0\n 18 13  1  0\n 19  8  2  0\n 20 15  1  0\n 21 12  2  0\n 22  9  2  0\n 23 15  2  0\n 24  5  1  0\n 25 27  1  0\n 26 28  2  0\n 27 18  2  0\n 28 18  1  0\n 29  6  1  0\n 30 14  1  0\n 31 30  1  0\n 32 12  1  0\n 33 13  1  0\n  4  3  1  0\n 22 11  1  0\n 16 25  2  0\nM  END\n> <chembl_id>\nCHEMBL34259\n\n> <chembl_pref_name>\nMETHOTREXATE",
+"standard_inchi": "InChI=1S/C20H22N8O5/c1-28(9-11-8-23-17-15(24-11)16(21)26-20(22)27-17)12-4-2-10(3-5-12)18(31)25-13(19(32)33)6-7-14(29)30/h2-5,8,13H,6-7,9H2,1H3,(H,25,31)(H,29,30)(H,32,33)(H4,21,22,23,26,27)/t13-/m0/s1",
+"standard_inchi_key": "FBOZXECLQNJBKD-ZDUSSCGKSA-N"
+},
+"molecule_synonyms": [
+{
+"molecule_synonym": "ADX-2191",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "ADX-2191"
+},
+{
+"molecule_synonym": "Amethopterin",
+"syn_type": "OTHER",
+"synonyms": "AMETHOPTERIN"
+},
+{
+"molecule_synonym": "CL 14377",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "CL 14377"
+},
+{
+"molecule_synonym": "CL-14377",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "CL-14377"
+},
+{
+"molecule_synonym": "D-amethopterin",
+"syn_type": "OTHER",
+"synonyms": "D-AMETHOPTERIN"
+},
+{
+"molecule_synonym": "D-methotrexate",
+"syn_type": "OTHER",
+"synonyms": "D-METHOTREXATE"
+},
+{
+"molecule_synonym": "Ebetrex",
+"syn_type": "TRADE_NAME",
+"synonyms": "EBETREX"
+},
+{
+"molecule_synonym": "EMT-25299",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "EMT-25299"
+},
+{
+"molecule_synonym": "Emtexate high-pot",
+"syn_type": "TRADE_NAME",
+"synonyms": "EMTEXATE HIGH-POT"
+},
+{
+"molecule_synonym": "Emtexate pf",
+"syn_type": "TRADE_NAME",
+"synonyms": "EMTEXATE PF"
+},
+{
+"molecule_synonym": "Jylamvo",
+"syn_type": "OTHER",
+"synonyms": "JYLAMVO"
+},
+{
+"molecule_synonym": "Jylamvo",
+"syn_type": "TRADE_NAME",
+"synonyms": "JYLAMVO"
+},
+{
+"molecule_synonym": "Maxtrex",
+"syn_type": "TRADE_NAME",
+"synonyms": "MAXTREX"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "ATC",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "BAN",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "BNF",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "EMA",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "FDA",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "INN",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "JAN",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "MERCK_INDEX",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "OTHER",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "USAN",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate",
+"syn_type": "USP",
+"synonyms": "METHOTREXATE"
+},
+{
+"molecule_synonym": "Methotrexate, d-",
+"syn_type": "OTHER",
+"synonyms": "METHOTREXATE, D-"
+},
+{
+"molecule_synonym": "Methotrexate, (r)-",
+"syn_type": "OTHER",
+"synonyms": "METHOTREXATE, (R)-"
+},
+{
+"molecule_synonym": "Methotrexatum",
+"syn_type": "OTHER",
+"synonyms": "METHOTREXATUM"
+},
+{
+"molecule_synonym": "Methylaminopterin",
+"syn_type": "OTHER",
+"synonyms": "METHYLAMINOPTERIN"
+},
+{
+"molecule_synonym": "Metoject",
+"syn_type": "TRADE_NAME",
+"synonyms": "METOJECT"
+},
+{
+"molecule_synonym": "Metotrexato",
+"syn_type": "INN_SPANISH",
+"synonyms": "METOTREXATO"
+},
+{
+"molecule_synonym": "Nordimet",
+"syn_type": "TRADE_NAME",
+"synonyms": "NORDIMET"
+},
+{
+"molecule_synonym": "NSC-740",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "NSC-740"
+},
+{
+"molecule_synonym": "Otrexup",
+"syn_type": "TRADE_NAME",
+"synonyms": "OTREXUP"
+},
+{
+"molecule_synonym": "Otrexup pfs",
+"syn_type": "TRADE_NAME",
+"synonyms": "OTREXUP PFS"
+},
+{
+"molecule_synonym": "R-9985",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "R-9985"
+},
+{
+"molecule_synonym": "Rasuvo",
+"syn_type": "TRADE_NAME",
+"synonyms": "RASUVO"
+},
+{
+"molecule_synonym": "Reditrex",
+"syn_type": "TRADE_NAME",
+"synonyms": "REDITREX"
+},
+{
+"molecule_synonym": "(r)-methotrexate",
+"syn_type": "OTHER",
+"synonyms": "(R)-METHOTREXATE"
+},
+{
+"molecule_synonym": "R-methotrexate",
+"syn_type": "USP",
+"synonyms": "R-METHOTREXATE"
+},
+{
+"molecule_synonym": "Zlatal",
+"syn_type": "TRADE_NAME",
+"synonyms": "ZLATAL"
+}
+],
+"molecule_type": "Small molecule",
+"natural_product": 1,
+"oral": true,
+"orphan": 0,
+"parenteral": true,
+"polymer_flag": 0,
+"pref_name": "METHOTREXATE",
+"prodrug": 0,
+"structure_type": "MOL",
+"therapeutic_flag": true,
+"topical": false,
+"usan_stem": "-trexate",
+"usan_stem_definition": "antimetabolites (folic acid derivatives)",
+"usan_substem": "-trexate",
+"usan_year": 1961,
+"veterinary": 0,
+"withdrawn_flag": false
+}
+],
+"page_meta": {
+"limit": 1,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/mechanism.json?limit=20&molecule_chembl_id=CHEMBL34259": {
+"status": 200,
+"json": {
+"mechanisms": [
+{
+"action_type": "INHIBITOR",
+"binding_site_comment": null,
+"direct_interaction": 1,
+"disease_efficacy": 1,
+"max_phase": 4,
+"mec_id": 2256,
+"mechanism_comment": null,
+"mechanism_of_action": "Dihydrofolate reductase inhibitor",
+"mechanism_refs": [
+{
+"ref_id": "setid=9ab8ce16-f7de-41d4-a4c8-1c742621b6d5",
+"ref_type": "DailyMed",
+"ref_url": "http://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=9ab8ce16-f7de-41d4-a4c8-1c742621b6d5"
+}
+],
+"molecular_mechanism": 1,
+"molecule_chembl_id": "CHEMBL34259",
+"parent_molecule_chembl_id": "CHEMBL34259",
+"record_id": 1705350,
+"selectivity_comment": null,
+"site_id": null,
+"target_chembl_id": "CHEMBL202",
+"variant_sequence": null
+}
+],
+"page_meta": {
+"limit": 20,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/atc_class/L04AX03.json?": {
+"status": 200,
+"json": {
+"level1": "L",
+"level1_description": "ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS",
+"level2": "L04",
+"level2_description": "IMMUNOSUPPRESSANTS",
+"level3": "L04A",
+"level3_description": "IMMUNOSUPPRESSANTS",
+"level4": "L04AX",
+"level4_description": "Other immunosuppressants",
+"level5": "L04AX03",
+"who_name": "methotrexate"
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/atc_class/L01BA01.json?": {
+"status": 200,
+"json": {
+"level1": "L",
+"level1_description": "ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS",
+"level2": "L01",
+"level2_description": "ANTINEOPLASTIC AGENTS",
+"level3": "L01B",
+"level3_description": "ANTIMETABOLITES",
+"level4": "L01BA",
+"level4_description": "Folic acid analogues",
+"level5": "L01BA01",
+"who_name": "methotrexate"
+}
+},
+"https://www.ema.europa.eu/en/medicines/human/EPAR/nordimet?": {
+"status": 200,
+"text": "<h2>Overview</a></li><li><a href=\"/en/human-regulatory-overview/research-development\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69491\" aria-selected=\"false\">Research and development</a></li><li><a href=\"/en/human-regulatory-overview/marketing-authorisation\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69601\" aria-selected=\"false\">Marketing authorisation</a></li><li><a href=\"/en/human-regulatory-overview/post-authorisation\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70358\" aria-selected=\"false\">Post-authorisation</a></li><li><a href=\"/en/human-regulatory-overview/medical-devices\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70079\" aria-selected=\"false\">Medical devices</a></li><li><a href=\"/en/human-regulatory-overview/herbal-medicinal-products\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69717\" aria-selected=\"false\">Herbal products</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/veterinary-regulatory-overview\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-924\" role=\"button\" data-drupal-link-system-path=\"node/82419\" aria-selected=\"false\">Veterinary regulatory</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-924\"\n  ><li><a href=\"/en/veterinary-regulatory-overview\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82419\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/veterinary-regulatory-overview/research-development-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69449\" aria-selected=\"false\">Research and development</a></li><li><a href=\"/en/veterinary-regulatory-overview/marketing-authorisation-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69313\" aria-selected=\"false\">Marketing authorisation</a></li><li><a href=\"/en/veterinary-regulatory-overview/post-authorisation-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68838\" aria-selected=\"false\">Post-authorisation</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/committees\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-646\" role=\"button\" data-drupal-link-system-path=\"node/82424\" aria-selected=\"false\">Committees</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-646\"\n  ><li><a href=\"/en/committees\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82424\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/committees/how-committees-work\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68348\" aria-selected=\"false\">How the committees work</a></li><li><a href=\"/en/committees/committee-medicinal-products-human-use-chmp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4879\" aria-selected=\"false\">CHMP</a></li><li><a href=\"/en/committees/committee-veterinary-medicinal-products-cvmp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4882\" aria-selected=\"false\">CVMP</a></li><li><a href=\"/en/committees/pharmacovigilance-risk-assessment-committee-prac\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4886\" aria-selected=\"false\">PRAC</a></li><li><a href=\"/en/committees/committee-orphan-medicinal-products-comp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4881\" aria-selected=\"false\">COMP</a></li><li><a href=\"/en/committees/committee-herbal-medicinal-products-hmpc\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4883\" aria-selected=\"false\">HMPC</a></li><li><a href=\"/en/committees/committee-advanced-therapies-cat\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4878\" aria-selected=\"false\">CAT</a></li><li><a href=\"/en/committees/paediatric-committee-pdco\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4885\" aria-selected=\"false\">PDCO</a></li><li><a href=\"/en/committees/working-parties-other-groups\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69598\" aria-selected=\"false\">Working parties and other groups</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/news-events\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-567\" role=\"button\" data-drupal-link-system-path=\"node/82423\" aria-selected=\"false\">News &amp; events</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-567\"\n  ><li><a href=\"/en/news-events\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82423\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/news\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4\" aria-selected=\"false\">News</a></li><li><a href=\"/en/events/upcoming-events\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/8\" aria-selected=\"false\">Events</a></li><li><a href=\"/en/news-events/whats-new\" class=\"dropdown-item\" data-drupal-link-system-path=\"news-events/whats-new\" aria-selected=\"false\">What&#039;s new</a></li><li><a href=\"/en/news-events/committee-highlights\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68454\" aria-selected=\"false\">Committee highlights</a></li><li><a href=\"/en/news-and-events/publications\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69163\" aria-selected=\"false\">Publications</a></li><li><a href=\"/en/news-events/press-social-media\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70061\" aria-selected=\"false\">Press and social media</a></li><li><a href=\"/en/news-events/podcast-inside-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/270105\" aria-selected=\"false\">Podcast: Inside EMA</a></li><li><a href=\"/en/news-events/ema-campaigns\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/271491\" aria-selected=\"false\">Campaigns</a></li><li><a href=\"/en/news-events/speeches\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/283545\" aria-selected=\"false\">Speeches</a></li><li><a href=\"/en/news-events/open-consultations\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/10\" aria-selected=\"false\">Open consultations</a></li><li><a href=\"/en/news-events/rss-feeds\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4876\" aria-selected=\"false\">RSS feeds</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/partners-networks\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-611\" role=\"button\" data-drupal-link-system-path=\"node/82420\" aria-selected=\"false\">Partners &amp; networks</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-611\"\n  ><li><a href=\"/en/partners-networks\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82420\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/partners-networks/eu-partners\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69559\" aria-selected=\"false\">EU partners</a></li><li><a href=\"/en/partners-networks/international-activities\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69859\" aria-selected=\"false\">International activities</a></li><li><a href=\"/en/partners-networks/patients-consumers\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4888\" aria-selected=\"false\">Patients and consumers</a></li><li><a href=\"/en/partners-networks/healthcare-professionals\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4889\" aria-selected=\"false\">Healthcare professionals</a></li><li><a href=\"/en/partners-networks/academia\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69725\" aria-selected=\"false\">Academia</a></li><li><a href=\"/en/partners-networks/pharmaceutical-industry\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4891\" aria-selected=\"false\">Pharmaceutical industry</a></li><li><a href=\"/en/partners-networks/networks\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68770\" aria-selected=\"false\">Networks</a></li><li><a href=\"/en/partners-networks/health-technology-assessment-bodies\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68799\" aria-selected=\"false\">Health technology assessment bodies</a></li><li><a href=\"/en/partners-networks/one-health-approach\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/254796\" aria-selected=\"false\">One Health approach</a></li><li><a href=\"/en/partners-networks/animal-health-professionals\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4890\" aria-selected=\"false\">Animal health professionals</a></li><li><a href=\"/en/partners-networks/one-substance-one-assessment-osoa-eu-collaboration-chemicals-related-data\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/273127\" aria-selected=\"false\">One substance - one assessment</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/about-us\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-294\" role=\"button\" data-drupal-link-system-path=\"node/82421\" aria-selected=\"false\">About us</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-294\"\n  ><li><a href=\"/en/about-us\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82421\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/about-us/what-we-do\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69654\" aria-selected=\"false\">What we do</a></li><li><a href=\"/en/about-us/who-we-are\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69649\" aria-selected=\"false\">Who we are</a></li><li><a href=\"/en/about-us/how-we-work\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69885\" aria-selected=\"false\">How we work</a></li><li><a href=\"/en/about-us/fees-payable-european-medicines-agency\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70027\" aria-selected=\"false\">Fees</a></li><li><a href=\"/en/about-us/support-smes\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69589\" aria-selected=\"false\">Support to SMEs</a></li><li><a href=\"/en/about-us/annual-reports-work-programmes\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70025\" aria-selected=\"false\">Annual reports and work programmes</a></li><li><a href=\"/en/about-us/history-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68954\" aria-selected=\"false\">History of EMA</a></li><li><a href=\"/en/about-us/careers\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69992\" aria-selected=\"false\">Careers</a></li><li><a href=\"/en/about-us/procurement-grants\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69872\" aria-selected=\"false\">Procurement</a></li><li><a href=\"/en/about-us/about-website\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70271\" aria-selected=\"false\">About this website</a></li><li><a href=\"/en/about-us/data-protection-privacy-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68881\" aria-selected=\"false\">Data protection and privacy</a></li><li><a href=\"/en/about-us/contacts-european-medicines-agency\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68696\" aria-selected=\"false\">Contacts</a></li></ul>\n        \n                </li>\n                    </ul>\n\n  \n\n\n\n  \n</div></div></nav><div class=\"container\">  \n<div id=\"block-system-breadcrumb-block\">            \n  \n    \n  <nav class=\"my-2-5\" aria-label=\"Breadcrumbs\">\n      <ol class=\"breadcrumb\"><li\n            class=\"breadcrumb-item d-none d-md-block\"><a href=\"/en/homepage\">Home</a>\n</li><li\n            class=\"breadcrumb-item\"><a href=\"https://www.ema.europa.eu/en/medicines\"><svg\n   class=\"d-md-none ms-0 me-2 me-2-5 bi icon--s\"\n><use xlink:href=\"/themes/custom/ema_theme/resources/icons/ema-bcl-bs-icons_202501.svg#arrow-left\"/></svg>Medicines</a>\n</li>            <li\n            class=\"breadcrumb-item d-none d-md-block active\"aria-current=\"page\">Nordimet</li></ol>\n    </nav>\n</div>\n\n</div></header><main id=\"main-content\" class=\"main-content-wrapper\" role=\"main\" aria-label=\"Main content\"><div class=\"container-fluid mt-3\">\n          <div class=\"row\"><div class=\"region-pre-content col-12 pb-lg-2 mb-lg-2 px-0\">  <div data-drupal-messages-fallback class=\"hidden\"></div>\n\n<div id=\"block-ema-content-banner--2\">\n      \n    \n    <div class=\"node ema-medicine content-banner ema-medicine--content-banner mb-4-75 bcl-content-banner with-status ema-light-blue\"><article class=\"bg-transparent border-0 card container\"><div class=\"row\"><div class=\"right-col\"><div class=\"card-body container-fluid\">\n    <div class=\"row\">\n      <div class=\"col\">          <div class=\"heading-title\"><h1 class=\"content-banner-title card-title bcl-heading\">\n<span>Nordimet</span>\n</h1></div><div class=\"heading-actions align-self-stretch d-flex justify-content-end\"><div class=\"action-bar\"><div class=\"ema-social-media-share button\"><script type=\"application/json\">{\"service\":\"share\",\"version\":\"2.0\",\"more\":[\"email\",\"linkedin\",\"bluesky\",\"facebook\",\"whatsapp\",\"blogger\",\"digg\",\"gmail\",\"netvibes\",\"pinterest\",\"pocket\",\"printfriendly\",\"qzone\",\"reddit\",\"threads\",\"tumblr\",\"typepad\",\"viadeo\",\"weibo\",\"yahoomail\",\"yammer\"],\"selection\":false,\"stats\":true,\"target\":\"_blank\"}</script></div>\n<a href=\"/en/individual-human-medicine.xml/66296\" class=\"btn btn-outline-primary ema-rss-button\" target=\"_blank\" title=\"RSS feed for Nordimet\"><span class=\"rss-icon\"></span> RSS</a></div></div><div class=\"heading-status\"><div\n    data-medicine-status=\"authorised\"\n    data-medicine-icon=\"check-circle-fill\"\n    data-medicine-color=\"status-success\"\n    class=\"medicine-status\">\n\n    <h2 class=\"h5 status-title\">Authorised</h2>\n    <div class=\"status-message\"><p>This medicine is authorised for use in the European Union</p></div>\n  </div></div><div class=\"card-content-block\"><div class=\"card-content-wrapper\">    <div class=\"content\"><div class=\"fst-italic\">methotrexate</div></div></div><div class=\"d-flex flex-column flex-lg-row justify-content-between gap-3\"><div class=\"card-badge-wrapper d-flex flex-row flex-wrap gap-3 align-items-start\"><span class=\"bundle-name badge rounded-pill bg-primary\"><span class=\"label\">Medicine</span></span><span class=\"ema-bg-category badge rounded-pill badge-outline-primary\"><span class=\"label\">Human</span></span><span class=\"ema-bg-medicine-status badge rounded-pill bg-success\"><span class=\"label\">Authorised</span></span></div></div></div>\n      </div>\n    </div>\n  </div></div></div></article>\n</div>\n</div>\n\n</div></div>\n        </div>\n\n        <div class=\"container\">\n          <div class=\"row\"><div class=\"region-content col-12 \"><div class=\"region-content-main row\">\n                <div class=\"col-12\">  <div id=\"block-system-main-block\" class=\"main-content\">\n  \n    \n          <article class=\"content-with-sidebar node ema-medicine ema-medicine--full container\"><div class=\"row\">\n    <div class=\"bcl-sidebar col-md-3\">\n<nav aria-label=\"Page contents\" class=\"bcl-inpage-navigation position-sticky dynamic-active\" id=\"bcl-inpage-navigation\">\n  <button\n   aria-expanded=\"false\" aria-controls=\"bcl-inpage-navigation-dropdown\" type=\"button\" data-bs-toggle=\"dropdown\" class=\"dropdown-toggle h2 d-md-none\"\n>Page contents<svg\n   class=\"bi icon--s\"\n><use xlink:href=\"/themes/custom/ema_theme/resources/icons/ema-bcl-bs-icons_202501.svg#chevron-down\"/></svg></button><h2 class=\"mb-0 d-none d-md-block bcl-heading\">Page contents</h2><div class=\"dropdown-menu\" id=\"bcl-inpage-navigation-dropdown\">\n\n                    \n                              \n        \n  \n    \n    <ul class=\"nav nav-pills flex-column\">                                                                    \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#overview\">Overview</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-info\">Product information</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-details\">Product details</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#authorisation-details\">Authorisation details</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#assessment-history\">Assessment history</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#news-on\">News on Nordimet</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#related-information-656\">Related information</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-information-with-tracked-changes-78079\">Product information - with tracked changes</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#related-medicines\">More information on Nordimet</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#topics\">Topics</a>\n\n        \n                </li>\n                    </ul>\n\n  </div>\n</nav>\n</div>\n\n    <div class=\"col-md-9\"><div class=\"ema-node-content-wrapper node-sections\">        \n    \n    \n    <div class=\"ema-statuses-timeline\">\n      <ul class=\"timeline\">\n                        <li class=\"status checked first\">Application under evaluation</li>\n                        <li class=\"status checked\">CHMP opinion</li>\n                        <li class=\"status current last\">European Commission decision</li></ul>\n    </div>\n            \n                  \n        \n  <div id=\"ema-inpage-item-overview\" data-section=\"overview\" class=\"section overview main-section\"><h2 id=\"overview\" class=\"h2 rounded-title\">Overview</h2>\n\n\n            <div class=\"field text-long ema-medicine__field-ema-introduction\"><p>Nordimet is a medicine used to treat the following inflammatory conditions:</p>\n<ul>\n<li data-list-item-id=\"e41bcb8b152a5a0eecf38a550bd741524\">active rheumatoid arthritis, a disease causing inflammation in joints;</li>\n<li data-list-item-id=\"ec5da65897fb556eead29e9a3955622d1\">severe juvenile idiopathic arthritis (JIA), a joint disease in children, when medicines known as NSAIDs (non-steroidal anti-inflammatory drugs) have not worked well enough;</li>\n<li data-list-item-id=\"e4e873508615aab90fdbb2701883bef68\">plaque psoriasis (a disease causing red, scaly patches on the skin) in adults with moderate to severe disease who can be treated with a medicine given by mouth or injection;</li>\n<li data-list-item-id=\"eef0e5ab29bc4f02799894e283bca1299\">severe psoriatic arthritis, inflammation of the joints that occurs in patients with psoriasis;</li>\n<li data-list-item-id=\"e002e3b0bb4ca88490b3ba8438da4ecf7\">Crohn's disease (a disease causing inflammation of the gut) in adults. It can be used in combination with corticosteroids or on its own to induce or maintain remission (a period without disease symptoms after treatment).</li>\n</ul>\n<p>Nordimet contains the active substance methotrexate.</p>\n<p>Nordimet is a ‘hybrid medicine’. This means that it is similar to a ‘reference medicine’ containing the same active substance, but Nordimet is available in more strengths. The reference medicine for Nordimet is Lantarel FS.</p>\n</div>\n      <div class=\"mt-3\">\n        \n\n  \n\n  \n  <div class=\"accordion d-flex flex-column\" id=\"accordion-bcl-accordion\">\n        \n        \n                          <div class=\"accordion-buttons d-flex flex-row align-items-center justify-content-end gap-3 mb-3\">\n                <button class=\"btn btn-primary\" type=\"button\" role=\"button\" data-trigger=\"expand-section\" aria-label=\"Expand content in section\">Expand section</button>\n\n                <button class=\"btn btn-outline-primary\" type=\"button\" role=\"button\" data-trigger=\"collapse-section\" aria-label=\"Collapse content in section\">Collapse section</button>\n      </div>\n\n            <script type=\"text/javascript\">\n                document.querySelectorAll('#accordion-bcl-accordion [data-trigger]').forEach((button) => {\n                    button.addEventListener('click', event => {\n            const item = event.target,\n              action = item.getAttribute('data-trigger'),\n              old_action_texts = item.querySelectorAll('.action-text'),\n              action_text = document.createElement('span'),\n              accordion = item.closest('#accordion-bcl-accordion'),\n              accordion_items = accordion.querySelectorAll('.accordion-collapse'),\n              action_message = (action === 'expand-section' ? \"Expanded content in section\" : \"Collapsed content in section\");\n\n                        old_action_texts.forEach((old_action_text) => {\n              old_action_text.remove();\n            });\n\n                        action_text.classList.add('visually-hidden');\n            action_text.classList.add('action-text');\n            action_text.setAttribute('role', 'alert');\n            action_text.setAttribute('aria-live', 'polite');\n            action_text.setAttribute('aria-atomic', true);\n            item.appendChild(action_text);\n            action_text.textContent = action_message;\n\n                        accordion_items.forEach((accordion_item) => {\n              if (action === 'expand-section') {\n                bootstrap.Collapse.getOrCreateInstance(accordion_item, {toggle: false}).show();\n              }\n              else if (action === 'collapse-section') {\n                bootstrap.Collapse.getOrCreateInstance(accordion_item, {toggle: false}).hide();\n              }\n            });\n          }, false);\n        });\n      </script>\n    \n        <div class=\"accordion-items-wrapper\">\n                                                        <div class=\"accordion-item\">\n                              <h3 class=\"accordion-header\" id=\"heading-bcl-accordion-1\">\n                        <button\n   class=\"accordion-button collapsed\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapse-bcl-accordion-1\" aria-controls=\"collapse-bcl-accordion-1\" aria-expanded=\"false\" type=\"button\"\n>\n<span>"
+},
+"https://www.ebi.ac.uk/chembl/api/data/molecule.json?limit=1&pref_name__iexact=LINERIXIBAT": {
+"status": 200,
+"json": {
+"molecules": [
+{
+"atc_classifications": [],
+"availability_type": null,
+"biotherapeutic": null,
+"black_box_warning": 0,
+"chemical_probe": 0,
+"chirality": 1,
+"cross_references": [
+{
+"xref_id": "https://searchusan.ama-assn.org/finder/usan/search/LINERIXIBAT/relevant/1/",
+"xref_name": "LINERIXIBAT",
+"xref_src": "USAN"
+}
+],
+"dosed_ingredient": false,
+"first_approval": null,
+"first_in_class": 0,
+"helm_notation": null,
+"inorganic_flag": 0,
+"max_phase": "3.0",
+"molecule_chembl_id": "CHEMBL2387408",
+"molecule_hierarchy": {
+"active_chembl_id": "CHEMBL2387408",
+"molecule_chembl_id": "CHEMBL2387408",
+"parent_chembl_id": "CHEMBL2387408"
+},
+"molecule_properties": {
+"alogp": "3.91",
+"aromatic_rings": 2,
+"full_molformula": "C28H38N2O7S",
+"full_mwt": "546.69",
+"hba": 7,
+"hbd": 4,
+"heavy_atoms": 38,
+"mw_freebase": "546.69",
+"np_likeness_score": "-0.06",
+"num_ro5_violations": 1,
+"psa": "142.03",
+"qed_weighted": "0.29",
+"ro3_pass": "N",
+"rtb": 13
+},
+"molecule_structures": {
+"canonical_smiles": "CCCC[C@]1(CC)CS(=O)(=O)c2cc(CNC(CC(=O)O)CC(=O)O)c(OC)cc2[C@@H](c2ccccc2)N1",
+"molfile": "\n     RDKit          2D\n\n 38 40  0  0  0  0  0  0  0  0999 V2000\n   -1.2538   -0.4972    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9682   -0.9097    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9682   -1.7347    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2538   -2.1472    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2538    0.3278    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.6827   -0.4972    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3972   -0.9097    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3972    0.7403    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.1117    0.3278    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.1117   -0.4972    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.8261    0.7403    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.5406    0.3278    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.5406   -0.4972    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.8261   -0.9097    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.0301    2.6940    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.2137    1.8897    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.0020    1.6465    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.6068    2.2077    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.4232    3.0120    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.6349    3.2552    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5393    0.7403    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.9682    0.7403    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.5393   -1.7347    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.2538   -2.9722    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.3972    1.5653    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.1856    0.8422    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.9899    0.6586    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.1856   -1.0115    0.0000 S   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.5406   -1.5259    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.5436   -1.7548    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.9899   -0.8280    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -7.3479   -0.0847    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -8.0830   -0.4592    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -8.1261   -1.2831    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -8.0830    0.2899    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -8.7749   -0.1594    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -9.5099    0.2151    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  -10.2019   -0.2342    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  1  5  1  0\n  6  7  1  0\n  6  2  1  0\n  8  9  1  0\n  9 10  1  0\n 10  7  1  0\n 11 12  1  0\n 12 13  2  0\n 13 14  1  0\n 11  9  2  0\n 14 10  2  0\n 15 16  1  0\n 16 17  2  0\n 17 18  1  0\n 18 19  2  0\n 19 20  1  0\n 15 20  2  0\n  5 21  2  0\n  5 22  1  0\n  4 23  2  0\n  4 24  1  0\n  8 25  1  0\n 12 26  1  0\n 26 17  1  6\n 26 27  1  0\n 13 28  1  0\n 28 29  2  0\n 28 30  2  0\n 28 31  1  0\n 31 32  1  0\n 32 27  1  0\n 32 33  1  0\n 33 34  1  0\n 32 35  1  1\n 35 36  1  0\n 36 37  1  0\n 37 38  1  0\nM  END\n> <chembl_id>\nCHEMBL2387408\n\n> <chembl_pref_name>\nLINERIXIBAT",
+"standard_inchi": "InChI=1S/C28H38N2O7S/c1-4-6-12-28(5-2)18-38(35,36)24-13-20(17-29-21(14-25(31)32)15-26(33)34)23(37-3)16-22(24)27(30-28)19-10-8-7-9-11-19/h7-11,13,16,21,27,29-30H,4-6,12,14-15,17-18H2,1-3H3,(H,31,32)(H,33,34)/t27-,28-/m1/s1",
+"standard_inchi_key": "CZGVOBIGEBDYTP-VSGBNLITSA-N"
+},
+"molecule_synonyms": [
+{
+"molecule_synonym": "Gsk-2330672",
+"syn_type": "OTHER",
+"synonyms": "GSK-2330672"
+},
+{
+"molecule_synonym": "Gsk2330672",
+"syn_type": "OTHER",
+"synonyms": "GSK2330672"
+},
+{
+"molecule_synonym": "GSK2330672",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "GSK2330672"
+},
+{
+"molecule_synonym": "Linerixibat",
+"syn_type": "INN",
+"synonyms": "LINERIXIBAT"
+},
+{
+"molecule_synonym": "Linerixibat",
+"syn_type": "OTHER",
+"synonyms": "LINERIXIBAT"
+},
+{
+"molecule_synonym": "Linerixibat",
+"syn_type": "USAN",
+"synonyms": "LINERIXIBAT"
+}
+],
+"molecule_type": "Small molecule",
+"natural_product": 1,
+"oral": false,
+"orphan": 0,
+"parenteral": false,
+"polymer_flag": 0,
+"pref_name": "LINERIXIBAT",
+"prodrug": 0,
+"structure_type": "MOL",
+"therapeutic_flag": false,
+"topical": false,
+"usan_stem": "-ixibat",
+"usan_stem_definition": "ileal bile acid transporter (IBAT) inhibitors",
+"usan_substem": "-ixibat",
+"usan_year": 2019,
+"veterinary": 0,
+"withdrawn_flag": false
+}
+],
+"page_meta": {
+"limit": 1,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/mechanism.json?limit=20&molecule_chembl_id=CHEMBL2387408": {
+"status": 200,
+"json": {
+"mechanisms": [
+{
+"action_type": "INHIBITOR",
+"binding_site_comment": null,
+"direct_interaction": 1,
+"disease_efficacy": 1,
+"max_phase": 3,
+"mec_id": 7698,
+"mechanism_comment": null,
+"mechanism_of_action": "Ileal bile acid transporter inhibitor",
+"mechanism_refs": [
+{
+"ref_id": "28187915",
+"ref_type": "PubMed",
+"ref_url": "http://europepmc.org/abstract/MED/28187915"
+}
+],
+"molecular_mechanism": 1,
+"molecule_chembl_id": "CHEMBL2387408",
+"parent_molecule_chembl_id": "CHEMBL2387408",
+"record_id": 3132696,
+"selectivity_comment": null,
+"site_id": null,
+"target_chembl_id": "CHEMBL2778",
+"variant_sequence": null
+}
+],
+"page_meta": {
+"limit": 20,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/atc_class.json?level4=A05AX&limit=1": {
+"status": 200,
+"json": {
+"atc": [
+{
+"level1": "A",
+"level1_description": "ALIMENTARY TRACT AND METABOLISM",
+"level2": "A05",
+"level2_description": "BILE AND LIVER THERAPY",
+"level3": "A05A",
+"level3_description": "BILE THERAPY",
+"level4": "A05AX",
+"level4_description": "Other drugs for bile therapy",
+"level5": "A05AX01",
+"who_name": "piprozolin"
+}
+],
+"page_meta": {
+"limit": 1,
+"next": "/chembl/api/data/atc_class.json?limit=1&offset=1&level4=A05AX",
+"offset": 0,
+"previous": null,
+"total_count": 7
+}
+}
+},
+"https://www.ema.europa.eu/en/medicines/human/EPAR/lynavoy?": {
+"status": 200,
+"text": "<h2>Overview</a></li><li><a href=\"/en/human-regulatory-overview/research-development\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69491\" aria-selected=\"false\">Research and development</a></li><li><a href=\"/en/human-regulatory-overview/marketing-authorisation\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69601\" aria-selected=\"false\">Marketing authorisation</a></li><li><a href=\"/en/human-regulatory-overview/post-authorisation\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70358\" aria-selected=\"false\">Post-authorisation</a></li><li><a href=\"/en/human-regulatory-overview/medical-devices\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70079\" aria-selected=\"false\">Medical devices</a></li><li><a href=\"/en/human-regulatory-overview/herbal-medicinal-products\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69717\" aria-selected=\"false\">Herbal products</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/veterinary-regulatory-overview\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-924\" role=\"button\" data-drupal-link-system-path=\"node/82419\" aria-selected=\"false\">Veterinary regulatory</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-924\"\n  ><li><a href=\"/en/veterinary-regulatory-overview\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82419\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/veterinary-regulatory-overview/research-development-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69449\" aria-selected=\"false\">Research and development</a></li><li><a href=\"/en/veterinary-regulatory-overview/marketing-authorisation-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69313\" aria-selected=\"false\">Marketing authorisation</a></li><li><a href=\"/en/veterinary-regulatory-overview/post-authorisation-veterinary-medicines\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68838\" aria-selected=\"false\">Post-authorisation</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/committees\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-646\" role=\"button\" data-drupal-link-system-path=\"node/82424\" aria-selected=\"false\">Committees</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-646\"\n  ><li><a href=\"/en/committees\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82424\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/committees/how-committees-work\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68348\" aria-selected=\"false\">How the committees work</a></li><li><a href=\"/en/committees/committee-medicinal-products-human-use-chmp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4879\" aria-selected=\"false\">CHMP</a></li><li><a href=\"/en/committees/committee-veterinary-medicinal-products-cvmp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4882\" aria-selected=\"false\">CVMP</a></li><li><a href=\"/en/committees/pharmacovigilance-risk-assessment-committee-prac\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4886\" aria-selected=\"false\">PRAC</a></li><li><a href=\"/en/committees/committee-orphan-medicinal-products-comp\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4881\" aria-selected=\"false\">COMP</a></li><li><a href=\"/en/committees/committee-herbal-medicinal-products-hmpc\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4883\" aria-selected=\"false\">HMPC</a></li><li><a href=\"/en/committees/committee-advanced-therapies-cat\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4878\" aria-selected=\"false\">CAT</a></li><li><a href=\"/en/committees/paediatric-committee-pdco\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4885\" aria-selected=\"false\">PDCO</a></li><li><a href=\"/en/committees/working-parties-other-groups\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69598\" aria-selected=\"false\">Working parties and other groups</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/news-events\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-567\" role=\"button\" data-drupal-link-system-path=\"node/82423\" aria-selected=\"false\">News &amp; events</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-567\"\n  ><li><a href=\"/en/news-events\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82423\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/news\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4\" aria-selected=\"false\">News</a></li><li><a href=\"/en/events/upcoming-events\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/8\" aria-selected=\"false\">Events</a></li><li><a href=\"/en/news-events/whats-new\" class=\"dropdown-item\" data-drupal-link-system-path=\"news-events/whats-new\" aria-selected=\"false\">What&#039;s new</a></li><li><a href=\"/en/news-events/committee-highlights\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68454\" aria-selected=\"false\">Committee highlights</a></li><li><a href=\"/en/news-and-events/publications\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69163\" aria-selected=\"false\">Publications</a></li><li><a href=\"/en/news-events/press-social-media\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70061\" aria-selected=\"false\">Press and social media</a></li><li><a href=\"/en/news-events/podcast-inside-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/270105\" aria-selected=\"false\">Podcast: Inside EMA</a></li><li><a href=\"/en/news-events/ema-campaigns\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/271491\" aria-selected=\"false\">Campaigns</a></li><li><a href=\"/en/news-events/speeches\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/283545\" aria-selected=\"false\">Speeches</a></li><li><a href=\"/en/news-events/open-consultations\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/10\" aria-selected=\"false\">Open consultations</a></li><li><a href=\"/en/news-events/rss-feeds\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4876\" aria-selected=\"false\">RSS feeds</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/partners-networks\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-611\" role=\"button\" data-drupal-link-system-path=\"node/82420\" aria-selected=\"false\">Partners &amp; networks</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-611\"\n  ><li><a href=\"/en/partners-networks\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82420\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/partners-networks/eu-partners\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69559\" aria-selected=\"false\">EU partners</a></li><li><a href=\"/en/partners-networks/international-activities\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69859\" aria-selected=\"false\">International activities</a></li><li><a href=\"/en/partners-networks/patients-consumers\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4888\" aria-selected=\"false\">Patients and consumers</a></li><li><a href=\"/en/partners-networks/healthcare-professionals\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4889\" aria-selected=\"false\">Healthcare professionals</a></li><li><a href=\"/en/partners-networks/academia\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69725\" aria-selected=\"false\">Academia</a></li><li><a href=\"/en/partners-networks/pharmaceutical-industry\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4891\" aria-selected=\"false\">Pharmaceutical industry</a></li><li><a href=\"/en/partners-networks/networks\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68770\" aria-selected=\"false\">Networks</a></li><li><a href=\"/en/partners-networks/health-technology-assessment-bodies\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68799\" aria-selected=\"false\">Health technology assessment bodies</a></li><li><a href=\"/en/partners-networks/one-health-approach\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/254796\" aria-selected=\"false\">One Health approach</a></li><li><a href=\"/en/partners-networks/animal-health-professionals\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/4890\" aria-selected=\"false\">Animal health professionals</a></li><li><a href=\"/en/partners-networks/one-substance-one-assessment-osoa-eu-collaboration-chemicals-related-data\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/273127\" aria-selected=\"false\">One substance - one assessment</a></li></ul>\n        \n                </li>\n                                                                                                              \n                        <li class=\"nav-item dropdown\">\n        \n        <a href=\"/en/about-us\" class=\"nav-link dropdown-toggle\" aria-expanded=\"false\" data-bs-toggle=\"dropdown\" id=\"dropdown-294\" role=\"button\" data-drupal-link-system-path=\"node/82421\" aria-selected=\"false\">About us</a><ul\n     class=\"dropdown-menu\" aria-labelledby=\"dropdown-294\"\n  ><li><a href=\"/en/about-us\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/82421\" aria-selected=\"false\">Overview</a></li><li><a href=\"/en/about-us/what-we-do\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69654\" aria-selected=\"false\">What we do</a></li><li><a href=\"/en/about-us/who-we-are\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69649\" aria-selected=\"false\">Who we are</a></li><li><a href=\"/en/about-us/how-we-work\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69885\" aria-selected=\"false\">How we work</a></li><li><a href=\"/en/about-us/fees-payable-european-medicines-agency\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70027\" aria-selected=\"false\">Fees</a></li><li><a href=\"/en/about-us/support-smes\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69589\" aria-selected=\"false\">Support to SMEs</a></li><li><a href=\"/en/about-us/annual-reports-work-programmes\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70025\" aria-selected=\"false\">Annual reports and work programmes</a></li><li><a href=\"/en/about-us/history-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68954\" aria-selected=\"false\">History of EMA</a></li><li><a href=\"/en/about-us/careers\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69992\" aria-selected=\"false\">Careers</a></li><li><a href=\"/en/about-us/procurement-grants\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/69872\" aria-selected=\"false\">Procurement</a></li><li><a href=\"/en/about-us/about-website\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/70271\" aria-selected=\"false\">About this website</a></li><li><a href=\"/en/about-us/data-protection-privacy-ema\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68881\" aria-selected=\"false\">Data protection and privacy</a></li><li><a href=\"/en/about-us/contacts-european-medicines-agency\" class=\"dropdown-item\" data-drupal-link-system-path=\"node/68696\" aria-selected=\"false\">Contacts</a></li></ul>\n        \n                </li>\n                    </ul>\n\n  \n\n\n\n  \n</div></div></nav><div class=\"container\">  \n<div id=\"block-system-breadcrumb-block\">            \n  \n    \n  <nav class=\"my-2-5\" aria-label=\"Breadcrumbs\">\n      <ol class=\"breadcrumb\"><li\n            class=\"breadcrumb-item d-none d-md-block\"><a href=\"/en/homepage\">Home</a>\n</li><li\n            class=\"breadcrumb-item\"><a href=\"https://www.ema.europa.eu/en/medicines\"><svg\n   class=\"d-md-none ms-0 me-2 me-2-5 bi icon--s\"\n><use xlink:href=\"/themes/custom/ema_theme/resources/icons/ema-bcl-bs-icons_202501.svg#arrow-left\"/></svg>Medicines</a>\n</li>            <li\n            class=\"breadcrumb-item d-none d-md-block active\"aria-current=\"page\">Lynavoy</li></ol>\n    </nav>\n</div>\n\n</div></header><main id=\"main-content\" class=\"main-content-wrapper\" role=\"main\" aria-label=\"Main content\"><div class=\"container-fluid mt-3\">\n          <div class=\"row\"><div class=\"region-pre-content col-12 pb-lg-2 mb-lg-2 px-0\">  <div data-drupal-messages-fallback class=\"hidden\"></div>\n\n<div id=\"block-ema-content-banner--2\">\n      \n    \n    <div class=\"node ema-medicine content-banner ema-medicine--content-banner mb-4-75 bcl-content-banner with-status ema-light-blue\"><article class=\"bg-transparent border-0 card container\"><div class=\"row\"><div class=\"right-col\"><div class=\"card-body container-fluid\">\n    <div class=\"row\">\n      <div class=\"col\">          <div class=\"heading-title\"><h1 class=\"content-banner-title card-title bcl-heading\">\n<span>Lynavoy</span>\n</h1></div><div class=\"heading-actions align-self-stretch d-flex justify-content-end\"><div class=\"action-bar\"><div class=\"ema-social-media-share button\"><script type=\"application/json\">{\"service\":\"share\",\"version\":\"2.0\",\"more\":[\"email\",\"linkedin\",\"bluesky\",\"facebook\",\"whatsapp\",\"blogger\",\"digg\",\"gmail\",\"netvibes\",\"pinterest\",\"pocket\",\"printfriendly\",\"qzone\",\"reddit\",\"threads\",\"tumblr\",\"typepad\",\"viadeo\",\"weibo\",\"yahoomail\",\"yammer\"],\"selection\":false,\"stats\":true,\"target\":\"_blank\"}</script></div>\n<a href=\"/en/individual-human-medicine.xml/284190\" class=\"btn btn-outline-primary ema-rss-button\" target=\"_blank\" title=\"RSS feed for Lynavoy\"><span class=\"rss-icon\"></span> RSS</a></div></div><div class=\"heading-status\"><div\n    data-medicine-status=\"authorised\"\n    data-medicine-icon=\"check-circle-fill\"\n    data-medicine-color=\"status-success\"\n    class=\"medicine-status\">\n\n    <h2 class=\"h5 status-title\">Authorised</h2>\n    <div class=\"status-message\"><p>This medicine is authorised for use in the European Union</p></div>\n  </div></div><div class=\"card-content-block\"><div class=\"card-content-wrapper\">    <div class=\"content\"><div class=\"fst-italic\">Linerixibat</div></div></div><div class=\"d-flex flex-column flex-lg-row justify-content-between gap-3\"><div class=\"card-badge-wrapper d-flex flex-row flex-wrap gap-3 align-items-start\"><span class=\"bundle-name badge rounded-pill bg-primary\"><span class=\"label\">Medicine</span></span><span class=\"ema-bg-category badge rounded-pill badge-outline-primary\"><span class=\"label\">Human</span></span><span class=\"ema-bg-medicine-status badge rounded-pill bg-success\"><span class=\"label\">Authorised</span></span></div></div></div>\n      </div>\n    </div>\n  </div></div></div></article>\n</div>\n</div>\n\n</div></div>\n        </div>\n\n        <div class=\"container\">\n          <div class=\"row\"><div class=\"region-content col-12 \"><div class=\"region-content-main row\">\n                <div class=\"col-12\">  <div id=\"block-system-main-block\" class=\"main-content\">\n  \n    \n          <article class=\"content-with-sidebar node ema-medicine ema-medicine--full container\"><div class=\"row\">\n    <div class=\"bcl-sidebar col-md-3\">\n<nav aria-label=\"Page contents\" class=\"bcl-inpage-navigation position-sticky dynamic-active\" id=\"bcl-inpage-navigation\">\n  <button\n   aria-expanded=\"false\" aria-controls=\"bcl-inpage-navigation-dropdown\" type=\"button\" data-bs-toggle=\"dropdown\" class=\"dropdown-toggle h2 d-md-none\"\n>Page contents<svg\n   class=\"bi icon--s\"\n><use xlink:href=\"/themes/custom/ema_theme/resources/icons/ema-bcl-bs-icons_202501.svg#chevron-down\"/></svg></button><h2 class=\"mb-0 d-none d-md-block bcl-heading\">Page contents</h2><div class=\"dropdown-menu\" id=\"bcl-inpage-navigation-dropdown\">\n\n                    \n                              \n        \n  \n    \n    <ul class=\"nav nav-pills flex-column\">                                                                    \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#overview\">Overview</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-info\">Product information</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#product-details\">Product details</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#authorisation-details\">Authorisation details</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#assessment-history\">Assessment history</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#news-on\">News on Lynavoy</a>\n\n        \n                </li>\n                                                                                  \n                        <li class=\"nav-item\">\n        \n        <a class=\"nav-link\" href=\"#related-medicines\">More information on Lynavoy</a>\n\n        \n                </li>\n                    </ul>\n\n  </div>\n</nav>\n</div>\n\n    <div class=\"col-md-9\"><div class=\"ema-node-content-wrapper node-sections\">        \n    \n    \n    <div class=\"ema-statuses-timeline\">\n      <ul class=\"timeline\">\n                        <li class=\"status checked first\">Application under evaluation</li>\n                        <li class=\"status checked\">CHMP opinion</li>\n                        <li class=\"status current last\">European Commission decision</li></ul>\n    </div>\n            \n                  \n        \n  <div id=\"ema-inpage-item-overview\" data-section=\"overview\" class=\"section overview main-section\"><h2 id=\"overview\" class=\"h2 rounded-title\">Overview</h2>\n\n\n            <div class=\"field text-long ema-medicine__field-ema-introduction\"><p>Lynavoy is a medicine used in adults to treat cholestatic pruritus (intense itching due to a build-up of bile) caused by primary biliary cholangitis.</p>\n<p>Primary biliary cholangitis is an autoimmune liver disease, a condition in which the immune system (the body’s natural defences) gradually damages the bile ducts in the liver. These ducts carry bile (a fluid that helps the body digest fats) from the liver to the intestines. When the ducts are damaged, bile builds up in the liver, causing damage to liver tissue and leading to symptoms such as itching. </p>\n<p>Primary biliary cholangitis is rare and Lynavoy was designated as an ‘orphan medicine’ (a medicine used in rare diseases) on 12 November 2021. Further information on the orphan designation can be found on the <a href=\"https://www.ema.europa.eu/en/medicines/human/orphan-designations/eu-3-21-2515\">EMA website</a>.</p>\n<p>Lynavoy contains the active substance linerixibat.</p>\n</div>\n      <div class=\"mt-3\">\n        \n\n  \n\n  \n  <div class=\"accordion d-flex flex-column\" id=\"accordion-bcl-accordion\">\n        \n        \n                          <div class=\"accordion-buttons d-flex flex-row align-items-center justify-content-end gap-3 mb-3\">\n                <button class=\"btn btn-primary\" type=\"button\" role=\"button\" data-trigger=\"expand-section\" aria-label=\"Expand content in section\">Expand section</button>\n\n                <button class=\"btn btn-outline-primary\" type=\"button\" role=\"button\" data-trigger=\"collapse-section\" aria-label=\"Collapse content in section\">Collapse section</button>\n      </div>\n\n            <script type=\"text/javascript\">\n                document.querySelectorAll('#accordion-bcl-accordion [data-trigger]').forEach((button) => {\n                    button.addEventListener('click', event => {\n            const item = event.target,\n              action = item.getAttribute('data-trigger'),\n              old_action_texts = item.querySelectorAll('.action-text'),\n              action_text = document.createElement('span'),\n              accordion = item.closest('#accordion-bcl-accordion'),\n              accordion_items = accordion.querySelectorAll('.accordion-collapse'),\n              action_message = (action === 'expand-section' ? \"Expanded content in section\" : \"Collapsed content in section\");\n\n                        old_action_texts.forEach((old_action_text) => {\n              old_action_text.remove();\n            });\n\n                        action_text.classList.add('visually-hidden');\n            action_text.classList.add('action-text');\n            action_text.setAttribute('role', 'alert');\n            action_text.setAttribute('aria-live', 'polite');\n            action_text.setAttribute('aria-atomic', true);\n            item.appendChild(action_text);\n            action_text.textContent = action_message;\n\n                        accordion_items.forEach((accordion_item) => {\n              if (action === 'expand-section') {\n                bootstrap.Collapse.getOrCreateInstance(accordion_item, {toggle: false}).show();\n              }\n              else if (action === 'collapse-section') {\n                bootstrap.Collapse.getOrCreateInstance(accordion_item, {toggle: false}).hide();\n              }\n            });\n          }, false);\n        });\n      </script>\n    \n        <div class=\"accordion-items-wrapper\">\n                                                        <div class=\"accordion-item\">\n                              <h3 class=\"accordion-header\" id=\"heading-bcl-accordion-1\">\n                        <button\n   class=\"accordion-button collapsed\" data-bs-toggle=\"collapse\" data-bs-target=\"#collapse-bcl-accordion-1\" aria-controls=\"collapse-bcl-accordion-1\" aria-expanded=\"false\" type=\"button\"\n>\n<span>"
+},
+"https://www.ebi.ac.uk/chembl/api/data/molecule.json?limit=1&pref_name__iexact=ORFORGLIPRON": {
+"status": 200,
+"json": {
+"molecules": [
+{
+"atc_classifications": [],
+"availability_type": null,
+"biotherapeutic": null,
+"black_box_warning": 0,
+"chemical_probe": 0,
+"chirality": 1,
+"cross_references": [
+{
+"xref_id": "128",
+"xref_name": "ORFORGLIPRON",
+"xref_src": "INN"
+},
+{
+"xref_id": "https://searchusan.ama-assn.org/finder/usan/search/ORFORGLIPRON/relevant/1/",
+"xref_name": "ORFORGLIPRON",
+"xref_src": "USAN"
+}
+],
+"dosed_ingredient": false,
+"first_approval": null,
+"first_in_class": 0,
+"helm_notation": null,
+"inorganic_flag": 0,
+"max_phase": "3.0",
+"molecule_chembl_id": "CHEMBL4446782",
+"molecule_hierarchy": {
+"active_chembl_id": "CHEMBL4446782",
+"molecule_chembl_id": "CHEMBL4446782",
+"parent_chembl_id": "CHEMBL4446782"
+},
+"molecule_properties": {
+"alogp": "7.44",
+"aromatic_rings": 8,
+"full_molformula": "C48H48F2N10O5",
+"full_mwt": "882.97",
+"hba": 13,
+"hbd": 1,
+"heavy_atoms": 65,
+"mw_freebase": "882.97",
+"np_likeness_score": "-0.76",
+"num_ro5_violations": 3,
+"psa": "155.93",
+"qed_weighted": "0.17",
+"ro3_pass": "N",
+"rtb": 7
+},
+"molecule_structures": {
+"canonical_smiles": "Cc1cc(-n2nc3c(c2-n2ccn(-c4ccc5c(cnn5C)c4F)c2=O)[C@H](C)N(C(=O)c2cc4cc([C@H]5CCOC(C)(C)C5)ccc4n2[C@@]2(c4noc(=O)[nH]4)C[C@@H]2C)CC3)cc(C)c1F",
+"molfile": "\n     RDKit          2D\n\n 65 75  0  0  0  0  0  0  0  0999 V2000\n   -6.9080    7.3212    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.4955    8.0357    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.6705    8.0357    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.2580    7.3212    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.6705    6.6068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.4955    6.6068    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.6705    5.1778    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.2580    5.8923    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.4330    5.8923    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.2580    4.4633    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.4330    4.4633    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.0205    5.1778    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.8810    3.8503    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.1273    4.1858    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.2135    5.0063    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.4128    3.7733    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6984    4.1858    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -1.6984    5.0108    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.9839    3.7733    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2694    4.1858    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.2694    5.0108    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.9839    5.4233    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -2.4128    2.9483    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -0.9839    2.9483    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.5152    3.9309    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.0001    4.5983    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    0.5152    5.2658    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7701    3.1463    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    1.5548    2.8913    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2376    3.8838    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.8251    4.5983    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.0626    3.8838    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4751    4.5983    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.0626    5.3128    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2376    5.3128    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.2852    2.4788    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    0.7701    1.8114    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    1.5548    2.0663    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    2.1360    0.7609    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2222    1.5814    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.8034    0.2760    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.5571    0.6115    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.6433    1.4320    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.9759    1.9169    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.3108    0.2760    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.8628    0.8891    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    4.4503    1.6036    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -7.6364    7.7085    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -7.6364    6.9339    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4751    3.1694    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.3001    4.5983    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n    3.4751    6.0273    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    2.2222    3.3762    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    3.0621    2.7374    0.0000 F   0  0  0  0  0  0  0  0  0  0  0  0\n    4.4823   -0.5310    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.0525    3.0433    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.9377    2.2263    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -3.2876    2.7342    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.2467    1.4614    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -4.8770    3.0721    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.3849    2.4220    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.1602    2.7041    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.1314    3.5286    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   -5.3383    3.7560    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   -6.8441    2.2428    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  1  6  1  0\n  7  8  1  0\n  5  8  1  6\n 10 11  1  0\n 11 12  2  0\n  9 12  1  0\n  7 10  2  0\n  9  8  2  0\n 13 14  1  0\n 14 15  2  0\n 11 13  1  0\n 12 15  1  0\n 16 17  1  0\n 17 18  1  0\n 14 16  1  0\n 19 20  1  0\n 20 21  1  0\n 21 22  1  0\n 17 19  1  0\n 18 22  1  0\n 16 23  2  0\n 19 24  1  6\n 25 26  1  0\n 26 27  1  0\n 20 25  2  0\n 21 27  2  0\n 28 29  1  0\n 30 31  2  0\n 25 28  1  0\n 26 31  1  0\n 32 33  2  0\n 33 34  1  0\n 34 35  2  0\n 30 32  1  0\n 31 35  1  0\n 36 37  2  0\n 37 38  1  0\n 29 38  1  0\n 28 36  1  0\n 39 40  2  0\n 38 40  1  0\n 41 42  2  0\n 42 43  1  0\n 43 44  2  0\n 39 41  1  0\n 40 44  1  0\n 45 46  1  0\n 46 47  2  0\n 42 45  1  0\n 43 47  1  0\n  1 48  1  0\n  1 49  1  0\n 32 50  1  0\n 33 51  1  0\n 34 52  1  0\n 29 53  2  0\n 44 54  1  0\n 45 55  1  0\n 13 56  1  0\n 56 57  1  0\n 56 58  1  0\n 58 57  1  0\n 57 59  1  6\n 56 60  1  6\n 61 62  1  0\n 62 63  1  0\n 63 64  1  0\n 64 60  2  0\n 61 60  1  0\n 62 65  2  0\nM  END\n> <chembl_id>\nCHEMBL4446782\n\n> <chembl_pref_name>\nORFORGLIPRON",
+"standard_inchi": "InChI=1S/C48H48F2N10O5/c1-25-18-32(19-26(2)40(25)49)60-42(58-16-15-57(46(58)63)37-11-10-36-33(41(37)50)24-51-55(36)7)39-28(4)56(14-12-34(39)53-60)43(61)38-21-31-20-29(30-13-17-64-47(5,6)23-30)8-9-35(31)59(38)48(22-27(48)3)44-52-45(62)65-54-44/h8-11,15-16,18-21,24,27-28,30H,12-14,17,22-23H2,1-7H3,(H,52,54,62)/t27-,28-,30-,48-/m0/s1",
+"standard_inchi_key": "USUWIEBBBWHKNI-KHIFEHGGSA-N"
+},
+"molecule_synonyms": [
+{
+"molecule_synonym": "LY-3502970",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "LY-3502970"
+},
+{
+"molecule_synonym": "Ly3502970",
+"syn_type": "OTHER",
+"synonyms": "LY3502970"
+},
+{
+"molecule_synonym": "LY3502970",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "LY3502970"
+},
+{
+"molecule_synonym": "Orforglipron",
+"syn_type": "INN",
+"synonyms": "ORFORGLIPRON"
+},
+{
+"molecule_synonym": "Orforglipron",
+"syn_type": "INN_FRENCH",
+"synonyms": "ORFORGLIPRON"
+},
+{
+"molecule_synonym": "Orforglipron",
+"syn_type": "INN_SPANISH",
+"synonyms": "ORFORGLIPRON"
+},
+{
+"molecule_synonym": "Orforglipron",
+"syn_type": "OTHER",
+"synonyms": "ORFORGLIPRON"
+},
+{
+"molecule_synonym": "Orforglipron",
+"syn_type": "USAN",
+"synonyms": "ORFORGLIPRON"
+}
+],
+"molecule_type": "Small molecule",
+"natural_product": 0,
+"oral": false,
+"orphan": 0,
+"parenteral": false,
+"polymer_flag": 0,
+"pref_name": "ORFORGLIPRON",
+"prodrug": 0,
+"structure_type": "MOL",
+"therapeutic_flag": false,
+"topical": false,
+"usan_stem": "-glipron",
+"usan_stem_definition": "glucagon-like peptide receptor agonists",
+"usan_substem": "-glipron",
+"usan_year": 2022,
+"veterinary": 0,
+"withdrawn_flag": false
+}
+],
+"page_meta": {
+"limit": 1,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/mechanism.json?limit=20&molecule_chembl_id=CHEMBL4446782": {
+"status": 200,
+"json": {
+"mechanisms": [],
+"page_meta": {
+"limit": 20,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 0
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/atc_class.json?level4=A10BJ&limit=1": {
+"status": 200,
+"json": {
+"atc": [
+{
+"level1": "A",
+"level1_description": "ALIMENTARY TRACT AND METABOLISM",
+"level2": "A10",
+"level2_description": "DRUGS USED IN DIABETES",
+"level3": "A10B",
+"level3_description": "BLOOD GLUCOSE LOWERING DRUGS, EXCL. INSULINS",
+"level4": "A10BJ",
+"level4_description": "Glucagon-like peptide-1 (GLP-1) analogues",
+"level5": "A10BJ01",
+"who_name": "exenatide"
+}
+],
+"page_meta": {
+"limit": 1,
+"next": "/chembl/api/data/atc_class.json?limit=1&offset=1&level4=A10BJ",
+"offset": 0,
+"previous": null,
+"total_count": 7
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/molecule.json?limit=1&pref_name__iexact=RIFAMPICIN": {
+"status": 200,
+"json": {
+"molecules": [],
+"page_meta": {
+"limit": 1,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 0
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/molecule.json?limit=1&pref_name__iexact=RIFAMPIN": {
+"status": 200,
+"json": {
+"molecules": [
+{
+"atc_classifications": [
+"J04AB02"
+],
+"availability_type": 1,
+"biotherapeutic": null,
+"black_box_warning": 0,
+"chemical_probe": 0,
+"chirality": 1,
+"cross_references": [
+{
+"xref_id": "rifampin",
+"xref_name": "rifampin",
+"xref_src": "DailyMed"
+}
+],
+"dosed_ingredient": true,
+"first_approval": 1971,
+"first_in_class": 0,
+"helm_notation": null,
+"inorganic_flag": 0,
+"max_phase": "4.0",
+"molecule_chembl_id": "CHEMBL374478",
+"molecule_hierarchy": {
+"active_chembl_id": "CHEMBL374478",
+"molecule_chembl_id": "CHEMBL374478",
+"parent_chembl_id": "CHEMBL374478"
+},
+"molecule_properties": {
+"alogp": "4.34",
+"aromatic_rings": 2,
+"full_molformula": "C43H58N4O12",
+"full_mwt": "822.95",
+"hba": 15,
+"hbd": 6,
+"heavy_atoms": 59,
+"mw_freebase": "822.95",
+"np_likeness_score": "1.66",
+"num_ro5_violations": 3,
+"psa": "220.15",
+"qed_weighted": "0.11",
+"ro3_pass": "N",
+"rtb": 4
+},
+"molecule_structures": {
+"canonical_smiles": "CO[C@H]1/C=C/O[C@@]2(C)Oc3c(C)c(O)c4c(O)c(c(/C=N/N5CCN(C)CC5)c(O)c4c3C2=O)NC(=O)/C(C)=C\\C=C\\[C@H](C)[C@H](O)[C@@H](C)[C@@H](O)[C@@H](C)[C@H](OC(C)=O)[C@@H]1C",
+"molfile": "\n     RDKit          2D\n\n 59 63  0  0  0  0  0  0  0  0999 V2000\n    8.3750  -22.8792    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5500  -21.6250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5500  -22.4667    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.6625  -22.4667    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.0875  -21.6250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.0875  -22.4667    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.1917  -23.6833    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.2667  -21.2083    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    7.0250  -22.8792    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8292  -21.2083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8292  -22.8792    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.3750  -21.2083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.1542  -23.6833    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.6625  -21.6250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9333  -20.3792    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.2667  -20.3792    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.6625  -19.9375    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.3750  -18.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.6625  -19.1208    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.2667  -22.8792    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9333  -21.2083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.6917  -22.8792    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    9.0875  -19.1208    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.9667  -22.4667    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n   12.0083  -19.9375    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.2500  -23.6833    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    6.2375  -19.9417    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   14.1083  -23.7125    0.0000 N   0  0  0  0  0  0  0  0  0  0  0  0\n    5.8917  -23.0750    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.4125  -19.9417    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.2250  -22.4667    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.2250  -21.6250    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   11.2667  -18.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.5625  -24.3875    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   12.0083  -19.1208    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5500  -19.9667    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   12.6833  -23.7000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.3958  -22.4667    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8292  -18.7500    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   10.5500  -19.1208    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.9708  -19.2458    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8292  -20.3833    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8292  -23.7000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    8.3750  -20.3833    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n   14.1083  -22.8917    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   13.3875  -24.1125    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9333  -18.7458    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    9.0875  -19.9417    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    7.1917  -24.5083    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    7.6625  -20.8042    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.3750  -19.5208    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    8.3750  -17.9292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.5083  -21.2208    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0\n    6.9333  -22.0292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   14.8167  -24.1292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n   12.7250  -20.3417    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    5.0125  -20.6583    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    9.8292  -17.9292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n    4.7917  -21.6292    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n  2  3  1  0\n  3 11  2  0\n  4  1  2  0\n  5  6  2  0\n  6  1  1  0\n  7 13  1  0\n  8  2  1  0\n  9  4  1  0\n 10  5  1  0\n 11  6  1  0\n 12  5  1  0\n 13  1  1  0\n 14  4  1  0\n 15 21  1  0\n 16  8  1  0\n 17 15  1  0\n 18 19  1  0\n 19 17  1  0\n 20  3  1  0\n 21 32  1  0\n 22 24  1  0\n 23 18  1  0\n 24 20  2  0\n 25 16  1  0\n 26  7  1  0\n 15 27  1  1\n 28 45  1  0\n 29 26  1  0\n 30 27  1  0\n 31 29  2  0\n 32 31  1  0\n 33 35  1  0\n 34 13  2  0\n 35 25  2  0\n 36 16  2  0\n 37 22  1  0\n 38 22  1  0\n 39 40  1  0\n 40 33  2  0\n 41 30  2  0\n 42 10  1  0\n 43 11  1  0\n 44 12  1  0\n 45 38  1  0\n 46 37  1  0\n 19 47  1  6\n 23 48  1  6\n  7 49  1  6\n 50 14  1  0\n 17 51  1  1\n 18 52  1  6\n 32 53  1  6\n 21 54  1  6\n 55 28  1  0\n 56 25  1  0\n 57 30  1  0\n 39 58  1  1\n 59 53  1  0\n 12 14  2  0\n  7  9  1  0\n  2 10  2  0\n 28 46  1  0\n 23 39  1  0\nM  END\n> <chembl_id>\nCHEMBL374478\n\n> <chembl_pref_name>\nRIFAMPIN",
+"standard_inchi": "InChI=1S/C43H58N4O12/c1-21-12-11-13-22(2)42(55)45-33-28(20-44-47-17-15-46(9)16-18-47)37(52)30-31(38(33)53)36(51)26(6)40-32(30)41(54)43(8,59-40)57-19-14-29(56-10)23(3)39(58-27(7)48)25(5)35(50)24(4)34(21)49/h11-14,19-21,23-25,29,34-35,39,49-53H,15-18H2,1-10H3,(H,45,55)/b12-11+,19-14+,22-13-,44-20+/t21-,23+,24+,25+,29-,34-,35+,39+,43-/m0/s1",
+"standard_inchi_key": "JQXXHWHPUNPDRT-WLSIYKJHSA-N"
+},
+"molecule_synonyms": [
+{
+"molecule_synonym": "Abrifam",
+"syn_type": "OTHER",
+"synonyms": "ABRIFAM"
+},
+{
+"molecule_synonym": "BA 411661E",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "BA 411661E"
+},
+{
+"molecule_synonym": "BA 41166/E",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "BA 41166/E"
+},
+{
+"molecule_synonym": "BA-41166/E",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "BA-41166/E"
+},
+{
+"molecule_synonym": "BA-41166E",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "BA-41166E"
+},
+{
+"molecule_synonym": "Eremfat",
+"syn_type": "TRADE_NAME",
+"synonyms": "EREMFAT"
+},
+{
+"molecule_synonym": "L-5103",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "L-5103"
+},
+{
+"molecule_synonym": "L-5103 LEPETIT",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "L-5103 LEPETIT"
+},
+{
+"molecule_synonym": "L-5103-LEPETIT",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "L-5103-LEPETIT"
+},
+{
+"molecule_synonym": "NIH-10782",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "NIH-10782"
+},
+{
+"molecule_synonym": "NSC-113926",
+"syn_type": "RESEARCH_CODE",
+"synonyms": "NSC-113926"
+},
+{
+"molecule_synonym": "Rifa",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIFA"
+},
+{
+"molecule_synonym": "Rifadin",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIFADIN"
+},
+{
+"molecule_synonym": "Rifadine",
+"syn_type": "OTHER",
+"synonyms": "RIFADINE"
+},
+{
+"molecule_synonym": "Rifaldazine",
+"syn_type": "OTHER",
+"synonyms": "RIFALDAZINE"
+},
+{
+"molecule_synonym": "Rifaldin",
+"syn_type": "OTHER",
+"synonyms": "RIFALDIN"
+},
+{
+"molecule_synonym": "Rifampicin",
+"syn_type": "ATC",
+"synonyms": "RIFAMPICIN"
+},
+{
+"molecule_synonym": "Rifampicin",
+"syn_type": "BAN",
+"synonyms": "RIFAMPICIN"
+},
+{
+"molecule_synonym": "Rifampicin",
+"syn_type": "BNF",
+"synonyms": "RIFAMPICIN"
+},
+{
+"molecule_synonym": "Rifampicin",
+"syn_type": "INN",
+"synonyms": "RIFAMPICIN"
+},
+{
+"molecule_synonym": "Rifampicin",
+"syn_type": "JAN",
+"synonyms": "RIFAMPICIN"
+},
+{
+"molecule_synonym": "Rifampicin",
+"syn_type": "OTHER",
+"synonyms": "RIFAMPICIN"
+},
+{
+"molecule_synonym": "Rifampicina",
+"syn_type": "INN_SPANISH",
+"synonyms": "RIFAMPICINA"
+},
+{
+"molecule_synonym": "Rifampicine",
+"syn_type": "INN_FRENCH",
+"synonyms": "RIFAMPICINE"
+},
+{
+"molecule_synonym": "Rifampicinum",
+"syn_type": "OTHER",
+"synonyms": "RIFAMPICINUM"
+},
+{
+"molecule_synonym": "Rifampin",
+"syn_type": "FDA",
+"synonyms": "RIFAMPIN"
+},
+{
+"molecule_synonym": "Rifampin",
+"syn_type": "MERCK_INDEX",
+"synonyms": "RIFAMPIN"
+},
+{
+"molecule_synonym": "Rifampin",
+"syn_type": "OTHER",
+"synonyms": "RIFAMPIN"
+},
+{
+"molecule_synonym": "Rifampin",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIFAMPIN"
+},
+{
+"molecule_synonym": "Rifampin",
+"syn_type": "USAN",
+"synonyms": "RIFAMPIN"
+},
+{
+"molecule_synonym": "Rifampin",
+"syn_type": "USP",
+"synonyms": "RIFAMPIN"
+},
+{
+"molecule_synonym": "Rifampin component of rifamate",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIFAMPIN COMPONENT OF RIFAMATE"
+},
+{
+"molecule_synonym": "Rifampin component of rifater",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIFAMPIN COMPONENT OF RIFATER"
+},
+{
+"molecule_synonym": "Rifamycin amp",
+"syn_type": "MERCK_INDEX",
+"synonyms": "RIFAMYCIN AMP"
+},
+{
+"molecule_synonym": "Rifapiam",
+"syn_type": "OTHER",
+"synonyms": "RIFAPIAM"
+},
+{
+"molecule_synonym": "Rifaprodin",
+"syn_type": "OTHER",
+"synonyms": "RIFAPRODIN"
+},
+{
+"molecule_synonym": "Rifoldin",
+"syn_type": "OTHER",
+"synonyms": "RIFOLDIN"
+},
+{
+"molecule_synonym": "Rimactan",
+"syn_type": "OTHER",
+"synonyms": "RIMACTAN"
+},
+{
+"molecule_synonym": "Rimactane",
+"syn_type": "TRADE_NAME",
+"synonyms": "RIMACTANE"
+}
+],
+"molecule_type": "Small molecule",
+"natural_product": 1,
+"oral": true,
+"orphan": 0,
+"parenteral": true,
+"polymer_flag": 0,
+"pref_name": "RIFAMPIN",
+"prodrug": 0,
+"structure_type": "MOL",
+"therapeutic_flag": true,
+"topical": false,
+"usan_stem": "-pin; rifa-",
+"usan_stem_definition": "tricyclic compounds; antibiotics (rifamycin derivatives)",
+"usan_substem": "-pin; rifa-",
+"usan_year": 1968,
+"veterinary": 0,
+"withdrawn_flag": false
+}
+],
+"page_meta": {
+"limit": 1,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/mechanism.json?limit=20&molecule_chembl_id=CHEMBL374478": {
+"status": 200,
+"json": {
+"mechanisms": [
+{
+"action_type": "INHIBITOR",
+"binding_site_comment": "Beta subunit is binding site",
+"direct_interaction": 1,
+"disease_efficacy": 1,
+"max_phase": 4,
+"mec_id": 1386,
+"mechanism_comment": null,
+"mechanism_of_action": "Bacterial DNA-directed RNA polymerase inhibitor",
+"mechanism_refs": [
+{
+"ref_id": "11290327",
+"ref_type": "PubMed",
+"ref_url": "http://europepmc.org/abstract/MED/11290327"
+},
+{
+"ref_id": "20185278",
+"ref_type": "PubMed",
+"ref_url": "http://europepmc.org/abstract/MED/20185278"
+},
+{
+"ref_id": "4942761",
+"ref_type": "PubMed",
+"ref_url": "http://europepmc.org/abstract/MED/4942761"
+},
+{
+"ref_id": "Rifampin#Mechanism_of_action",
+"ref_type": "Wikipedia",
+"ref_url": "http://en.wikipedia.org/wiki/Rifampin#Mechanism_of_action"
+}
+],
+"molecular_mechanism": 1,
+"molecule_chembl_id": "CHEMBL374478",
+"parent_molecule_chembl_id": "CHEMBL374478",
+"record_id": 1344108,
+"selectivity_comment": null,
+"site_id": 2638,
+"target_chembl_id": "CHEMBL2364672",
+"variant_sequence": null
+}
+],
+"page_meta": {
+"limit": 20,
+"next": null,
+"offset": 0,
+"previous": null,
+"total_count": 1
+}
+}
+},
+"https://www.ebi.ac.uk/chembl/api/data/atc_class/J04AB02.json?": {
+"status": 200,
+"json": {
+"level1": "J",
+"level1_description": "ANTIINFECTIVES FOR SYSTEMIC USE",
+"level2": "J04",
+"level2_description": "ANTIMYCOBACTERIALS",
+"level3": "J04A",
+"level3_description": "DRUGS FOR TREATMENT OF TUBERCULOSIS",
+"level4": "J04AB",
+"level4_description": "Antibiotics",
+"level5": "J04AB02",
+"who_name": "rifampicin"
+}
+}
+},
+"ema_rows": [
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "Linerixibat",
+"international_non_proprietary_name_common_name": "Linerixibat",
+"name_of_medicine": "Lynavoy",
+"atc_code_human": "A05AX",
+"therapeutic_indication": "Lynavoy is indicated for the treatment of cholestatic pruritus in adult patients with primary biliary cholangitis (PBC).",
+"marketing_authorisation_date": "22/10/2026",
+"generic": "No",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/lynavoy"
+},
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "methotrexate",
+"international_non_proprietary_name_common_name": "methotrexate",
+"name_of_medicine": "Nordimet",
+"atc_code_human": "L04AX03",
+"therapeutic_indication": "Nordimet is indicated for the treatment of:  active rheumatoid arthritis in adult patients, polyarthritic forms of severe, active juvenile idiopathic arthritis (JIA), when the response to nonsteroidal anti-inflammatory drugs (NSAIDs) has been inadequate, moderate to severe plaque&nbsp;psoriasis in adults who are candidates&nbsp;for systemic therapy, and severe psoriatic arthritis in adult patients,&nbsp; induction of remission in moderate steroid-dependent Crohn's disease in adult patients, in combination with corticosteroids and for maintenance of remission, as monotherapy, in patients who have responded to methotrexate.",
+"marketing_authorisation_date": "18/08/2016",
+"generic": "No",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/nordimet"
+},
+{
+"category": "Human",
+"medicine_status": "Opinion",
+"active_substance": "Orforglipron hemicalcium",
+"international_non_proprietary_name_common_name": "Orforglipron",
+"name_of_medicine": "Foundayo",
+"atc_code_human": "A10BJ",
+"therapeutic_indication": "Treatment of obesity and type 2 diabetes mellitus in adults",
+"marketing_authorisation_date": "",
+"generic": "No",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/foundayo"
+},
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "rivaroxaban",
+"international_non_proprietary_name_common_name": "rivaroxaban",
+"name_of_medicine": "Svariya (previously Rivaroxaban Koanaa)",
+"atc_code_human": "B01AF01",
+"therapeutic_indication": "Prevention of venous thromboembolism (VTE) in adult patients undergoing elective hip or knee replacement surgery. Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients). Prevention of atherothrombotic events Adults prevention of stroke and systemic embolism in adult patients with non-valvular atrial fibrillation with one or more risk factors, such as congestive heart failure, hypertension, age ≥ 75 years, diabetes mellitus, prior stroke or transient ischaemic attack.&nbsp; Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients.)&nbsp; Paediatric population Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing more than 50 kg after at least 5 days of initial parenteral anticoagulation treatment. Adults prevention of stroke and systemic embolism in adult patients with non-valvular atrial fibrillation with one or more risk factors, such as congestive heart failure, hypertension, age ≥ 75 years, diabetes mellitus, prior stroke or transient ischaemic attack.&nbsp; Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients).&nbsp; Paediatric population Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing from 30 kg to 50 kg after at least 5 days of initial parenteral anticoagulation treatment. Svariya films should not be prescribed for patients with body weight less than 30 kg.",
+"marketing_authorisation_date": "21/11/2025",
+"generic": "Yes",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/svariya"
+},
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "rivaroxaban",
+"international_non_proprietary_name_common_name": "rivaroxaban",
+"name_of_medicine": "Xarelto",
+"atc_code_human": "B01AF01",
+"therapeutic_indication": "Xarelto, co-administered with acetylsalicylic acid (ASA) alone or with ASA plus clopidogrel or ticlopidine, is indicated for the prevention of atherothrombotic events in adult patients after an acute coronary syndrome (ACS) with elevated cardiac biomarkers. Xarelto, co-administered with acetylsalicylic acid (ASA), is indicated for the prevention of atherothrombotic events in adult patients with coronary artery disease (CAD) or symptomatic peripheral artery disease (PAD) at high risk of ischaemic events. Prevention of venous thromboembolism (VTE) in adult patients undergoing elective hip or knee replacement surgery. Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. Adults Prevention of stroke and systemic embolism in adult patients with non-valvular atrial fibrillation with one or more risk factors, such as congestive heart failure, hypertension, age ? 75 years, diabetes mellitus, prior stroke or transient ischaemic attack. Paediatric population  Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing from 30 kg to 50 kg after at least 5 days of initial parenteral anticoagulation treatment. Paediatric population  Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing more than 50 kg after at least 5 days of initial parenteral anticoagulation treatment.",
+"marketing_authorisation_date": "30/09/2008",
+"generic": "No",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/xarelto"
+},
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "methotrexate",
+"international_non_proprietary_name_common_name": "methotrexate",
+"name_of_medicine": "Jylamvo",
+"atc_code_human": "L04AX03",
+"therapeutic_indication": "In rheumatological and dermatological diseases  Active rheumatoid arthritis in adult patients. Polyarthritic forms of active, severe juvenile idiopathic arthritis (JIA) in adolescents and children aged 3 years and over when the response to non-steroidal anti-inflammatory drugs (NSAIDs) has been inadequate. Severe, treatment-refractory, disabling psoriasis which does not respond sufficiently to other forms of treatment such as phototherapy, psoralen and ultraviolet A radiation (PUVA) therapy and retinoids, and severe psoriatic arthritis in adult patients.  In oncology  Maintenance treatment of acute lymphoblastic leukaemia (ALL) in adults, adolescents and children aged 3 years and over.",
+"marketing_authorisation_date": "29/03/2017",
+"generic": "No",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/jylamvo"
+},
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "rivaroxaban",
+"international_non_proprietary_name_common_name": "rivaroxaban",
+"name_of_medicine": "Rivaroxaban Viatris (previously Rivaroxaban Mylan)",
+"atc_code_human": "B01AF01",
+"therapeutic_indication": "Rivaroxaban Mylan co-administered with acetylsalicylic acid (ASA) alone or with ASA plus clopidogrel or ticlopidine, is indicated for the prevention of atherothrombotic events in adult patients after an acute coronary syndrome (ACS) with elevated cardiac biomarkers.&nbsp; Rivaroxaban Mylan co-administered with acetylsalicylic acid (ASA), is indicated for the prevention of atherothrombotic events in adult patients with coronary artery disease (CAD) or symptomatic peripheral artery disease (PAD) at high risk of ischaemic events.&nbsp; ------ Prevention of venous thromboembolism (VTE) in adult patients undergoing elective hip or knee replacement surgery.&nbsp; Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. ------- Adults&nbsp; Prevention of stroke and systemic embolism in adult &nbsp; patients with non-valvular atrial fibrillation with one or more risk factors, such as congestive heart failure, hypertension, age ? 75 years, diabetes mellitus, prior stroke or transient ischaemic attack. Paediatric population&nbsp; Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing from 30 kg to 50 kg after at least 5 days of initial parenteral anticoagulation treatment. Paediatric population&nbsp; Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing more than 50 kg after at least 5 days of initial parenteral anticoagulation treatment. &nbsp;",
+"marketing_authorisation_date": "12/11/2021",
+"generic": "Yes",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rivaroxaban-viatris"
+},
+{
+"category": "Human",
+"medicine_status": "Authorised",
+"active_substance": "rivaroxaban",
+"international_non_proprietary_name_common_name": "rivaroxaban",
+"name_of_medicine": "Rivaroxaban Accord",
+"atc_code_human": "B01AF01",
+"therapeutic_indication": "Prevention of venous thromboembolism (VTE) in adult patients undergoing elective hip or knee replacement surgery. Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients. Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients). Adults Prevention of stroke and systemic embolism in adult patients with non valvular atrial fibrillation with one or more risk factors, such as congestive heart failure, hypertension, age ? 75 years, diabetes mellitus, prior stroke or transient ischaemic attack. Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients.) Paediatric population Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing from 30 kg to 50 kg after at least 5 days of initial parenteral anticoagulation treatment. Rivaroxaban Accord, co administered with acetylsalicylic acid (ASA) alone or with ASA plus ticlopidine, is indicated for the prevention of atherothrombotic events in adult patients after an acute coronary syndrome (ACS) with elevated cardiac biomarkers (see sections 4.3, 4.4 and 5.1). Rivaroxaban Accord, co administered with acetylsalicylic acid (ASA), is indicated for the prevention of atherothrombotic events in adult patients with coronary artery disease (CAD) or symptomatic peripheral artery disease (PAD) at high risk of ischaemic events. Adults Prevention of stroke and systemic embolism in adult patients with non-valvular atrial fibrillation with one or more risk factors, such as congestive heart failure, hypertension, age ? 75 years, diabetes mellitus, prior stroke or transient ischaemic attack. Treatment of deep vein thrombosis (DVT) and pulmonary embolism (PE), and prevention of recurrent DVT and PE in adults. (See section 4.4 for haemodynamically unstable PE patients.) Paediatric population Treatment of venous thromboembolism (VTE) and prevention of VTE recurrence in children and adolescents aged less than 18 years and weighing more than 50 kg after at least 5 days of initial parenteral anticoagulation treatment.",
+"marketing_authorisation_date": "16/11/2020",
+"generic": "Yes",
+"biosimilar": "No",
+"medicine_url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rivaroxaban-accord"
+}
+]
+}

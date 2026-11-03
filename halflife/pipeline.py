@@ -3,13 +3,14 @@
 import json
 import logging
 from datetime import date
+from urllib.parse import quote
 
 import numpy as np
 import pandas as pd
 
 from halflife import config, history, schedule, source_log, topics
 from halflife.interactions import cyp, figures as ifig, model
-from halflife.molecules import figures as mfig, properties, pubchem, structure
+from halflife.molecules import drug_info, figures as mfig, properties, pubchem, structure
 from halflife.notify import ntfy
 from halflife.report import overview, poster
 from halflife.sources.collect import collect_all
@@ -70,32 +71,71 @@ def discovery_molecule(cards, demo: bool) -> pubchem.Compound | None:
     return None
 
 
-def pick_molecule(cards, demo: bool) -> pubchem.Compound | None:
+def pick_molecule(cards, pair: tuple[str, str], demo: bool) -> tuple[pubchem.Compound | None, str]:
+    """The molecule, and where it comes from: the Discovery card, today's interaction, or the FDA table.
+    It should never feel random, so anything picked here has a reason the screen can state."""
     found = discovery_molecule(cards, demo)
     if found:
-        return found
-    candidates = [d for c in cards for d in c.drugs]
+        return found, "discovery"
     if demo:
         samples = set(pubchem.sample_names())
-        for d in candidates:
+        for d in pair:
             if d.lower() in samples:
-                return pubchem.load_sample(d)
+                return pubchem.load_sample(d), "interaction"
         names = pubchem.sample_names()
-        return pubchem.load_sample(names[date.today().toordinal() % len(names)])
+        return pubchem.load_sample(names[date.today().toordinal() % len(names)]), "sample"
 
-    # live: first drug from the news that PubChem knows, otherwise rotate through the FDA table
-    for d in candidates:
+    for d in pair:
         try:
-            return pubchem.fetch(d)
+            comp = pubchem.fetch(d)
+            if small_enough(comp):
+                return comp, "interaction"
         except Exception as e:
             log.info("PubChem miss for %s: %s", d, e)
-    drugs = cyp.all_drugs()
+    drugs = [d for d in cyp.all_drugs() if " and " not in d and d.lower() not in cyp.VAGUE]
     for k in range(5):
         try:
-            return pubchem.fetch(drugs[(date.today().toordinal() + k) % len(drugs)])
+            return pubchem.fetch(drugs[(date.today().toordinal() + k) % len(drugs)]), "fda_table"
         except Exception:
             continue
-    return None
+    return None, "none"
+
+
+def _long_date(iso: str) -> str:
+    day = date.fromisoformat(iso)
+    return f"{day.day} {day:%B %Y}"
+
+
+def why_today(kind: str, name: str, cards, items, pair: tuple[str, str]) -> dict:
+    """The line under the name, and the link behind it when there is one."""
+    if kind == "discovery":
+        key = name.lower()
+        card = next((c for c in cards if c.lane == "discovery" and key in (d.lower() for d in c.drugs)), None)
+        item = next((i for i in items if card and i.url == card.url), None)
+        if card and item and item.date:
+            verbs = {"EU authorisation": ("eu_authorised", "Authorised in the EU"),
+                     "CHMP opinion": ("ema_opinion", "Recommended by EMA"),
+                     "Novel drug approval": ("fda_approved", "Approved by the FDA")}
+            reason, text = verbs.get(item.journal, (None, None))
+            if reason:
+                return {"kind": reason, "text": f"{text} on {_long_date(item.date)}", "url": card.url}
+        return {"kind": "discovery", "text": "From today's Discovery card", "url": card.url if card else None}
+    if kind == "interaction":
+        return {"kind": "interaction", "text": f"In today's interaction: {pair[0]} and {pair[1]}",
+                "url": f"#lab?a={quote(pair[0])}&b={quote(pair[1])}"}
+    if kind == "fda_table":
+        return {"kind": "fda_table", "text": "From the FDA interaction table", "url": None}
+    return {"kind": kind, "text": "From the saved samples", "url": None}
+
+
+def _fda_use(name: str, cards, items) -> tuple[str, str]:
+    # only the FDA card knows the approved use, and only for a drug that came in through it
+    for c in cards:
+        if name.lower() in (d.lower() for d in c.drugs):
+            for i in items:
+                if i.url == c.url and i.extra.get("use"):
+                    return i.extra["use"], i.url
+    return "", ""
 
 
 def _image_url(figs_dir, day: date) -> str:
@@ -125,16 +165,22 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
 
     # 2. molecule of the day
     figures, molecule = {}, None
-    comp = pick_molecule(cards, demo)
+    a, b = pick_pair(cards, day)
+    comp, why_kind = pick_molecule(cards, (a, b), demo)
     if comp:
         figures["molecule"] = figs_dir / "molecule.png"
         mfig.property_figure(comp.name, comp.smiles, figures["molecule"])
         mfig.structure_png(comp.smiles, figs_dir / "structure_2d.png")
         molecule = {"name": comp.name, "smiles": comp.smiles, "source": comp.source, "url": comp.url,
-                    **properties.describe(comp.smiles)}
+                    **properties.describe(comp.smiles), "reason": why_today(why_kind, comp.name, cards, items, (a, b))}
+        if not demo:  # the demo has to work without internet
+            info = drug_info.lookup(comp.name, *_fda_use(comp.name, cards, items))
+            for problem in info.pop("problems"):
+                log.warning("Molecule section: %s", problem)
+                status["errors"][problem.split(" failed")[0]] = problem
+            molecule.update(info)
 
     # 3. interaction of the day
-    a, b = pick_pair(cards, day)
     findings = cyp.check_pair(a, b)
     transporter_findings = cyp.check_transporters(a, b)
     figures["network"] = figs_dir / "interaction_network.png"

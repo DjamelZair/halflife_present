@@ -118,7 +118,7 @@ async function load() {
     brief = loadedBrief;
     structure = molecule;
     renderToday(brief, molecule, cyp);
-    renderMoleculeScreen(brief.molecule, molecule);
+    renderMoleculeScreen(brief.molecule, molecule, cyp);
     if (cyp && model) {
       setupLab(cyp, model);
       labReady = true;
@@ -130,7 +130,7 @@ async function load() {
   } catch (e) {
     console.warn("Could not load the brief:", e);
     renderTodayError();
-    renderMoleculeScreen(null, null);
+    renderMoleculeScreen(null, null, null);
     labUnavailable();
     startScene(null);
   }

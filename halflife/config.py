@@ -17,6 +17,7 @@ SOURCE_HISTORY = OUTPUT_ROOT / "source_history.csv"  # items per source per day,
 CYP_TABLE = DATA_DIR / "cyp_reference.csv"
 TRANSPORTER_TABLE = DATA_DIR / "transporter_reference.csv"
 BRIEF_SCHEMA = DATA_DIR / "brief.schema.json"
+ATC_TABLE = DATA_DIR / "atc_reference.csv"
 
 # clean white look with dark navy as the main colour, he likes navy
 # one place to change it, everything else reads from here

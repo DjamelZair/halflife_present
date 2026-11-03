@@ -7,6 +7,7 @@ the CHMP highlights page, and it already has the INN, the indication and flags l
 import html
 import re
 from datetime import date, timedelta
+from functools import lru_cache
 
 import requests
 
@@ -102,8 +103,14 @@ def parse_medicines(rows: list[dict], since: str) -> list[Item]:
     return items
 
 
-def fetch(days: int = config.DISCOVERY_LOOKBACK_DAYS) -> list[Item]:
-    r = requests.get(MEDICINES_JSON, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT * 2)  # about 7 MB
+@lru_cache(maxsize=1)
+def medicines() -> list[dict]:
+    # about 7 MB, and the molecule section needs it too, so once per run is plenty
+    r = requests.get(MEDICINES_JSON, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT * 2)
     r.raise_for_status()
+    return r.json()["data"]
+
+
+def fetch(days: int = config.DISCOVERY_LOOKBACK_DAYS) -> list[Item]:
     since = (date.today() - timedelta(days=days)).isoformat()
-    return parse_medicines(r.json()["data"], since)
+    return parse_medicines(medicines(), since)

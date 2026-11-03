@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import date
 
 import pytest
+import requests
 
 from halflife import config
 from halflife.interactions import cyp, model
@@ -1016,3 +1017,180 @@ def test_every_transporter_on_the_page_is_covered():
     assert set(t["transporter"]) == set(TRANSPORTERS)
     assert (t.groupby(["transporter", "role"]).size() > 0).all()
     assert {"inhibitor", "substrate"} == set(t[t["transporter"] == "OAT3"]["role"])
+
+
+# the molecule section. recorded from the live sources on 3 November 2026, tests/fixtures_drug_info.json
+
+class _Recorded:
+    def __init__(self, entry):
+        self.status_code = entry["status"]
+        self.text = entry.get("text", "")
+        self._json = entry.get("json")
+
+    def json(self):
+        return self._json
+
+    def raise_for_status(self):
+        if self.status_code >= 400:
+            raise requests.HTTPError(str(self.status_code))
+
+
+@pytest.fixture
+def recorded(monkeypatch):
+    from halflife.molecules import drug_info
+    from halflife.sources import ema
+    data = json.loads((config.ROOT / "tests/fixtures_drug_info.json").read_text(encoding="utf-8"))
+    drug_info._atc_record.cache_clear()
+
+    def fake_get(url, params=None, **kwargs):
+        key = url + "?" + "&".join(f"{a}={b}" for a, b in sorted((params or {}).items()))
+        return _Recorded(data["http"][key])
+    monkeypatch.setattr(drug_info.requests, "get", fake_get)
+    monkeypatch.setattr(ema, "medicines", lambda: data["ema_rows"])
+    yield drug_info
+    drug_info._atc_record.cache_clear()
+
+
+def test_rivaroxaban_has_everything(recorded):
+    info = recorded.lookup("rivaroxaban")
+    assert info["atc_status"] == "assigned" and info["atc_source"] == "ChEMBL"
+    atc = info["atc"][0]
+    assert atc["code"] == "B01AF01" and atc["substance"] == "rivaroxaban"
+    assert [lv["code"] for lv in atc["levels"]] == ["B", "B01", "B01A", "B01AF"]
+    assert atc["levels"][0]["name"] == "Blood and blood forming organs"  # ChEMBL shouts this
+    assert atc["levels"][3]["name"] == "Direct factor Xa inhibitors"
+    text = info["used_for"]["text"]
+    assert text.startswith("Rivaroxaban is an anticoagulant medicine") and "deep vein thrombosis" in text
+    assert "Xarelto" not in text and "aspirin" not in text and "acetylsalicylic acid" in text  # INN only
+    assert info["used_for"]["source"].startswith("EMA summary") and info["used_for"]["url"].endswith("xarelto")  # the original, not a generic
+    assert [m["text"] for m in info["mechanisms"]] == ["Coagulation factor X inhibitor"]
+    assert info["problems"] == []
+
+
+def test_methotrexate_shows_every_atc_code(recorded):
+    info = recorded.lookup("methotrexate")
+    assert {a["code"] for a in info["atc"]} == {"L04AX03", "L01BA01"}
+    words = {a["code"]: a["levels"][3]["name"] for a in info["atc"]}
+    assert words == {"L04AX03": "Other immunosuppressants", "L01BA01": "Folic acid analogues"}
+    assert [m["text"] for m in info["mechanisms"]] == ["Dihydrofolate reductase inhibitor"]
+    assert "Nordimet" not in info["used_for"]["text"]
+    assert "one medicine" in info["used_for"]["source"]  # it describes one product, not all uses of the substance
+
+
+def test_linerixibat_new_in_the_eu_gets_a_partial_code_from_ema(recorded):
+    info = recorded.lookup("linerixibat")
+    assert info["atc_source"] == "EMA"  # ChEMBL has no code yet
+    atc = info["atc"][0]
+    assert atc["code"] == "A05AX" and atc["substance"] is None
+    assert [lv["code"] for lv in atc["levels"]] == ["A", "A05", "A05A", "A05AX"]
+    assert info["used_for"]["text"].startswith("Linerixibat is a medicine used in adults") and "Lynavoy" not in info["used_for"]["text"]
+    assert [m["text"] for m in info["mechanisms"]] == ["Ileal bile acid transporter inhibitor"]
+
+
+def test_orforglipron_has_only_what_is_known(recorded):
+    info = recorded.lookup("orforglipron")
+    assert info["atc"][0]["code"] == "A10BJ" and info["atc"][0]["substance"] is None
+    assert info["used_for"] == {"text": "Treatment of obesity and type 2 diabetes mellitus in adults", "source": "EMA indication",
+                                "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/foundayo"}  # an opinion has no plain summary yet
+    assert info["mechanisms"] == []  # missing, so left out
+
+
+def test_chembl_is_asked_for_the_us_name(recorded):
+    info = recorded.lookup("rifampicin")  # filed as RIFAMPIN
+    assert info["atc"][0]["code"] == "J04AB02"
+    assert info["used_for"] is None  # not in EMA's data, nothing invented
+
+
+def _down(*args, **kwargs):
+    raise requests.ConnectionError("down")
+
+
+def test_not_assigned_is_only_said_when_both_sources_looked(monkeypatch):
+    from halflife.molecules import drug_info
+    from halflife.sources import ema
+    monkeypatch.setattr(drug_info, "find_molecule", lambda name: {"atc_classifications": [], "molecule_chembl_id": "CHEMBL1"})
+    monkeypatch.setattr(drug_info, "mechanisms", lambda cid: [])
+    monkeypatch.setattr(ema, "medicines", lambda: [])
+    assert drug_info.lookup("newdrug")["atc_status"] == "none"
+    monkeypatch.setattr(drug_info, "find_molecule", _down)
+    down = drug_info.lookup("newdrug")
+    assert down["atc_status"] == "unknown" and down["atc"] == [] and "ChEMBL failed" in down["problems"][0]
+
+
+def test_an_fda_drug_uses_the_approved_use(monkeypatch):
+    from halflife.molecules import drug_info
+    from halflife.sources import ema
+    monkeypatch.setattr(drug_info, "find_molecule", lambda name: None)
+    monkeypatch.setattr(ema, "medicines", lambda: [])
+    info = drug_info.lookup("pritelivir", "treat herpes lesions", "https://fda.example/p")
+    assert info["used_for"] == {"text": "Treat herpes lesions", "source": "FDA approved use", "url": "https://fda.example/p"}
+
+
+def test_atc_words_keep_their_acronyms():
+    from halflife.molecules.drug_info import _sentence_case
+    assert _sentence_case("PSYCHOSTIMULANTS, AGENTS USED FOR ADHD AND NOOTROPICS") == "Psychostimulants, agents used for ADHD and nootropics"
+    assert _sentence_case("Direct factor Xa inhibitors") == "Direct factor Xa inhibitors"  # not shouting, left alone
+
+
+def test_overview_includes_the_list_it_leads_into():
+    from halflife.molecules.drug_info import parse_overview
+    page = """<h2>Overview</h2><div><p>Drug is used:</p><ul><li>to treat A;</li><li>to treat B.</li></ul>
+              <p>Second paragraph stays out.</p></div><h2>How is it used?</h2><p>No.</p>"""
+    assert parse_overview(page) == "Drug is used: to treat A; to treat B."
+    assert parse_overview("<h2>Other</h2><p>x</p>") == ""
+
+
+# why today
+
+def _reason_item(source, journal, url, day="2026-10-22"):
+    return Item(source=source, title="t", abstract="", url=url, date=day, journal=journal, identifier=url, lane="discovery")
+
+
+def _reason_card(url, drugs=("linerixibat",), lane="discovery"):
+    from halflife.summarise.brief import Card
+    return Card(title="t", what="", why="", pkpd_hook="", source="s", url=url, peer_reviewed=True, original_title="t", drugs=list(drugs), lane=lane)
+
+
+@pytest.mark.parametrize("source,journal,kind,text", [
+    ("EMA", "EU authorisation", "eu_authorised", "Authorised in the EU on 22 October 2026"),
+    ("EMA", "CHMP opinion", "ema_opinion", "Recommended by EMA on 22 October 2026"),
+    ("FDA", "Novel drug approval", "fda_approved", "Approved by the FDA on 22 October 2026"),
+])
+def test_why_today_from_the_discovery_card(source, journal, kind, text):
+    from halflife.pipeline import why_today
+    reason = why_today("discovery", "linerixibat", [_reason_card("https://x/1")], [_reason_item(source, journal, "https://x/1")], ("a", "b"))
+    assert reason == {"kind": kind, "text": text, "url": "https://x/1"}
+
+
+def test_why_today_interaction_and_table():
+    from halflife.pipeline import why_today
+    pair = ("omeprazole", "phenytoin")
+    interaction = why_today("interaction", "omeprazole", [], [], pair)
+    assert interaction["text"] == "In today's interaction: omeprazole and phenytoin"
+    assert interaction["url"] == "#lab?a=omeprazole&b=phenytoin"
+    assert why_today("fda_table", "caffeine", [], [], pair) == {"kind": "fda_table", "text": "From the FDA interaction table", "url": None}
+
+
+def test_molecule_comes_from_the_interaction_when_there_is_no_discovery_pick(monkeypatch):
+    from halflife import pipeline
+    monkeypatch.setattr(pipeline, "discovery_molecule", lambda cards, demo: None)
+    comp, kind = pipeline.pick_molecule([], ("rivaroxaban", "ceritinib"), demo=True)
+    assert comp.name.lower() == "rivaroxaban" and kind == "interaction"
+
+
+def test_molecule_fields_pass_the_schema(recorded):
+    from halflife import validate
+    info = recorded.lookup("linerixibat")
+    info.pop("problems")
+    molecule = {**GOOD_BRIEF["molecule"], **info, "reason": {"kind": "eu_authorised", "text": "Authorised in the EU on 22 October 2026", "url": "https://x"}}
+    assert validate.problems({**GOOD_BRIEF, "molecule": molecule}) == []
+    assert validate.problems({**GOOD_BRIEF, "molecule": {**molecule, "atc_status": "maybe"}})
+
+
+def test_lab_atc_table_is_complete_enough():
+    import pandas as pd
+    t = pd.read_csv(config.ATC_TABLE)
+    codes = t.groupby("drug")["atc"].apply(set)
+    assert codes["rivaroxaban"] == {"B01AF01"} and codes["methotrexate"] == {"L04AX03", "L01BA01"}
+    assert t["source"].str.contains(r"retrieved \d{4}-\d{2}-\d{2}").all()
+    assert set(t["drug"]) <= set(cyp.all_drugs())

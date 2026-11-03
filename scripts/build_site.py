@@ -75,6 +75,7 @@ def cyp_json() -> dict:
     transporters = pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)
     return {"source": df["source"].iloc[0], "url": FDA_TABLE_URL,
             "rows": df[["drug", "enzyme", "role"]].to_dict(orient="records"),
+            "atc": pd.read_csv(config.ATC_TABLE).groupby("drug")["atc"].apply(list).to_dict(),
             "transporterSource": transporters["source"].iloc[0],
             "transporters": transporters[["drug", "transporter", "role", "note"]].to_dict(orient="records")}
 

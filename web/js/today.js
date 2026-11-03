@@ -1,6 +1,6 @@
 // the Today screen, filled from brief.json. only textContent, so nothing from a feed can become markup
 
-import { formulaNodes } from "./molecule-screen.js";
+import { renderDrugInfo, renderWhyToday } from "./drug-info.js";
 
 const TOPIC_TAGS = { Interaction: "tag-interaction", TDM: "tag-tdm", Biologics: "tag-biologics" };
 const LANE_TAGS = { discovery: ["Discovery", "tag-discovery"], toxicology: ["Toxicology", "tag-toxicology"] };
@@ -43,13 +43,13 @@ function rolesOf(cyp, drug) {
   return rows.filter((r) => r.drug.toLowerCase() === drug.toLowerCase());
 }
 
-function renderMolecule(mol, cyp, structure) {
+function renderMolecule(mol, structure) {
   const name = byId("molecule-name");
-  const chips = byId("molecule-chips");
   const line = byId("molecule-line");
+  const info = byId("drug-info-today");
   if (!mol) {
     name.textContent = "No molecule today";
-    chips.hidden = true;
+    info.hidden = true;
     line.textContent = "It will be back with the next brief.";
     byId("scene").setAttribute("aria-label", "No molecule today");
     return;
@@ -58,22 +58,8 @@ function renderMolecule(mol, cyp, structure) {
   byId("scene").setAttribute("aria-label", structure
     ? `3D model of ${mol.name}. Drag sideways to turn it.`
     : `No 3D structure of ${mol.name} today.`);
-
-  // every number here is one tap away from its source
-  const link = document.createElement("a");
-  link.href = mol.url;
-  link.target = "_blank";
-  link.rel = "noopener";
-  link.append(...formulaNodes(mol.Formula), `, ${mol.source}`);
-  line.replaceChildren(link);
-
-  chips.replaceChildren(
-    chip(String(mol["Molecular weight"]), "MW"),
-    chip(String(mol.logP), "logP"),
-    chip(`${mol.TPSA} Å²`, "TPSA"),
-  );
-  const role = rolesOf(cyp, mol.name)[0];
-  if (role) chips.append(chip(`${capitalise(role.role)}, ${role.enzyme}`));
+  renderWhyToday(line, mol.reason);
+  byId("drug-info-more").hidden = !renderDrugInfo(info, mol, { clamp: true });
 }
 
 function tagFor(card) {
@@ -142,7 +128,7 @@ function showStatus(message) {
 
 export function renderToday(brief, structure, cyp) {
   renderDate(brief.date);
-  renderMolecule(brief.molecule, cyp, structure);
+  renderMolecule(brief.molecule, structure);
   renderCards(brief);
   renderPair(brief.pair, cyp);
 }
@@ -151,7 +137,7 @@ export function renderTodayError() {
   byId("molecule-name").textContent = "Halflife";
   byId("molecule-line").textContent = "A morning dose of pharmacology";
   document.querySelector(".hero .eyebrow").hidden = true;
-  byId("molecule-chips").hidden = true;
+  byId("drug-info-today").hidden = true;
   document.querySelector(".picks").hidden = true;
   showStatus("This morning's brief did not load. Check your connection and try again.");
   byId("retry").hidden = false;

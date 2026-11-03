@@ -63,7 +63,7 @@ def _rows_to_items(rows: list[dict], since: str, page_url: str) -> list[Item]:
             abstract=f"FDA novel drug approval on {r['date']}. Approved use: {r['use']}." if r["use"] else "",
             url=url, date=r["date"], journal="Novel drug approval",
             identifier=f"FDA {inn} {r['date']}",
-            extra={"drugs": [inn]},
+            extra={"drugs": [inn], "use": r["use"]},
             lane="discovery",
         ))
     return items

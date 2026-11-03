@@ -1,5 +1,7 @@
 // the Molecule screen: everything else about the molecule of the day, the 3D itself stays on the one canvas
 
+import { renderDrugInfo, renderWhyToday } from "./drug-info.js";
+
 const ELEMENTS = { C: "Carbon", O: "Oxygen", N: "Nitrogen", S: "Sulphur", Cl: "Chlorine", F: "Fluorine", H: "Hydrogen" };
 const SWATCH = { C: "c", O: "o", N: "n", S: "s", Cl: "cl", F: "f", H: "h" };
 const ROWS = [
@@ -44,7 +46,17 @@ export function showHydrogensInLegend(structure, hydrogens) {
   if (structure) legend(structure, hydrogens);
 }
 
-export function renderMoleculeScreen(mol, structure) {
+// its enzyme and transporter roles, from the FDA tables only
+function fdaRoles(cyp, name) {
+  if (!cyp) return [];
+  const key = name.toLowerCase();
+  return [
+    ...cyp.rows.filter((r) => r.drug.toLowerCase() === key).map((r) => `${r.role}, ${r.enzyme}`),
+    ...cyp.transporters.filter((r) => r.drug.toLowerCase() === key).map((r) => `${r.role}, ${r.transporter}`),
+  ];
+}
+
+export function renderMoleculeScreen(mol, structure, cyp) {
   const empty = !mol;
   byId("molecule-stage").hidden = empty || !structure;
   byId("molecule-sheet").hidden = empty;
@@ -65,6 +77,19 @@ export function renderMoleculeScreen(mol, structure) {
     row.append(dt, dd);
     return [row];
   }));
+
+  renderWhyToday(byId("molecule-why"), mol.reason);
+  renderDrugInfo(byId("drug-info-full"), mol);
+  const roles = fdaRoles(cyp, mol.name);
+  if (roles.length) {
+    const row = document.createElement("div");
+    const dt = document.createElement("dt");
+    const dd = document.createElement("dd");
+    dt.textContent = "FDA table";
+    dd.textContent = roles.join("; ");
+    row.append(dt, dd);
+    byId("molecule-properties").append(row);
+  }
 
   const source = byId("molecule-source");
   if (mol.url) {

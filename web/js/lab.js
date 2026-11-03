@@ -63,6 +63,7 @@ function resetSliders(findings) {
 
 function roleChips(name, target) {
   const rows = [
+    ...(cyp.atc?.[name] ?? []).map((code) => `ATC ${code}`),
     ...cyp.rows.filter((r) => r.drug === name).map((r) => `${capitalise(r.role)}, ${r.enzyme}`),
     ...cyp.transporters.filter((r) => r.drug === name).map((r) => `${capitalise(r.role)}, ${r.transporter}`),
   ];
@@ -147,7 +148,11 @@ export function setupLab(cypData, modelData) {
   model = modelData;
   names = new Map(Object.entries(modelData.names));
   const drugs = [...new Set([...cyp.rows, ...cyp.transporters].map((r) => r.drug))].sort((x, y) => x.localeCompare(y));
-  byId("lab-drugs").replaceChildren(...drugs.map((d) => Object.assign(document.createElement("option"), { value: d })));
+  byId("lab-drugs").replaceChildren(...drugs.map((d) => {
+    const option = Object.assign(document.createElement("option"), { value: d });
+    if (cyp.atc?.[d]) option.label = `ATC ${cyp.atc[d].join(", ")}`;
+    return option;
+  }));
   byId("lab-source").href = cyp.url;
   byId("lab-source-date").textContent = cyp.transporterSource;
   for (const id of ["lab-a", "lab-b"]) {

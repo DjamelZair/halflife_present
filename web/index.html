@@ -48,7 +48,8 @@
   </section>
 
   <div class="column today-body">
-    <ul class="chips reveal" id="molecule-chips" aria-label="Molecule properties"></ul>
+    <section class="drug-info reveal" id="drug-info-today" aria-label="About this molecule"></section>
+    <a class="text-link reveal" id="drug-info-more" href="#molecule" hidden>Full text and properties</a>
 
     <section class="picks reveal" aria-labelledby="picks-title">
       <div class="section-head">
@@ -90,6 +91,8 @@
   <div class="column sheet" id="molecule-sheet">
     <p class="status" id="molecule-no-3d" hidden>No 3D structure today, the properties are all here.</p>
     <p class="hint">Drag to turn it, pinch to zoom.</p>
+    <p class="why-today" id="molecule-why"></p>
+    <section class="drug-info" id="drug-info-full" aria-label="About this molecule"></section>
     <h2>Properties</h2>
     <dl class="properties" id="molecule-properties"></dl>
     <p class="note">Calculated with RDKit from the structure.</p>

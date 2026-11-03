@@ -23,6 +23,11 @@ The person building it (the repo owner) wants the **easiest version** first.
   `interactions/fda_page.py`. A transporter name it does not know stops the update, and so does a changed footnote: a
   few facts are only in footnotes (selexipag, the pro-drugs of tenofovir, adefovir and oseltamivir). They count for the Lab and the interaction of the day. The static model covers enzymes,
   so a pair linked only by a transporter gets no ratio. FDA footnotes stay, like rifampicin as a single dose.
+* The molecule section says why it is there (`molecule.reason` in brief.json): the Discovery card, today's interaction
+  or the FDA table. `molecules/drug_info.py`: ATC from ChEMBL then EMA, "used for" from the Overview on EMA's page, then
+  EMA's indication, then FDA's approved use, mechanism from ChEMBL. No text of our own, brand names swapped for the INN.
+  `atc_status` keeps "none" (both sources looked) apart from "unknown" (a lookup failed), only "none" may say
+  "ATC code not yet assigned". `data/atc_reference.csv` feeds the Lab pickers, refreshed by hand with `scripts/update_atc.py`.
 * Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages** (HTML, CSS,
   JavaScript with three.js), `web/index.html` at the main address, the portfolio page at `/about.html`, reading the
   JSON the pipeline writes. `scripts/build_site.py` checks `brief.json` against `data/brief.schema.json` first, a
@@ -68,7 +73,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 161 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 177 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflows, the web app in `web/`.

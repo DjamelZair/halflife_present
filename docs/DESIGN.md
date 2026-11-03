@@ -14,7 +14,9 @@ the phone itself is in light mode.
 1. **Space hero, about 470 px tall.** The molecule of the day floats in a scene with stars and soft coloured
    bokeh. Logo top left, date pill top right. Bottom left: label "MOLECULE OF THE DAY", the drug name large,
    one line underneath.
-2. **Property chips:** MW, logP, TPSA and the main CYP role, as small rounded pills.
+2. **About the molecule** (decided after feedback from a pharmacist, it felt random): under the name a line saying why
+   it is here today, then an ATC chip that opens the hierarchy, "Used for" and "How it works". MW, logP, TPSA and the
+   FDA roles are on the Molecule screen only. A field without a source stays out, nothing is written by us.
 3. **Today:** heading plus "3 picks from N new papers", then three cards. Each card: a coloured topic tag,
    the number (01 to 03), a short headline, one meta line (study type, journal). The whole card links to the source.
 4. **Interaction of the day:** pair name, two role chips (from the FDA table), the big number from the study
