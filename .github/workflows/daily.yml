@@ -61,6 +61,7 @@ jobs:
       pages: write
       id-token: write
     uses: ./.github/workflows/pages.yml
+    secrets: inherit
 
   # anything above went wrong: the run itself, saving the brief or the deploy
   alert:

@@ -4,6 +4,7 @@ import json
 import re
 import shutil
 import subprocess
+from pathlib import Path
 from datetime import date
 
 import pytest
@@ -81,8 +82,6 @@ def test_no_inhibition_means_no_change():
     assert model.auc_ratio(0.9, 0) == pytest.approx(1.0)
 
 
-def test_full_inhibition_hits_the_ceiling():
-    assert model.auc_ratio(0.9, 1e9) == pytest.approx(model.max_possible_ratio(0.9), rel=1e-6)
 
 
 def test_illustrative_values_match_fda_categories():
@@ -190,13 +189,13 @@ def test_demo_run_writes_all_outputs(tmp_path, monkeypatch):
     assert "abstract" not in (out / "data/items.csv").read_text().splitlines()[0]  # repo goes public
 
 
-def test_latest_output_prefers_live_over_demo(tmp_path, monkeypatch):
+def test_output_dirs_ignore_the_demo_folder(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
     (tmp_path / config.DEMO_DIR_NAME).mkdir()
-    assert config.latest_output_dir().name == config.DEMO_DIR_NAME  # only the demo so far
+    assert config.dated_output_dirs() == []  # only the demo so far
     (tmp_path / "2026-10-29").mkdir()
     (tmp_path / "2026-10-30").mkdir()
-    assert config.latest_output_dir().name == "2026-10-30"  # "demo" sorts after dates, must not win
+    assert [p.name for p in config.dated_output_dirs()] == ["2026-10-30", "2026-10-29"]  # "demo" sorts after dates, must not win
 
 
 # discovery lane and the Dutch sources, all offline with trimmed copies of real records
@@ -885,3 +884,92 @@ def test_a_transporter_pair_gets_no_made_up_ratio(tmp_path, monkeypatch):
     assert (out / "figures/interaction_network.png").exists()
     assert not (out / "figures/auc_ratio.png").exists()  # no fake curve either
     assert "no illustrative number" in (out / "poster.html").read_text()
+
+
+# a broken day keeps the previous brief
+
+GOOD_BRIEF = {
+    "date": "2026-11-04", "mode": "fallback", "demo": False, "status": {"counts": {"clinic/PubMed": 3}, "errors": {}},
+    "cards": [{"title": "A title", "what": "", "source": "PubMed, J", "url": "https://doi.org/1", "lane": "clinic"}],
+    "molecule": {"name": "x", "smiles": "C", "source": "PubChem", "url": "", "Formula": "CH4", "Molecular weight": 16.0, "logP": 0.6, "TPSA": 0.0},
+    "pair": {"a": "digoxin", "b": "verapamil", "sentences": [], "illustrative_auc_ratio": None, "category": None},
+}
+
+
+@pytest.mark.parametrize("change,where", [
+    ({"cards": []}, "cards"),  # nothing to show
+    ({"date": "4 November"}, "date"),
+    ({"mode": "guess"}, "mode"),
+    ({"status": {}}, "status"),
+    ({"cards": [{"title": "No link", "what": "", "source": "x", "lane": "clinic"}]}, "cards/0"),
+    ({"cards": [{"title": "t", "what": "", "source": "x", "url": "javascript:alert(1)", "lane": "clinic"}]}, "cards/0/url"),
+    ({"cards": [{"title": "t", "what": "", "source": "x", "url": "https://a.b", "lane": "gossip"}]}, "cards/0/lane"),
+    ({"molecule": {"name": "x"}}, "molecule"),
+    ({"pair": {"a": "x"}}, "pair"),
+])
+def test_schema_rejects_what_would_break_the_app(change, where):
+    from halflife import validate
+    trouble = validate.problems({**GOOD_BRIEF, **change})
+    assert trouble and any(line.startswith(where) for line in trouble), trouble
+
+
+def test_schema_accepts_good_briefs_and_all_real_ones():
+    import glob
+    from halflife import validate
+    assert validate.problems(GOOD_BRIEF) == []
+    assert validate.problems({**GOOD_BRIEF, "molecule": None, "pair": None}) == []  # the app has empty states for these
+    for path in glob.glob(str(config.OUTPUT_ROOT / "20*/data/brief.json")):
+        assert validate.problems_in_file(Path(path)) == [], path
+
+
+def test_a_real_pipeline_run_passes_the_schema(tmp_path, monkeypatch):
+    from halflife import pipeline, validate
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    pipeline.run(demo=True, push=False)
+    assert validate.problems_in_file(tmp_path / config.DEMO_DIR_NAME / "data/brief.json") == []
+
+
+def _run_folder(root, day, content):
+    data = root / day / "data"
+    data.mkdir(parents=True)
+    (data / "brief.json").write_text(content if isinstance(content, str) else json.dumps(content))
+    return root / day
+
+
+def test_a_broken_day_keeps_the_previous_brief_and_alerts(tmp_path, monkeypatch):
+    site = _build_site_module()
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    alerts = []
+    monkeypatch.setattr(site.admin, "send", lambda title, message: alerts.append((title, message)))
+    good = _run_folder(tmp_path, "2026-11-03", {**GOOD_BRIEF, "date": "2026-11-03"})
+    _run_folder(tmp_path, "2026-11-04", "{ not json")
+    _run_folder(tmp_path, "2026-11-05", {**GOOD_BRIEF, "cards": []})
+    assert site.pick_source() == good
+    assert "2026-11-03" in alerts[0][0]
+    assert "2026-11-05" in alerts[0][1] and "2026-11-04" in alerts[0][1]
+
+
+def test_a_good_day_is_silent(tmp_path, monkeypatch):
+    site = _build_site_module()
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    alerts = []
+    monkeypatch.setattr(site.admin, "send", lambda title, message: alerts.append(title))
+    _run_folder(tmp_path, "2026-11-03", GOOD_BRIEF)
+    newest = _run_folder(tmp_path, "2026-11-04", GOOD_BRIEF)
+    assert site.pick_source() == newest and not alerts
+
+
+def test_no_good_brief_at_all_fails_the_build(tmp_path, monkeypatch):
+    site = _build_site_module()
+    monkeypatch.setattr(config, "OUTPUT_ROOT", tmp_path)
+    _run_folder(tmp_path, "2026-11-04", "{ not json")
+    with pytest.raises(SystemExit):  # the deploy fails, the live site stays as it was
+        site.pick_source()
+
+
+def test_a_broken_molecule_file_does_not_break_the_site(tmp_path):
+    site = _build_site_module()
+    run = _run_folder(tmp_path, "2026-11-04", GOOD_BRIEF)
+    (run / "data/molecule.json").write_text("{ not json")
+    rebuilt = site.molecule_json(run, {"molecule": None})
+    assert rebuilt is None

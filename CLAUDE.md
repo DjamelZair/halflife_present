@@ -2,7 +2,7 @@
 
 ## What this is
 Halflife, a Christmas 2026 present for a hospital pharmacist in the Netherlands. He gets a push every
-morning, opens a Streamlit app with three news cards, a 3D molecule and an interaction lab.
+morning, opens a web app with three news cards, a 3D molecule and an interaction lab.
 The person building it (the repo owner) wants the **easiest version** first.
 
 ## Decisions already made
@@ -22,9 +22,10 @@ The person building it (the repo owner) wants the **easiest version** first.
   refreshed by hand with `scripts/update_fda_tables.py`, parser in `interactions/fda_page.py`. OAT1/OAT3 are on the
   page but left out for now. They count for the Lab and the interaction of the day. The static model covers enzymes,
   so a pair linked only by a transporter gets no ratio. FDA footnotes stay, like rifampicin as a single dose.
-* Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages**, `web/index.html` at the main address, the portfolio page at `/about.html`. It replaced Streamlit
-  (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
-  chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
+* Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages** (HTML, CSS,
+  JavaScript with three.js), `web/index.html` at the main address, the portfolio page at `/about.html`, reading the
+  JSON the pipeline writes. `scripts/build_site.py` checks `brief.json` against `data/brief.schema.json` first, a
+  broken day keeps the previous brief and alerts me.
 * **Two lanes** (decided 30 October 2026): Clinic (interactions, PK, TDM, dosing) gives 2 cards, Discovery
   (new approvals, first in class or first in human, phase 3 results) gives 1. A lane short on items hands its
   slots to the other. Every card has a `lane` field. Nothing is shown twice: `history.py` reads earlier briefs.
@@ -55,8 +56,8 @@ The person building it (the repo owner) wants the **easiest version** first.
   follow the new tokens when they are next touched.
 * Every run writes `outputs/YYYY-MM-DD/` with `figures/`, `data/` and `poster.html`. Never only CSVs,
   always figures too.
-* Demo runs write `outputs/demo/` instead, which is in `.gitignore`. `config.latest_output_dir()` skips it
-  and only falls back to it when there is no dated run yet.
+* Demo runs write `outputs/demo/` instead, which is in `.gitignore`. `config.dated_output_dirs()` skips it
+
 
 ## Code conventions
 * Python, modular, one job per module.
@@ -66,10 +67,10 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 142 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 156 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
-ntfy notifier, GitHub workflow, Streamlit app with bundled 3Dmol.js.
+ntfy notifier, GitHub workflows, the web app in `web/`.
 
 **First live run on 30 October 2026** (`--no-push`): all four news sources and PubChem work
 (PubMed 28, bioRxiv 7, medRxiv 2, ClinicalTrials.gov 20). One fix was needed: PubMed took the DOI

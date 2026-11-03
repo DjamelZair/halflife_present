@@ -125,12 +125,6 @@ def interacts(a: str, b: str) -> bool:
     return bool(check_pair(a, b) or check_transporters(a, b))
 
 
-def shared_enzymes(a: str, b: str) -> list[str]:
-    ea = set(roles_for(a)["enzyme"])
-    eb = set(roles_for(b)["enzyme"])
-    return sorted(ea & eb)
-
-
 @lru_cache(maxsize=1)
 def all_pairs() -> list[tuple[str, str]]:
     """Every (substrate, inhibitor or inducer) pair that shares an enzyme or transporter in the FDA table."""

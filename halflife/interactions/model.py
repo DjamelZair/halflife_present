@@ -38,11 +38,6 @@ def auc_ratio(fm: float, i_over_ki_liver: float = 0.0, fg: float = 1.0, i_over_k
     return gut * liver
 
 
-def max_possible_ratio(fm: float, fg: float = 1.0) -> float:
-    """Ceiling with full inhibition, 1 / ((1 - fm) * Fg). Shows why fm matters so much."""
-    return np.inf if fm >= 1 else 1.0 / ((1.0 - fm) * fg)
-
-
 def category(ratio: float) -> str:
     for threshold, label in UP:
         if ratio >= threshold:

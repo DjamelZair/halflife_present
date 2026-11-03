@@ -17,10 +17,6 @@ export function aucRatio({ fm, iOverKiLiver = 0, fg = 1, iOverKiGut = 0, inducti
   return gut * liver;
 }
 
-export function maxPossibleRatio(fm, fg = 1) {
-  return fm >= 1 ? Infinity : 1 / ((1 - fm) * fg);
-}
-
 // FDA wording for how strong an effect is, the thresholds come from the python through model.json
 export function category(ratio, thresholds) {
   for (const [threshold, label] of thresholds.up) if (ratio >= threshold) return label;

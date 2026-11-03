@@ -15,7 +15,8 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))  # so this script finds the halflife package
 
-from halflife import config, topics  # noqa: E402
+from halflife import config, topics, validate  # noqa: E402
+from halflife.notify import admin  # noqa: E402
 from halflife.molecules import structure  # noqa: E402
 from halflife.summarise import headline  # noqa: E402
 from halflife.interactions import cyp, model  # noqa: E402
@@ -24,6 +25,24 @@ from halflife.pipeline import FM_BY_ROLE, INDUCTION_BY_ROLE, IKI_BY_ROLE  # noqa
 
 FDA_TABLE_URL = ("https://www.fda.gov/drugs/drug-interactions-labeling/"
                  "healthcare-professionals-fdas-examples-drugs-interact-cyp-enzymes-and-transporter-systems")
+
+
+def pick_source(demo: bool = False) -> Path:
+    """The newest run with a brief fit to publish. A broken day keeps the previous brief and tells me about it."""
+    if demo:
+        return config.OUTPUT_ROOT / config.DEMO_DIR_NAME
+    runs = config.dated_output_dirs()
+    broken = []
+    for run in runs:
+        trouble = validate.problems_in_file(run / "data/brief.json")
+        if not trouble:
+            if broken:
+                admin.send(f"Halflife: kept the brief of {run.name}", "\n".join(broken)[:900])
+            return run
+        broken.append(f"{run.name}: {trouble[0]}")
+        print(f"Skipping {run.name}: {trouble}")
+    # failing here leaves the live site as it is, and the failed job sends its own alert
+    raise SystemExit(f"No brief fit to publish: {broken or 'no runs at all'}")
 
 
 def brief_json(src: Path) -> dict:
@@ -38,7 +57,12 @@ def brief_json(src: Path) -> dict:
 def molecule_json(src: Path, brief: dict) -> dict | None:
     saved = src / "data/molecule.json"
     if saved.exists():
-        return json.loads(saved.read_text(encoding="utf-8"))
+        try:
+            structure_data = json.loads(saved.read_text(encoding="utf-8"))
+            if structure_data["atoms"] and "bonds" in structure_data:
+                return structure_data
+        except (ValueError, KeyError, TypeError) as e:
+            print(f"Ignoring a broken molecule.json: {e}")  # the app copes without the 3D, and rdkit may rebuild it
     mol = brief.get("molecule")
     if not mol:
         return None
@@ -86,6 +110,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--demo", action="store_true")
     args = parser.parse_args()
-    source = config.OUTPUT_ROOT / config.DEMO_DIR_NAME if args.demo else config.latest_output_dir()
+    source = pick_source(args.demo)
     build(source, ROOT / "site")
     print(f"Built site/ from {source.name}")

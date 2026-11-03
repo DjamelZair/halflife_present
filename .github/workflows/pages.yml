@@ -6,7 +6,9 @@ on:
     paths:
       - "web/**"
       - "scripts/build_site.py"
-      - "data/cyp_reference.csv"
+      - "halflife/**"
+      - "data/**"
+      - "requirements.txt"
       - ".github/workflows/pages.yml"
   workflow_call: {}  # the daily job calls this after it has saved the new brief
   workflow_dispatch: {}  # lets me redeploy by hand
@@ -41,6 +43,8 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Build the site
+        env:
+          ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
         run: python scripts/build_site.py
 
       - uses: actions/upload-pages-artifact@v5

@@ -7,9 +7,7 @@ networkx>=3.2
 rdkit>=2024.3
 pillow>=10.0
 python-dotenv>=1.0
-
-# app
-streamlit>=1.40
+jsonschema>=4.20
 
 # optional, only used when ANTHROPIC_API_KEY is set
 anthropic>=0.40

@@ -14,8 +14,8 @@ app holds the rest.
 |---|---|---|
 | Morning push | Three headlines at about 07:30 via the ntfy app | ntfy.sh |
 | Today | Two Clinic cards and one Discovery card: title, opening of the abstract, drugs mentioned, source link | Clinic: PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, Lareb. Discovery: EMA, FDA (openFDA as backup), PubMed first in human, ClinicalTrials.gov phase 3 results. Toxicology, rare: EUDA reports on new psychoactive substances via the HRB National Drugs Library |
-| Molecule | Rotating 3D model, 2D structure, drug likeness properties | PubChem, RDKit, 3Dmol.js |
-| Interaction lab | Two drugs, shared CYP enzymes, sliders for an AUC ratio model | FDA CYP example table, ICH M12 static model |
+| Molecule | 3D model to spin and zoom, drug likeness properties | PubChem, RDKit, three.js |
+| Interaction lab | Two drugs, shared CYP enzymes and transporters, sliders for an AUC ratio model | FDA example tables, ICH M12 static model |
 | Poster | One HTML page per day with everything above | generated |
 
 Drug names are always European generic names (rifampicin, paracetamol, ciclosporin), never US names or brands.
@@ -28,7 +28,8 @@ pip install -r requirements.txt
 
 python run_daily.py --demo        # saved PubMed sample, no internet needed, writes outputs/demo/
 python run_daily.py --no-push     # live sources, no notification
-streamlit run app/streamlit_app.py
+python scripts/build_site.py      # builds the web app into site/
+python -m http.server -d site 8000
 pytest -q
 ```
 
@@ -57,20 +58,21 @@ halflife/
 ├── interactions/      FDA table lookups, ICH M12 model, figures
 ├── report/            daily HTML poster and overview figure
 └── notify/            ntfy push
-app/streamlit_app.py   the app
-data/                  cyp_reference.csv (FDA), sample PubMed items and molecules
+web/                   the app: index.html, css, js, three.js, fonts. about.html is the portfolio page
+scripts/               build_site.py, update_fda_tables.py
+data/                  cyp_reference.csv and transporter_reference.csv (FDA), brief.schema.json, samples
 ```
 
 ## Going live (once)
 
 1. **ntfy**: install the ntfy app on his phone, subscribe to a long random topic name.
-2. **GitHub secrets** (repo, Settings, Secrets and variables, Actions): `NTFY_TOPIC`, and later `APP_URL`.
+2. **GitHub secrets** (repo, Settings, Secrets and variables, Actions): `NTFY_TOPIC`, `APP_URL`, `ADMIN_NTFY_TOPIC`.
    Optional: `NCBI_EMAIL`, `NCBI_API_KEY`, `ANTHROPIC_API_KEY`.
 3. **GitHub Actions**: the workflow in `.github/workflows/daily.yml` runs every evening, commits the
    new `outputs/` folder, deploys the site and schedules the push for 07:30 Dutch time the next morning.
    Press "Run workflow" once to test it.
-4. **Streamlit Community Cloud**: new app from this repo, main file `app/streamlit_app.py`.
-   Put the app url in the `APP_URL` secret so tapping the push opens it.
+4. **GitHub Pages**: source "GitHub Actions". Put the address in the `APP_URL` secret so tapping the push opens it.
+5. **Alerts**: subscribe to a second long random topic and put it in the `ADMIN_NTFY_TOPIC` secret.
 
 ## Sources and credits
 
@@ -79,7 +81,7 @@ data/                  cyp_reference.csv (FDA), sample PubMed items and molecule
 * Interaction model: ICH M12 mechanistic static model, as written up in the `pkpd-modeling` skill of
   [K-Dense claude-scientific-skills](https://github.com/K-Dense-AI/claude-scientific-skills) (MIT).
 * API details checked against the `paper-lookup` and `database-lookup` skills from the same repo.
-* 3D viewer: [3Dmol.js](https://3dmol.org) 2.5.5, BSD 3 clause, bundled in `app/vendor/`.
+* 3D: [three.js](https://threejs.org) r186, MIT, bundled in `web/vendor/`. Fonts: Space Grotesk and Inter, OFL, in `web/fonts/`.
 * Sample data: real PubMed records from October 2026, abstracts shortened, plus real EMA, FDA and
   ClinicalTrials.gov records from 30 October 2026 for the discovery lane.
 * Regulators: EMA medicines data (JSON report), FDA *Novel Drug Approvals*, openFDA drugsfda.

@@ -16,6 +16,7 @@ OUTPUT_ROOT = ROOT / "outputs"
 SOURCE_HISTORY = OUTPUT_ROOT / "source_history.csv"  # items per source per day, kept in the repo
 CYP_TABLE = DATA_DIR / "cyp_reference.csv"
 TRANSPORTER_TABLE = DATA_DIR / "transporter_reference.csv"
+BRIEF_SCHEMA = DATA_DIR / "brief.schema.json"
 
 # clean white look with dark navy as the main colour, he likes navy
 # one place to change it, everything else reads from here
@@ -34,8 +35,6 @@ PALETTE = {
 }
 FONT = "Poppins"
 
-# english interface, but always European generic names (INN), never US brand names
-LANGUAGE = "en"
 
 # how many items end up in the daily brief: two clinic cards and one discovery card.
 # no discovery item that day means three clinic cards, the morning never comes up empty.
@@ -140,12 +139,8 @@ def output_dir(day: date | None = None, demo: bool = False) -> Path:
     return out
 
 
-def latest_output_dir() -> Path | None:
-    """Newest dated run, or the demo folder when there is no live run yet."""
+def dated_output_dirs() -> list[Path]:
+    """Every live run, newest first."""
     if not OUTPUT_ROOT.exists():
-        return None
-    runs = sorted(p for p in OUTPUT_ROOT.iterdir() if p.is_dir() and p.name != DEMO_DIR_NAME)
-    if runs:
-        return runs[-1]
-    demo = OUTPUT_ROOT / DEMO_DIR_NAME
-    return demo if demo.is_dir() else None
+        return []
+    return sorted((p for p in OUTPUT_ROOT.iterdir() if p.is_dir() and p.name != DEMO_DIR_NAME), reverse=True)
