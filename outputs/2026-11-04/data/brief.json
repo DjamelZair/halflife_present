@@ -1,0 +1,127 @@
+{
+  "date": "2026-11-04",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 41,
+      "clinic/bioRxiv": 16,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 11,
+      "discovery/ClinicalTrials.gov": 43
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 41,
+      "Preprints": 18,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 2,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 11,
+      "Phase 3 results": 43,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 1,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Antibiotic use, Resistance Patterns and Clinical Outcomes in Critically Burned Patients: A Retrospective Study From a Tertiary Burn Center in Albania.",
+      "what": "Severe burn injuries induce profound physiological and immunological alterations that significantly affect the pharmacokinetics and pharmacodynamics of antimicrobial agents. These changes complicate standard dosing strategies and demand individualized, PK/PD-driven approaches to antimicrobial therapy to prevent treatment failure, resistance and toxicity.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Annals of burns and fire disasters",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42973892/",
+      "peer_reviewed": true,
+      "original_title": "Antibiotic use, Resistance Patterns and Clinical Outcomes in Critically Burned Patients: A Retrospective Study From a Tertiary Burn Center in Albania.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Antibiotic use, Resistance Patterns and Clinical Outcomes"
+    },
+    {
+      "title": "Phase 1 Evaluation of the Pharmacokinetics of Sevasemten (EDG-5506) for Potential Food Effect and Drug-Drug Interaction With a CYP3A4 Moderate Inhibitor.",
+      "what": "Sevasemten (EDG-5506) is an investigational, small molecule, in development for the treatment of Becker and Duchenne muscular dystrophy. In vitro data suggest sevasemten is a substrate for cytochrome P450 (CYP)3A4.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Clinical and translational science",
+      "url": "https://doi.org/10.1111/cts.70751",
+      "peer_reviewed": true,
+      "original_title": "Phase 1 Evaluation of the Pharmacokinetics of Sevasemten (EDG-5506) for Potential Food Effect and Drug-Drug Interaction With a CYP3A4 Moderate Inhibitor.",
+      "drugs": [
+        "verapamil"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Pharmacokinetics of Sevasemten (EDG-5506) for Potential Food Effect"
+    },
+    {
+      "title": "Bepirovirsen approved by the FDA for chronic hepatitis B virus infection in certain adults without cirrhosis, in combination with existing antiviral therapy",
+      "what": "FDA novel drug approval on 2026-10-20. Approved use: chronic hepatitis B virus infection in certain adults without cirrhosis, in combination with existing antiviral therapy.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "FDA, Novel drug approval",
+      "url": "https://www.fda.gov/drugs/novel-drug-approvals-fda/novel-drug-approvals-2026",
+      "peer_reviewed": true,
+      "original_title": "Bepirovirsen approved by the FDA for chronic hepatitis B virus infection in certain adults without cirrhosis, in combination with existing antiviral therapy",
+      "drugs": [
+        "bepirovirsen"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Bepirovirsen approved by the FDA for chronic hepatitis B virus infection in certain adults"
+    }
+  ],
+  "molecule": {
+    "name": "sevabertinib",
+    "smiles": "COC1=C(C=CC=C1Cl)NC2=C(NC3=C2C(=O)NCC3)C4=C(C=NC=C4)OC[C@@H]5COCCO5",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/155234713",
+    "Formula": "C24H25ClN4O5",
+    "Molecular weight": 484.9,
+    "logP": 3.56,
+    "H bond donors": 3,
+    "H bond acceptors": 7,
+    "TPSA": 106.7,
+    "Rotatable bonds": 7,
+    "Rings": 5,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: sevabertinib and dronedarone",
+      "url": "#lab?a=sevabertinib&b=dronedarone"
+    },
+    "atc": [],
+    "atc_status": "none",
+    "atc_source": null,
+    "used_for": null,
+    "mechanisms": []
+  },
+  "pair": {
+    "a": "sevabertinib",
+    "b": "dronedarone",
+    "sentences": [
+      "dronedarone is a moderate inhibitor of CYP3A and sevabertinib is a moderate sensitive substrate of CYP3A, so sevabertinib exposure can be higher."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 2.4,
+    "category": "moderate increase"
+  }
+}
