@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Halflife</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  /* layout: one dark column, a live molecule hero, then the real morning brief, the pipeline and what comes next */
+  :root {
+    --space: #070D22;
+    --surface: rgba(255, 255, 255, 0.05);
+    --line: rgba(255, 255, 255, 0.10);
+    --ink: #FFFFFF;
+    --muted: #A9B6D0;
+    --ice: #8FD3FF;
+    --pink: #FF5C8A;
+    --amber: #FFB547;
+    --plum: #B45CD6;
+    --cobalt: #3D5BD9;
+    --display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+    --body: 'Inter', system-ui, -apple-system, sans-serif;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--space); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; }
+  .wrap { max-width: 760px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+
+  .hero { position: relative; }
+  #scene { display: block; width: 100%; height: 380px; }
+  .hero-text { padding-block: 0 8px; display: flex; flex-direction: column; gap: 10px; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--ice); }
+  h1 { font-family: var(--display); font-weight: 600; font-size: clamp(34px, 7vw, 54px); line-height: 1.04; margin: 0; text-wrap: balance; }
+  .lead { color: var(--muted); font-size: 17px; max-width: 58ch; margin: 0; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 28px; }
+  .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px 14px; display: flex; flex-direction: column; gap: 2px; }
+  .stat b { font-family: var(--display); font-size: 30px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat span { color: var(--muted); font-size: 13px; line-height: 1.35; }
+  @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  section { padding-block: 44px 0; display: flex; flex-direction: column; gap: 16px; }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 26px; margin: 0; text-wrap: balance; }
+  .sub { color: var(--muted); margin: -8px 0 0; font-size: 14px; }
+
+  .cards { display: flex; flex-direction: column; gap: 12px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .tag { align-self: flex-start; border-radius: 999px; padding: 3px 11px; font-size: 12px; font-weight: 600; color: #070D22; }
+  .t-clinic { background: var(--pink); }
+  .t-lareb { background: var(--amber); }
+  .t-disc { background: var(--plum); color: #FFFFFF; }
+  .card h3 { font-family: var(--display); font-weight: 600; font-size: 18px; line-height: 1.3; margin: 0; }
+  .card p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
+  .steps li { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding-block: 14px; border-top: 1px solid var(--line); }
+  .steps li:last-child { border-bottom: 1px solid var(--line); }
+  .num { font-family: var(--display); font-weight: 600; font-size: 22px; color: var(--ice); font-variant-numeric: tabular-nums; }
+  .steps h3 { font-family: var(--display); font-size: 17px; font-weight: 600; margin: 0 0 2px; }
+  .steps p { margin: 0; color: var(--muted); font-size: 14px; max-width: 60ch; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; color: var(--ink); background: var(--surface); }
+
+  .next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .next div { border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .next b { font-family: var(--display); font-weight: 600; }
+  .next span { color: var(--muted); font-size: 13px; }
+  @media (max-width: 560px) { .next { grid-template-columns: minmax(0, 1fr); } }
+
+  footer { color: var(--muted); font-size: 12px; padding-block: 48px 40px; }
+  @media (prefers-reduced-motion: reduce) { #scene { animation: none; } }
+</style>
+</head>
+<body style="margin:0">
+
+<div class="hero">
+  <canvas id="scene" aria-label="A slowly turning 3D model of rivaroxaban among stars" role="img"></canvas>
+  <div class="wrap hero-text">
+    <div class="eyebrow">Personal project, in progress</div>
+    <h1>Halflife, a daily pharmacology brief</h1>
+    <p class="lead">Every morning Halflife collects new research, approvals and safety signals from European and US sources, picks three things worth knowing, shows a molecule in 3D and explains one drug interaction.</p>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="stats">
+    <div class="stat"><b>10</b><span>news sources, Europe first</span></div>
+    <div class="stat"><b>3</b><span>picks a day, runs on its own</span></div>
+    <div class="stat"><b>170</b><span>CYP roles from the FDA table</span></div>
+    <div class="stat"><b>47</b><span>automatic tests passing</span></div>
+  </div>
+
+  <section>
+    <h2>This morning's brief</h2>
+    <p class="sub">The real picks from the live run on Friday 30 October</p>
+    <div class="cards">
+      <article class="card">
+        <span class="tag t-clinic">Clinic</span>
+        <h3>Interpreting antiretroviral exposure and drug interactions in pregnancy</h3>
+        <p>Br J Clin Pharmacol</p>
+      </article>
+      <article class="card">
+        <span class="tag t-lareb">Clinic, Lareb signal</span>
+        <h3>Omega 3 fatty acids and atrial fibrillation</h3>
+        <p>Lareb, Dutch pharmacovigilance centre</p>
+      </article>
+      <article class="card">
+        <span class="tag t-disc">Discovery</span>
+        <h3>Linerixibat authorised in the EU for cholestatic pruritus in primary biliary cholangitis</h3>
+        <p>EMA, and today's molecule of the day</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <h2>What happens every morning</h2>
+    <ol class="steps">
+      <li><span class="num">1</span><div><h3>Collect</h3><p>PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, Lareb, EMA, FDA, first in human studies, phase 3 results, and EUDA alerts on new psychoactive substances.</p></div></li>
+      <li><span class="num">2</span><div><h3>Pick three</h3><p>Two Clinic cards (interactions, PK, TDM, dosing) and one Discovery card (new approvals, new molecules). A new Lareb signal always gets a slot; a EUDA alert becomes a Toxicology card. Nothing repeats.</p></div></li>
+      <li><span class="num">3</span><div><h3>Molecule of the day</h3><p>The real 3D structure from PubChem, ideally the newest drug from the Discovery card, with its properties worked out by RDKit.</p></div></li>
+      <li><span class="num">4</span><div><h3>Interaction of the day</h3><p>Shared CYP enzymes from the FDA table and the ICH M12 model, with sliders to play with. European generic names only.</p></div></li>
+      <li><span class="num">5</span><div><h3>Push</h3><p>GitHub runs it all, saves the day's poster and figures, and sends the notification.</p></div></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>The look</h2>
+    <p class="sub">Chosen after three design rounds</p>
+    <div class="chips">
+      <span class="chip">Midnight lab, dark by default</span>
+      <span class="chip">White light mode</span>
+      <span class="chip">Real 3D molecules</span>
+      <span class="chip">Drag to spin</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Still to come</h2>
+    <div class="next">
+      <div><b>The app</b><span>Today, Molecule and Lab screens with the live 3D molecule</span></div>
+      <div><b>Short headlines</b><span>Cards that read in ten seconds</span></div>
+      <div><b>Daily use</b><span>Tested on real mornings before launch</span></div>
+    </div>
+  </section>
+
+  <footer>For curiosity and learning, not for clinical decisions. Every item links to its source.</footer>
+</main>
+
+<script>
+  // rivaroxaban, real conformer from RDKit, x and y in px on a 340 by 230 box, z depth 0 to 1
+  const A = [[103.2,120.7,0.28,'O'],[100.2,101.7,0.27,'C'],[115.2,88.6,0.12,'N'],[135.3,96.9,0.0,'C'],[150.1,100.6,0.33,'C'],[170.3,111.0,0.21,'C'],[185.7,100.3,0.43,'N'],[206.9,107.0,0.46,'C'],[213.9,124.4,0.26,'C'],[234.7,131.3,0.28,'C'],[249.4,121.1,0.5,'C'],[270.9,127.8,0.53,'N'],[286.4,113.5,0.68,'C'],[308.6,118.1,0.55,'C'],[314.0,138.8,0.66,'O'],[300.5,153.3,0.48,'C'],[276.8,148.7,0.46,'C'],[264.9,163.2,0.38,'O'],[242.3,103.6,0.7,'C'],[221.5,96.7,0.68,'C'],[177.2,82.0,0.57,'C'],[185.7,67.9,0.75,'O'],[156.4,80.9,0.48,'O'],[81.6,91.3,0.42,'C'],[74.9,70.7,0.38,'C'],[55.6,66.8,0.57,'C'],[48.5,84.5,0.74,'C'],[26.0,86.8,1.0,'Cl'],[64.2,105.5,0.68,'S']];
+  const B = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[10,18],[18,19],[6,20],[20,21],[20,22],[1,23],[23,24],[24,25],[25,26],[26,27],[26,28],[22,4],[28,23],[19,7],[16,11]];
+  const COL = { C: '#2A3A78', N: '#E6ECF7', O: '#FF5C8A', S: '#FFB547', Cl: '#B45CD6' };
+  const RAD = { C: 8.5, N: 9, O: 9, S: 10.5, Cl: 10.5 };
+
+  // centre the molecule and give the depth a real size so it can turn
+  const pts = A.map(([x, y, z, el]) => ({ x: x - 170, y: y - 115, z: (z - 0.5) * 90, el }));
+
+  const canvas = document.getElementById('scene');
+  const ctx = canvas.getContext('2d');
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // seeded stars and bokeh so the sky looks the same on every load
+  let seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+  const jewels = ['#FF5C8A', '#FFB547', '#8FD3FF', '#E6ECF7', '#B45CD6', '#3D5BD9'];
+  const stars = Array.from({ length: 90 }, () => ({ x: rnd(), y: rnd(), r: 0.4 + rnd() * 1.1, a: 0.25 + rnd() * 0.6 }));
+  const bokeh = Array.from({ length: 18 }, () => ({ x: rnd(), y: rnd(), r: 6 + rnd() * 28, c: jewels[Math.floor(rnd() * jewels.length)], a: 0.08 + rnd() * 0.22, s: 0.2 + rnd() * 0.6 }));
+
+  let W = 0, H = 0, dpr = 1;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function shade(hex, f) {
+    const n = parseInt(hex.slice(1), 16);
+    const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(f > 0 ? v + (255 - v) * f : v * (1 + f)));
+    return 'rgb(' + c.join(',') + ')';
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#070D22';
+    ctx.fillRect(0, 0, W, H);
+
+    for (const s of stars) {
+      ctx.globalAlpha = s.a;
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath(); ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2); ctx.fill();
+    }
+    for (const b of bokeh) {
+      const drift = still ? 0 : Math.sin(t / 4000 * b.s + b.x * 6) * 8;
+      const g = ctx.createRadialGradient(b.x * W, b.y * H + drift, 0, b.x * W, b.y * H + drift, b.r);
+      g.addColorStop(0, b.c); g.addColorStop(1, 'rgba(7, 13, 34, 0)');
+      ctx.globalAlpha = b.a; ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(b.x * W, b.y * H + drift, b.r, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // slow turn around the vertical axis plus a gentle tilt
+    const ang = still ? 0.5 : t / 6000;
+    const ca = Math.cos(ang), sa = Math.sin(ang);
+    const scale = Math.min(W / 380, 1.45);
+    const cx = W / 2, cy = H / 2 + 6;
+    const proj = pts.map((p) => {
+      const x = p.x * ca - p.z * sa;
+      const z = p.x * sa + p.z * ca;
+      const persp = 1 + z / 600;
+      return { sx: cx + x * scale * persp, sy: cy + p.y * scale * persp, z, persp, el: p.el };
+    });
+    const zs = proj.map((p) => p.z);
+    const zmin = Math.min(...zs), zmax = Math.max(...zs);
+    const depth = (z) => (z - zmin) / (zmax - zmin || 1);
+
+    // bonds first, thin and silvery, fainter at the back
+    ctx.lineCap = 'round';
+    for (const [i, j] of B) {
+      const a = proj[i], b = proj[j];
+      const d = (depth(a.z) + depth(b.z)) / 2;
+      ctx.strokeStyle = 'rgba(160, 182, 230,' + (0.35 + 0.5 * d) + ')';
+      ctx.lineWidth = (2 + 1.6 * d) * scale;
+      ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(b.sx, b.sy); ctx.stroke();
+    }
+
+    // atoms back to front, glossy with a highlight, softer at the back for a depth of field feel
+    const order = proj.map((p, i) => i).sort((i, j) => proj[i].z - proj[j].z);
+    for (const i of order) {
+      const p = proj[i];
+      const d = depth(p.z);
+      const r = RAD[p.el] * scale * p.persp * 0.95;
+      const c = COL[p.el];
+      ctx.save();
+      ctx.filter = d < 0.35 ? 'blur(' + ((0.35 - d) * 6).toFixed(1) + 'px)' : 'none';
+      ctx.globalAlpha = 0.7 + 0.3 * d;
+      ctx.shadowColor = 'rgba(143, 211, 255, 0.35)';
+      ctx.shadowBlur = 14 * d;
+      const g = ctx.createRadialGradient(p.sx - r * 0.35, p.sy - r * 0.4, r * 0.05, p.sx, p.sy, r);
+      g.addColorStop(0, '#FFFFFF');
+      g.addColorStop(0.22, shade(c, 0.35));
+      g.addColorStop(0.6, c);
+      g.addColorStop(1, shade(c, -0.6));
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(p.sx, p.sy, r, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function loop(t) { draw(t); if (!still) requestAnimationFrame(loop); }
+  resize();
+  window.addEventListener('resize', () => { resize(); if (still) draw(0); });
+  requestAnimationFrame(loop);
+</script>
+</body>
+</html>

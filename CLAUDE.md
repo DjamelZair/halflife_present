@@ -12,7 +12,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   cards show the title and first two sentences of the abstract. The Claude path in
   `summarise/brief.py` stays in place for later, it only activates when `ANTHROPIC_API_KEY` is set.
 * Push via **ntfy** (no account, secret topic). No Telegram. Sent the evening before with the `At` header (`halflife/schedule.py`), because GitHub cron can start hours late.
-* Hosting: GitHub Actions for the daily job. The app moves from Streamlit to a **static web app on GitHub Pages**
+* Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages**, `web/index.html` at the main address, the portfolio page at `/about.html`. It replaced Streamlit
   (HTML, CSS, JavaScript with three.js), reading the JSON the pipeline writes. Streamlit could not reach the
   chosen look. Keep `app/streamlit_app.py` working until the new front end is live, then remove it.
 * **Two lanes** (decided 30 October 2026): Clinic (interactions, PK, TDM, dosing) gives 2 cards, Discovery
@@ -78,7 +78,8 @@ Use a virtualenv in `.venv/`, it is ignored by git.
 7. Molecule screen: built. One canvas moves between Today and Molecule.
 8. Lab screen: built. `web/js/m12.js` is checked against the python by `tests/m12_check.mjs`, numbers come through `data/model.json`.
 9. Shorter headlines: built in `summarise/headline.py`, plain rules. The Claude API key can improve them later.
-10. Accessibility, design review, restyle poster and figures, remove Streamlit.
+10. Technical work, in this order: reliability, source health, content correctness, transporter data, clean-up.
+    Later, parked on purpose: fine tuning the molecule look, restyling the poster and figures, a design review.
 11. A test week on my phone.
 12. Christmas handover: his own ntfy topic, QR card.
 
