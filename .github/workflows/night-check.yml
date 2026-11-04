@@ -1,0 +1,56 @@
+name: Night check
+
+on:
+  schedule:
+    # the last try of the night. if the evening deploy failed three times, or GitHub ran it late, this catches it
+    - cron: "7 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    outputs:
+      stale: ${{ steps.site.outputs.stale }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - id: site
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+        run: python scripts/site_check.py
+
+  redeploy:
+    needs: check
+    if: needs.check.outputs.stale == 'true'
+    uses: ./.github/workflows/pages.yml
+    secrets: inherit
+
+  # this is the only place a stale site alerts me, a failed evening deploy alone stays quiet
+  verify:
+    needs: [check, redeploy]
+    if: ${{ !cancelled() && needs.check.outputs.stale == 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - env:
+          APP_URL: ${{ secrets.APP_URL }}
+          ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
+        run: python scripts/site_check.py --alert --wait 10

@@ -1092,13 +1092,18 @@ def test_orforglipron_has_only_what_is_known(recorded):
     assert info["atc"][0]["code"] == "A10BJ" and info["atc"][0]["substance"] is None
     assert info["used_for"] == {"text": "Treatment of obesity and type 2 diabetes mellitus in adults", "source": "EMA indication",
                                 "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/foundayo"}  # an opinion has no plain summary yet
-    assert info["mechanisms"] == []  # missing, so left out
+    # ChEMBL has no mechanism for it, the FDA label fills the gap and says so
+    assert info["mechanisms"][0]["source"] == "FDA label" and "GLP-1 receptor agonist" in info["mechanisms"][0]["text"]
+    assert "FOUNDAYO" not in info["mechanisms"][0]["text"].upper() and info["mechanisms"][0]["text"].startswith("Orforglipron is a")
+    assert "dailymed.nlm.nih.gov" in info["mechanisms"][0]["url"]
 
 
 def test_chembl_is_asked_for_the_us_name(recorded):
     info = recorded.lookup("rifampicin")  # filed as RIFAMPIN
     assert info["atc"][0]["code"] == "J04AB02"
-    assert info["used_for"] is None  # not in EMA's data, nothing invented
+    # not in EMA's data, the label fills it. it opens with a warning about resistance, the use starts where it says indicated
+    assert info["used_for"]["source"] == "FDA label" and "indicated" in info["used_for"]["text"]
+    assert "resistant cells" not in info["used_for"]["text"] and "rifampin" not in info["used_for"]["text"].lower()
 
 
 def _down(*args, **kwargs):
@@ -1111,6 +1116,7 @@ def test_not_assigned_is_only_said_when_both_sources_looked(monkeypatch):
     monkeypatch.setattr(drug_info, "find_molecule", lambda name: {"atc_classifications": [], "molecule_chembl_id": "CHEMBL1"})
     monkeypatch.setattr(drug_info, "mechanisms", lambda cid: [])
     monkeypatch.setattr(ema, "medicines", lambda: [])
+    monkeypatch.setattr(drug_info, "fda_labels", lambda name: [])
     assert drug_info.lookup("newdrug")["atc_status"] == "none"
     monkeypatch.setattr(drug_info, "find_molecule", _down)
     down = drug_info.lookup("newdrug")
@@ -1122,6 +1128,7 @@ def test_an_fda_drug_uses_the_approved_use(monkeypatch):
     from halflife.sources import ema
     monkeypatch.setattr(drug_info, "find_molecule", lambda name: None)
     monkeypatch.setattr(ema, "medicines", lambda: [])
+    monkeypatch.setattr(drug_info, "fda_labels", lambda name: [])
     info = drug_info.lookup("pritelivir", "treat herpes lesions", "https://fda.example/p")
     assert info["used_for"] == {"text": "Treat herpes lesions", "source": "FDA approved use", "url": "https://fda.example/p"}
 
@@ -1174,7 +1181,7 @@ def test_why_today_interaction_and_table():
 def test_molecule_comes_from_the_interaction_when_there_is_no_discovery_pick(monkeypatch):
     from halflife import pipeline
     monkeypatch.setattr(pipeline, "discovery_molecule", lambda cards, demo: None)
-    comp, kind = pipeline.pick_molecule([], ("rivaroxaban", "ceritinib"), demo=True)
+    comp, kind, _ = pipeline.pick_molecule([], ("rivaroxaban", "ceritinib"), demo=True)
     assert comp.name.lower() == "rivaroxaban" and kind == "interaction"
 
 
@@ -1194,3 +1201,231 @@ def test_lab_atc_table_is_complete_enough():
     assert codes["rivaroxaban"] == {"B01AF01"} and codes["methotrexate"] == {"L04AX03", "L01BA01"}
     assert t["source"].str.contains(r"retrieved \d{4}-\d{2}-\d{2}").all()
     assert set(t["drug"]) <= set(cyp.all_drugs())
+
+
+# openFDA labels, the third source
+
+def test_sevabertinib_has_no_label_and_nothing_gets_made_up(recorded):
+    info = recorded.lookup("sevabertinib")  # checked live, 404 under every name field
+    assert info["used_for"] is None and info["mechanisms"] == [] and info["problems"] == []
+
+
+def test_a_label_only_fills_what_is_missing(recorded):
+    info = recorded.lookup("rivaroxaban")
+    assert info["used_for"]["source"].startswith("EMA") and info["mechanisms"][0]["source"] == "ChEMBL"  # EMA and ChEMBL come first
+
+
+def test_dronedarone_label_says_unknown_and_that_is_what_shows(recorded):
+    label = recorded.fda_labels("dronedarone")[0]
+    assert "unknown" in recorded.label_mechanism(label, "dronedarone")[0]["text"]  # the honest answer, not a gap
+
+
+def test_label_text_is_cleaned_and_only_ever_cut():
+    from halflife.molecules.drug_info import label_mechanism, label_used_for
+    label = {"set_id": "abc", "openfda": {"brand_name": ["MULTAQ"]},
+             "indications_and_usage": ["1 INDICATIONS AND USAGE MULTAQ ® is indicated to reduce the risk [see Clinical Studies (14) ] . It works ( 1.1 ) well."],
+             "mechanism_of_action": ["12.1 Mechanism of Action MULTAQ blocks channels. One. Two. Three. Four."]}
+    used = label_used_for(label, "dronedarone")
+    assert used == {"text": "Dronedarone is indicated to reduce the risk. It works well.", "source": "FDA label",
+                    "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=abc"}
+    assert label_mechanism(label, "dronedarone")[0]["text"] == "Dronedarone blocks channels. One. Two."
+
+
+def test_a_label_without_indicated_stays_out_and_a_combination_label_is_skipped(monkeypatch):
+    from halflife.molecules import drug_info
+    assert drug_info.label_used_for({"indications_and_usage": ["To reduce resistance, cultures should be taken."]}, "x") is None
+    assert drug_info.label_used_for({"indications_and_usage": ["It is not indicated for meningitis."]}, "x") is None
+    assert drug_info.label_used_for(None, "x") is None and drug_info.label_mechanism(None, "x") == []
+
+    class Combo:
+        status_code = 200
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"results": [{"openfda": {"generic_name": ["X AND Y"]}}]}
+    monkeypatch.setattr(drug_info.requests, "get", lambda *a, **k: Combo())
+    assert drug_info.fda_labels("x") == []
+
+
+def test_openfda_down_is_a_problem_not_a_crash(monkeypatch):
+    from halflife.molecules import drug_info
+    from halflife.sources import ema
+    monkeypatch.setattr(drug_info, "find_molecule", lambda name: None)
+    monkeypatch.setattr(ema, "medicines", lambda: [])
+    monkeypatch.setattr(drug_info.requests, "get", _down)
+    info = drug_info.lookup("newdrug")
+    assert info["used_for"] is None and any("openFDA failed" in p for p in info["problems"])
+
+
+# the most complete molecule wins
+
+FULL = {"atc_status": "assigned", "used_for": {"text": "x"}, "mechanisms": [{"text": "y"}]}
+TWO = {"atc_status": "assigned", "used_for": {"text": "x"}, "mechanisms": []}
+ONE = {"atc_status": "assigned", "used_for": None, "mechanisms": []}
+EMPTY = {"atc_status": "none", "used_for": None, "mechanisms": []}
+
+
+@pytest.fixture
+def choice(monkeypatch):
+    from halflife import pipeline
+    from halflife.molecules.pubchem import Compound
+    known = {}
+
+    def fetch(name):
+        if name not in known:
+            raise ValueError("PubChem has no match")
+        return Compound(name=name, smiles="C" * 120 if known[name] == "big" else "CC(=O)Nc1ccc(O)cc1", source="test")
+    monkeypatch.setattr(pipeline.pubchem, "fetch", fetch)
+    monkeypatch.setattr(pipeline.drug_info, "lookup", lambda name, *a: known[name])
+    monkeypatch.setattr(pipeline.cyp, "all_drugs", lambda: ["t1", "t2", "t3", "t4", "t5"])
+    return pipeline, known
+
+
+def _discovery(*drugs):
+    return [_reason_card("https://x/1", drugs)]
+
+
+def test_completeness_scores():
+    from halflife.pipeline import completeness
+    assert [completeness(i) for i in (FULL, TWO, ONE, EMPTY, None)] == [3, 2, 1, 0, 0]
+
+
+def test_todays_case_the_complete_partner_beats_the_sparse_one(choice):
+    pipeline, known = choice
+    known.update(sevabertinib=EMPTY, dronedarone=FULL)
+    comp, kind, info = pipeline.pick_molecule(_discovery("bepirovirsen"), ("sevabertinib", "dronedarone"), demo=False)
+    assert comp.name == "dronedarone" and kind == "interaction" and info is FULL  # bepirovirsen is not in PubChem
+
+
+def test_a_tie_keeps_the_discovery_drug(choice):
+    pipeline, known = choice
+    known.update(newdrug=FULL, a=FULL, b=FULL)
+    comp, kind, _ = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
+    assert comp.name == "newdrug" and kind == "discovery"
+
+
+def test_more_complete_beats_discovery(choice):
+    pipeline, known = choice
+    known.update(newdrug=TWO, a=FULL, b=EMPTY)
+    comp, kind, _ = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
+    assert comp.name == "a" and kind == "interaction"
+
+
+def test_the_fda_table_only_steps_in_for_a_sparse_molecule(choice):
+    pipeline, known = choice
+    known.update(a=ONE, b=EMPTY, t1=EMPTY, t2=FULL, t3=TWO)
+    comp, kind, _ = pipeline.pick_molecule([], ("a", "b"), demo=False)
+    assert comp.name == "t2" and kind == "fda_table"
+    known.update(a=TWO)  # two out of three is not sparse, today's drug stays
+    comp, kind, _ = pipeline.pick_molecule([], ("a", "b"), demo=False)
+    assert comp.name == "a" and kind == "interaction"
+
+
+def test_a_sparse_molecule_stays_when_nothing_better_exists(choice):
+    pipeline, known = choice
+    known.update(a=ONE, b=EMPTY, t1=ONE, t2=EMPTY)
+    comp, kind, _ = pipeline.pick_molecule([], ("a", "b"), demo=False)
+    assert comp.name == "a" and kind == "interaction"
+
+
+def test_too_big_or_unknown_never_wins_and_nothing_at_all_is_handled(choice):
+    pipeline, known = choice
+    known.update(big="big")
+    assert pipeline.pick_molecule(_discovery("big"), ("nope", "nada"), demo=False) == (None, "none", None)
+
+
+# the deploy and the push
+
+class _Head:
+    def __init__(self, status=200, kind="image/png"):
+        self.status_code, self.headers = status, {"content-type": kind}
+
+
+@pytest.mark.parametrize("response,expected", [(_Head(), True), (_Head(404, "text/html"), False), (_Head(200, "text/html"), False)])
+def test_image_must_really_be_an_image_on_the_site(monkeypatch, response, expected):
+    from halflife.notify import ntfy
+    monkeypatch.setattr(ntfy.requests, "head", lambda *a, **k: response)
+    assert ntfy.image_is_live("https://x/m.png", tries=1) is expected
+
+
+def test_image_check_retries_and_survives_a_network_error(monkeypatch):
+    from halflife.notify import ntfy
+    answers = iter([requests.ConnectionError("down"), _Head(404, "text/html"), _Head()])
+
+    def head(*a, **k):
+        answer = next(answers)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+    monkeypatch.setattr(ntfy.requests, "head", head)
+    assert ntfy.image_is_live("https://x/m.png", tries=3, wait=0) is True
+
+
+@pytest.mark.parametrize("live,attached", [(True, True), (False, False)])
+def test_the_push_goes_out_either_way(tmp_path, monkeypatch, live, attached):
+    from halflife import pipeline
+    (tmp_path / "structure_2d.png").write_bytes(b"png")
+    monkeypatch.setattr(config, "APP_URL", "https://x.org/")
+    monkeypatch.setattr(pipeline.ntfy, "image_is_live", lambda url: live)
+    sent = {}
+    monkeypatch.setattr(pipeline.ntfy, "send", lambda cards, mol, day, image, at: sent.update(image=image, at=at) or True)
+    assert pipeline.send_push([], "x", date(2026, 11, 5), tmp_path)
+    assert bool(sent["image"]) is attached
+    assert sent["at"].hour == 7 and sent["at"].minute == 30
+
+
+def _site_check():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("site_check", config.ROOT / "scripts/site_check.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_stale_means_older_than_today_or_unreadable():
+    site = _site_check()
+    today = date(2026, 11, 4)
+    assert site.is_stale("2026-11-03", today) and site.is_stale(None, today)
+    assert not site.is_stale("2026-11-04", today)
+    assert not site.is_stale("2026-11-05", today)  # the evening run publishes tomorrow's brief
+
+
+@pytest.mark.parametrize("stale,flag,alerts", [(True, True, 1), (True, False, 0), (False, True, 0)])
+def test_only_the_last_check_alerts(monkeypatch, tmp_path, stale, flag, alerts):
+    site = _site_check()
+    monkeypatch.delenv("GITHUB_OUTPUT", raising=False)
+    monkeypatch.setattr(site, "live_brief_date", lambda: "2020-01-01" if stale else "2999-01-01")
+    sent = []
+    monkeypatch.setattr(site.admin, "send", lambda title, message: sent.append(title))
+    monkeypatch.setattr(site.sys, "argv", ["site_check.py"] + (["--alert"] if flag else []))
+    assert site.main() == 0
+    assert len(sent) == alerts
+
+
+def test_workflows_put_the_push_after_the_deploy_and_stay_quiet_on_a_failed_deploy():
+    daily = (config.ROOT / ".github/workflows/daily.yml").read_text()
+    assert "run_daily.py --push-later" in daily and "NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}" in daily.split("  push:")[1]
+    assert "needs: [brief, deploy]" in daily.split("  push:")[1].split("steps:")[0]
+    alert = daily.split("  alert:")[1].split("steps:")[0]
+    assert "needs: [brief, push]" in alert and "failure()" not in alert  # failure() would also see the deploy
+    pages = (config.ROOT / ".github/workflows/pages.yml").read_text()
+    assert pages.count("actions/deploy-pages@v5") == 3 and pages.count("sleep 180") == 2
+    night = (config.ROOT / ".github/workflows/night-check.yml").read_text()
+    assert "--alert" in night.split("  verify:")[1] and "--alert" not in night.split("  verify:")[0]
+
+
+def test_old_ema_pages_use_their_own_section_and_never_the_boilerplate():
+    from halflife.molecules.drug_info import parse_overview
+    old = """<h2>Overview</h2><p>This is a summary of the European public assessment report (EPAR) for Multaq.</p>
+             <h2>What is Multaq and what is it used for?</h2><p>Multaq is an antiarrhythmic medicine.</p><p>More.</p><h2>How is Multaq used?</h2>"""
+    assert parse_overview(old) == "Multaq is an antiarrhythmic medicine."
+    only_boilerplate = "<h2>Overview</h2><p>This is a summary of the European public assessment report (EPAR).</p><h2>Next</h2>"
+    assert parse_overview(only_boilerplate) == ""  # then the indication takes over
+
+
+def test_dronedarone_is_the_real_old_page_case(recorded):
+    info = recorded.lookup("dronedarone")
+    assert info["used_for"]["text"].startswith("Dronedarone is an antiarrhythmic medicine used to maintain normal heart rhythm")
+    assert "European public assessment" not in info["used_for"]["text"] and "Multaq" not in info["used_for"]["text"]

@@ -16,11 +16,12 @@ from halflife.pipeline import run
 def main() -> None:
     parser = argparse.ArgumentParser(description="Halflife morning brief")
     parser.add_argument("--demo", action="store_true", help="use the saved sample data")
-    parser.add_argument("--no-push", action="store_true", help="skip the ntfy notification")
+    parser.add_argument("--no-push", action="store_true", help="skip the ntfy notification and the alerts")
+    parser.add_argument("--push-later", action="store_true", help="scripts/send_push.py queues it, after the deploy")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
-    result = run(demo=args.demo, push=not args.no_push and not args.demo)
+    result = run(demo=args.demo, push=not (args.no_push or args.demo or args.push_later))
 
     print(f"Mode: {result['mode']}, {len(result['cards'])} cards")
     for c in result["cards"]:

@@ -1,5 +1,6 @@
 """Push to his phone through ntfy.sh. No account needed, just the app and a secret topic name."""
 
+import time
 from datetime import date, datetime, timezone
 
 import requests
@@ -20,6 +21,20 @@ def shorten(text: str, limit: int = LINE_LENGTH) -> str:
     if not headline.keeps_population(text, cut):
         cut = headline.through_last_population(text)  # who it is about matters more than the line length
     return cut if cut == text else cut + "…"
+
+
+def image_is_live(url: str, tries: int = 3, wait: float = 20) -> bool:
+    """Is the picture really on the site? ntfy would happily attach a dead link."""
+    for attempt in range(tries):
+        try:
+            r = requests.head(url, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT, allow_redirects=True)
+            if r.status_code == 200 and r.headers.get("content-type", "").startswith("image/"):
+                return True
+        except requests.RequestException:
+            pass
+        if attempt < tries - 1:
+            time.sleep(wait)  # a fresh deploy can take a moment to reach every server
+    return False
 
 
 def build_title(day: date) -> str:

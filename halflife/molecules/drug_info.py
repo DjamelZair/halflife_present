@@ -20,6 +20,10 @@ log = logging.getLogger(__name__)
 
 CHEMBL = "https://www.ebi.ac.uk/chembl/api/data"
 COMPOUND_PAGE = "https://www.ebi.ac.uk/chembl/explore/compound/{id}"
+OPENFDA_LABEL = "https://api.fda.gov/drug/label.json"
+DAILYMED = "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid={id}"
+LABEL_SENTENCES = 3  # a label section can run for pages, the source is one tap away
+BOILERPLATE = re.compile(r"This is a summary of the European public assessment report", re.I)
 LEVELS = {1: 1, 3: 2, 4: 3, 5: 4, 7: 5}  # how long an ATC code is at each level
 
 
@@ -86,29 +90,26 @@ def ema_atc_codes(row: dict | None) -> list[str]:
     return re.findall(r"\b[A-Z]\d{2}(?:[A-Z]{1,2}(?:\d{2})?)?\b", (row or {}).get("atc_code_human") or "")
 
 
+def _swap_brands(text: str, brands, inn: str) -> str:
+    for brand in sorted((b.strip() for b in brands if b.strip() and b.strip().lower() != inn.lower()), key=len, reverse=True):
+        text = re.sub(rf"\b{re.escape(brand)}\b", lambda m: inn.capitalize() if m.start() == 0 or m.string[m.start() - 2:m.start()] == ". " else inn,
+                      text, flags=re.I)
+    return europeanise(re.sub(r"\s+", " ", text).strip())  # EMA says aspirin, the rule says acetylsalicylic acid
+
+
 def without_brand(text: str, row: dict, inn: str) -> str:
     """"Xarelto is a medicine" becomes "Rivaroxaban is a medicine". Never a brand name, also from a former name."""
-    names = re.findall(r"[^()]+", (row.get("name_of_medicine") or "").replace("previously", ""))
-    for brand in sorted((n.strip() for n in names if n.strip()), key=len, reverse=True):
-        text = re.sub(rf"\b{re.escape(brand)}\b", lambda m: inn.capitalize() if m.start() == 0 or text[m.start() - 2:m.start()] == ". " else inn, text)
-    return europeanise(re.sub(r"\s+", " ", text).strip())  # EMA says aspirin, the rule says acetylsalicylic acid
+    return _swap_brands(text, re.findall(r"[^()]+", (row.get("name_of_medicine") or "").replace("previously", "")), inn)
 
 
 def _plain(fragment: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", fragment))).replace(" ,", ",").replace(" ;", ";").strip()
 
 
-def parse_overview(page: str) -> str:
-    """The first paragraph under Overview on an EMA page, with the list when the paragraph leads into one."""
-    start = re.search(r"<h[1-6][^>]*>\s*Overview\s*</h[1-6]>", page)
-    if not start:
-        return ""
-    rest = page[start.end():]
-    stop = re.search(r"<h[1-6][^>]*>", rest)
-    section = rest[:stop.start()] if stop else rest
-    blocks = re.findall(r"<(p|ul|ol)\b[^>]*>(.*?)</\1>", section, re.S)
+def _first_block(section: str) -> str:
+    """The first paragraph of a section, with the list when the paragraph leads into one."""
     out = []
-    for tag, content in blocks:
+    for tag, content in re.findall(r"<(p|ul|ol)\b[^>]*>(.*?)</\1>", section, re.S):
         if tag == "p":
             if out and not out[-1].endswith(":"):
                 break
@@ -121,8 +122,74 @@ def parse_overview(page: str) -> str:
     return " ".join(out)
 
 
+def _section(page: str, heading: str) -> str:
+    start = re.search(rf"<h[1-6][^>]*>\s*{heading}\s*</h[1-6]>", page, re.I)
+    if not start:
+        return ""
+    rest = page[start.end():]
+    stop = re.search(r"<h[1-6][^>]*>", rest)
+    return rest[:stop.start()] if stop else rest
+
+
+def parse_overview(page: str) -> str:
+    """What EMA says it is used for. Older pages have a section for it and an Overview that is only boilerplate
+    about the report, newer ones say it in the Overview. An empty answer beats that boilerplate."""
+    for heading in (r"What is [^<]{1,80}used for\??", "Overview"):
+        text = _first_block(_section(page, heading))
+        if text and not BOILERPLATE.match(text):
+            return text
+    return ""
+
+
+def fda_labels(name: str) -> list[dict]:
+    """US labels for this one substance, newest first, under both names. A combination label says nothing about it."""
+    found = []
+    for term in normalise_query(name):
+        r = requests.get(OPENFDA_LABEL, params={"search": f'openfda.generic_name.exact:"{term.upper()}"', "limit": 5, "sort": "effective_time:desc"},
+                         headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT)
+        if r.status_code == 404:  # how openFDA says no match
+            continue
+        r.raise_for_status()
+        for label in r.json().get("results", []):
+            generic = label.get("openfda", {}).get("generic_name", [])
+            if len(generic) == 1 and generic[0].lower() == term:
+                found.append(label)
+    return found
+
+
+def _label_section(label: dict, field: str, name: str) -> str:
+    """Section text without its heading, cross references and brand names, "1 INDICATIONS AND USAGE FOUNDAYO TM is"."""
+    text = " ".join(label.get(field) or [])
+    text = re.sub(r"^\s*\d*(?:\.\d+)?\s*(?:INDICATIONS?\s*(?:AND|&)\s*USAGE|Mechanism of Action)\s*:?\s*", "", text, flags=re.I)
+    text = re.sub(r"\[\s*see[^\]]*\]|\(\s*\d+(?:\.\d+)*\s*\)|\s*(?:®|™|\bTM\b)|•", " ", text)
+    text = re.sub(r"\s+([.,;:])", r"\1", text)
+    return _swap_brands(text, label.get("openfda", {}).get("brand_name", []), to_inn(name))
+
+
+def _sentences(text: str, limit: int) -> list[str]:
+    return re.split(r"(?<=[.!?])\s+(?=[A-Z])", text.strip())[:limit]
+
+
+def label_used_for(label: dict | None, name: str) -> dict | None:
+    if not label:
+        return None
+    # old labels open with warnings about resistance. the use starts at the first sentence that says indicated, or it stays out
+    sentences = _sentences(_label_section(label, "indications_and_usage", name), 40)
+    start = next((i for i, s in enumerate(sentences) if re.search(r"(?<!not )\bindicated\b", s, re.I)), None)
+    if start is None:
+        return None
+    return {"text": " ".join(sentences[start:start + LABEL_SENTENCES]), "source": "FDA label", "url": DAILYMED.format(id=label.get("set_id", ""))}
+
+
+def label_mechanism(label: dict | None, name: str) -> list[dict]:
+    text = _label_section(label, "mechanism_of_action", name) if label else ""
+    if not text:
+        return []
+    return [{"text": " ".join(_sentences(text, LABEL_SENTENCES)), "source": "FDA label", "url": DAILYMED.format(id=label.get("set_id", ""))}]
+
+
 def used_for(name: str, row: dict | None, fda_use: str = "", fda_url: str = "") -> tuple[dict | None, list[str]]:
-    """EMA's plain language summary, then EMA's indication, then FDA's approved use."""
+    """EMA's plain language summary, then EMA's indication, then FDA's approved use. lookup() adds the label after that."""
     problems = []
     inn = to_inn(name)
     if row and row.get("medicine_status") == "Authorised" and row.get("medicine_url"):
@@ -187,4 +254,14 @@ def lookup(name: str, fda_use: str = "", fda_url: str = "") -> dict:
         info["atc_status"] = "none"  # both looked and neither has one, only then it is true to say so
 
     info["used_for"], used_problems = used_for(name, row, fda_use, fda_url)
-    return {**info, "problems": problems + used_problems}
+    problems += used_problems
+    # the third source, only asked for what EMA and ChEMBL left open
+    if not info["used_for"] or not info["mechanisms"]:
+        try:
+            # not every label has every section, so the first one that has it
+            labels = fda_labels(name)
+            info["used_for"] = info["used_for"] or next(filter(None, (label_used_for(lb, name) for lb in labels)), None)
+            info["mechanisms"] = info["mechanisms"] or next(filter(None, (label_mechanism(lb, name) for lb in labels)), [])
+        except requests.RequestException as e:
+            problems.append(f"openFDA failed: {e}")
+    return {**info, "problems": problems}

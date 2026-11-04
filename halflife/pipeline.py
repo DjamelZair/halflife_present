@@ -25,6 +25,10 @@ FM_BY_ROLE = {"sensitive substrate": 0.9, "moderate sensitive substrate": 0.7, "
 IKI_BY_ROLE = {"strong inhibitor": 50.0, "moderate inhibitor": 5.0}
 INDUCTION_BY_ROLE = {"strong inducer": 10.0, "moderate inducer": 3.0}  # strong gives 80 percent lower or more
 
+SPARSE = 1  # out of 3: ATC, used for, how it works. at this or below, the FDA table gets a look too
+FDA_TABLE_TRIES = 5
+
+
 def pick_pair(cards, day: date) -> tuple[str, str]:
     """A pair from the news when there is one, otherwise the pair of the day from the FDA table."""
     for c in cards:
@@ -71,34 +75,57 @@ def discovery_molecule(cards, demo: bool) -> pubchem.Compound | None:
     return None
 
 
-def pick_molecule(cards, pair: tuple[str, str], demo: bool) -> tuple[pubchem.Compound | None, str]:
-    """The molecule, and where it comes from: the Discovery card, today's interaction, or the FDA table.
-    It should never feel random, so anything picked here has a reason the screen can state."""
+def completeness(info: dict | None) -> int:
+    """How much the molecule section can say: ATC, used for, how it works."""
+    if not info:
+        return 0
+    return (info.get("atc_status") == "assigned") + bool(info.get("used_for")) + bool(info.get("mechanisms"))
+
+
+def _demo_molecule(cards, pair, demo=True):
     found = discovery_molecule(cards, demo)
     if found:
-        return found, "discovery"
-    if demo:
-        samples = set(pubchem.sample_names())
-        for d in pair:
-            if d.lower() in samples:
-                return pubchem.load_sample(d), "interaction"
-        names = pubchem.sample_names()
-        return pubchem.load_sample(names[date.today().toordinal() % len(names)]), "sample"
-
+        return found, "discovery", None
+    samples = set(pubchem.sample_names())
     for d in pair:
+        if d.lower() in samples:
+            return pubchem.load_sample(d), "interaction", None
+    names = pubchem.sample_names()
+    return pubchem.load_sample(names[date.today().toordinal() % len(names)]), "sample", None
+
+
+def _best(candidates, cards, items) -> tuple | None:
+    """The most complete of these, among those PubChem knows. On a tie the first in the list wins."""
+    best = None
+    for name, kind in dict.fromkeys(candidates):
         try:
-            comp = pubchem.fetch(d)
-            if small_enough(comp):
-                return comp, "interaction"
+            comp = pubchem.fetch(name)
         except Exception as e:
-            log.info("PubChem miss for %s: %s", d, e)
-    drugs = [d for d in cyp.all_drugs() if " and " not in d and d.lower() not in cyp.VAGUE]
-    for k in range(5):
-        try:
-            return pubchem.fetch(drugs[(date.today().toordinal() + k) % len(drugs)]), "fda_table"
-        except Exception:
+            log.info("PubChem miss for %s: %s", name, e)
             continue
-    return None, "none"
+        if not small_enough(comp):
+            log.info("%s is too big for the 3D view", name)
+            continue
+        info = drug_info.lookup(comp.name, *_fda_use(comp.name, cards, items))
+        if best is None or completeness(info) > completeness(best[2]):
+            best = (comp, kind, info)
+    return best
+
+
+def pick_molecule(cards, pair: tuple[str, str], demo: bool, items=()) -> tuple:
+    """The molecule, where it comes from and what is known about it. Today's drugs first: the Discovery card and the
+    interaction, the most complete one wins. A sparse one only stays when the FDA table has nothing better."""
+    if demo:
+        return _demo_molecule(cards, pair)
+    today = [(d, "discovery") for c in cards if c.lane == "discovery" for d in c.drugs] + [(d, "interaction") for d in pair]
+    best = _best(today, cards, items)
+    if completeness(best[2] if best else None) <= SPARSE:
+        drugs = [d for d in cyp.all_drugs() if " and " not in d and d.lower() not in cyp.VAGUE]
+        start = date.today().toordinal()
+        table = _best([(drugs[(start + k) % len(drugs)], "fda_table") for k in range(FDA_TABLE_TRIES)], cards, items)
+        if table and (best is None or completeness(table[2]) > completeness(best[2])):
+            best = table
+    return best if best else (None, "none", None)
 
 
 def _long_date(iso: str) -> str:
@@ -145,6 +172,15 @@ def _image_url(figs_dir, day: date) -> str:
     return ""
 
 
+def send_push(cards, molecule_name: str | None, day: date, figs_dir) -> bool:
+    """The image only goes along when it is really on the site, a push without it is better than a broken one."""
+    image = _image_url(figs_dir, day)
+    if image and not ntfy.image_is_live(image):
+        log.warning("The molecule image is not on the site, sending the push without it: %s", image)
+        image = ""
+    return ntfy.send(cards, molecule_name, day, image, schedule.push_time(day))
+
+
 def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     day = day or (date.today() if demo else schedule.delivery_day())
     out = config.output_dir(day, demo=demo)
@@ -166,16 +202,16 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     # 2. molecule of the day
     figures, molecule = {}, None
     a, b = pick_pair(cards, day)
-    comp, why_kind = pick_molecule(cards, (a, b), demo)
+    comp, why_kind, info = pick_molecule(cards, (a, b), demo, items)
     if comp:
         figures["molecule"] = figs_dir / "molecule.png"
         mfig.property_figure(comp.name, comp.smiles, figures["molecule"])
         mfig.structure_png(comp.smiles, figs_dir / "structure_2d.png")
         molecule = {"name": comp.name, "smiles": comp.smiles, "source": comp.source, "url": comp.url,
                     **properties.describe(comp.smiles), "reason": why_today(why_kind, comp.name, cards, items, (a, b))}
-        if not demo:  # the demo has to work without internet
-            info = drug_info.lookup(comp.name, *_fda_use(comp.name, cards, items))
-            for problem in info.pop("problems"):
+        if info:  # the demo has none, it has to work without internet
+            info = dict(info)
+            for problem in info.pop("problems", []):
                 log.warning("Molecule section: %s", problem)
                 status["errors"][problem.split(" failed")[0]] = problem
             molecule.update(info)
@@ -219,10 +255,6 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
 
     # 6. poster and push
     poster_path = poster.build(out, cards, mode, figures, molecule, pair, day)
-    pushed = False
-    if push:
-        pushed = ntfy.send(cards, molecule["name"] if molecule else None, day, _image_url(figs_dir, day),
-                           schedule.push_time(day))
-
+    pushed = send_push(cards, molecule["name"] if molecule else None, day, figs_dir) if push else False
     summary.update({"output_dir": str(out), "poster": str(poster_path), "pushed": pushed})
     return summary
