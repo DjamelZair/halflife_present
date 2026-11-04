@@ -34,8 +34,8 @@ The person building it (the repo owner) wants the **easiest version** first.
   search a day, cached per drug in `outputs/web_search.json`, a gap is asked again after 30 days. It only fills gaps in the molecule
   that has been chosen, the choice itself is on structured sources only, so snippets never count toward the 2 of 3. Free plan is 250 a month. No key or no quota: skipped, a line in `outputs/admin_log.csv`, no push.
   The key goes in the url and requests puts the url in its errors, so **never keep or log an error's text from that call**.
-  `atc_status` keeps "none" (both sources looked) apart from "unknown" (a lookup failed), only "none" may say
-  "ATC code not yet assigned". `data/atc_reference.csv` feeds the Lab pickers, refreshed by hand with `scripts/update_atc.py`.
+  ATC goes ChEMBL, EMA, then NLM (RxClass for the class, RxNorm for the full code). `atc_status` "none" only means these sources
+  have nothing, they lag behind WHO, so the app never says a code is not assigned: no code found, no field. `data/atc_reference.csv` feeds the Lab pickers, refreshed by hand with `scripts/update_atc.py`.
 * The evening job: brief, deploy (`pages.yml`, 3 tries, 3 minutes apart), then the push, because the image must be on
   the site first (`ntfy.image_is_live`, without it the push goes out without the image). Only the brief decides on the push, a failed,
   cancelled or skipped deploy never stops it. A failed deploy alone does not alert: `night-check.yml` at about 04:00 and 06:00 UTC

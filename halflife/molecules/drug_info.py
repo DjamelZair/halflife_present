@@ -19,6 +19,7 @@ from halflife.sources import ema
 log = logging.getLogger(__name__)
 
 CHEMBL = "https://www.ebi.ac.uk/chembl/api/data"
+RXNAV = "https://rxnav.nlm.nih.gov/REST"
 COMPOUND_PAGE = "https://www.ebi.ac.uk/chembl/explore/compound/{id}"
 OPENFDA_LABEL = "https://api.fda.gov/drug/label.json"
 DAILYMED = "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid={id}"
@@ -74,6 +75,34 @@ def atc_hierarchy(code: str) -> dict:
     levels = [{"level": n, "code": record[f"level{n}"], "name": _sentence_case(record[f"level{n}_description"])}
               for n in range(1, min(level, 4) + 1) if record.get(f"level{n}") and record.get(f"level{n}_description")]
     return {"code": code, "levels": levels, "substance": record.get("who_name") if level == 5 else None}
+
+
+def _rxnav(path: str, **params) -> dict:
+    r = requests.get(f"{RXNAV}/{path}", params=params, timeout=config.HTTP_TIMEOUT, headers=config.HTTP_HEADERS)
+    r.raise_for_status()
+    return r.json()
+
+
+def nlm_atc(name: str) -> list[dict]:
+    """ATC from NLM. RxClass gives the class up to level 4, RxNorm the full code. Only the substance on its own,
+    RxClass also lists combinations and those have other codes."""
+    for term in normalise_query(name):
+        found = (_rxnav("rxclass/class/byDrugName.json", drugName=term, relaSource="ATC").get("rxclassDrugInfoList") or {}).get("rxclassDrugInfo", [])
+        alone = [f for f in found if f["minConcept"]["tty"] == "IN" and f["minConcept"]["name"].lower() == term.lower()]
+        if not alone:
+            continue
+        rxcui = alone[0]["minConcept"]["rxcui"]
+        props = (_rxnav(f"rxcui/{rxcui}/property.json", propName="ATC").get("propConceptGroup") or {}).get("propConcept", [])
+        full = [p["propValue"] for p in props if len(p["propValue"]) == 7]
+        entries = []
+        for class_id in dict.fromkeys(f["rxclassMinConceptItem"]["classId"] for f in alone):
+            graph = _rxnav("rxclass/classGraph.json", classId=class_id, source="ATC1-4")["rxclassGraph"]["rxclassMinConceptItem"]
+            levels = [{"level": LEVELS[len(g["classId"])], "code": g["classId"], "name": _sentence_case(g["className"])}
+                      for g in sorted(graph, key=lambda g: len(g["classId"])) if len(g["classId"]) in LEVELS and g["classId"] != "0"]
+            codes = [c for c in full if c.startswith(class_id)]
+            entries += [{"code": c, "levels": levels, "substance": to_inn(name)} for c in codes] or [{"code": class_id, "levels": levels, "substance": None}]
+        return entries
+    return []
 
 
 def ema_row(name: str, rows: list[dict]) -> dict | None:
@@ -264,8 +293,16 @@ def lookup(name: str, fda_use: str = "", fda_url: str = "") -> dict:
             problems.append(f"ChEMBL ATC levels failed: {e}")
             info["atc"] = [{"code": code, "levels": [], "substance": None} for code in codes]
         info["atc_status"], info["atc_source"] = "assigned", source
-    elif chembl_ok and ema_ok:
-        info["atc_status"] = "none"  # both looked and neither has one, only then it is true to say so
+    else:
+        # these lag behind WHO, so "none" only means none of them has it. the app shows nothing then, never "not assigned"
+        try:
+            info["atc"] = nlm_atc(name)
+            if info["atc"]:
+                info["atc_status"], info["atc_source"] = "assigned", "NLM RxClass"
+            elif chembl_ok and ema_ok:
+                info["atc_status"] = "none"
+        except Exception as e:
+            problems.append(f"RxClass failed: {type(e).__name__}")
 
     info["used_for"], used_problems = used_for(name, row, fda_use, fda_url)
     problems += used_problems

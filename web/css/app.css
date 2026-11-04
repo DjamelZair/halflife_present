@@ -512,7 +512,6 @@ h2 {
   font-variant-numeric: tabular-nums;
 }
 
-.atc-none { color: var(--text-secondary); }
 
 .fact {
   display: flex;

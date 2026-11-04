@@ -1037,6 +1037,21 @@ class _Recorded:
             raise requests.HTTPError(str(self.status_code))
 
 
+def _rxnav_answer(url, params):
+    # as answered live on 4 November 2026
+    if "byDrugName" in url:
+        if params["drugName"].lower() != "sevabertinib":
+            return {}
+        item = {"classId": "L01EH", "className": "Human epidermal growth factor receptor 2 (HER2) tyrosine kinase inhibitors", "classType": "ATC1-4"}
+        return {"rxclassDrugInfoList": {"rxclassDrugInfo": [{"minConcept": {"rxcui": "2728187", "name": "sevabertinib", "tty": "IN"}, "rxclassMinConceptItem": item}]}}
+    if "property" in url:
+        return {"propConceptGroup": {"propConcept": [{"propName": "ATC", "propValue": "L01EH06"}]}}
+    return {"rxclassGraph": {"rxclassMinConceptItem": [
+        {"classId": "0", "className": "Anatomical Therapeutic Chemical"}, {"classId": "L", "className": "ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS"},
+        {"classId": "L01", "className": "ANTINEOPLASTIC AGENTS"}, {"classId": "L01E", "className": "PROTEIN KINASE INHIBITORS"},
+        {"classId": "L01EH", "className": "Human epidermal growth factor receptor 2 (HER2) tyrosine kinase inhibitors"}]}}
+
+
 @pytest.fixture
 def recorded(monkeypatch):
     from halflife.molecules import drug_info
@@ -1045,6 +1060,8 @@ def recorded(monkeypatch):
     drug_info._atc_record.cache_clear()
 
     def fake_get(url, params=None, **kwargs):
+        if "rxnav" in url:
+            return _Recorded({"status": 200, "json": _rxnav_answer(url, params)})
         key = url + "?" + "&".join(f"{a}={b}" for a, b in sorted((params or {}).items()))
         return _Recorded(data["http"][key])
     monkeypatch.setattr(drug_info.requests, "get", fake_get)
@@ -1120,6 +1137,7 @@ def test_not_assigned_is_only_said_when_both_sources_looked(monkeypatch):
     monkeypatch.setattr(drug_info, "mechanisms", lambda cid: [])
     monkeypatch.setattr(ema, "medicines", lambda: [])
     monkeypatch.setattr(drug_info, "fda_labels", lambda name: [])
+    monkeypatch.setattr(drug_info, "nlm_atc", lambda name: [])
     assert drug_info.lookup("newdrug")["atc_status"] == "none"
     monkeypatch.setattr(drug_info, "find_molecule", _down)
     down = drug_info.lookup("newdrug")
@@ -1132,6 +1150,7 @@ def test_an_fda_drug_uses_the_approved_use(monkeypatch):
     monkeypatch.setattr(drug_info, "find_molecule", lambda name: None)
     monkeypatch.setattr(ema, "medicines", lambda: [])
     monkeypatch.setattr(drug_info, "fda_labels", lambda name: [])
+    monkeypatch.setattr(drug_info, "nlm_atc", lambda name: [])
     info = drug_info.lookup("pritelivir", "treat herpes lesions", "https://fda.example/p")
     assert info["used_for"] == {"text": "Treat herpes lesions", "source": "FDA approved use", "url": "https://fda.example/p"}
 
@@ -1211,6 +1230,20 @@ def test_lab_atc_table_is_complete_enough():
 def test_sevabertinib_has_no_label_and_nothing_gets_made_up(recorded):
     info = recorded.lookup("sevabertinib")  # checked live, 404 under every name field
     assert info["used_for"] is None and info["mechanisms"] == [] and info["problems"] == []
+    assert info["atc_status"] == "assigned" and info["atc_source"] == "NLM RxClass"
+    atc = info["atc"][0]
+    assert atc["code"] == "L01EH06" and atc["substance"] == "sevabertinib"
+    assert [lv["code"] for lv in atc["levels"]] == ["L", "L01", "L01E", "L01EH"]
+
+
+def test_the_app_never_says_a_code_is_not_assigned():
+    assert "not yet assigned" not in (config.ROOT / "web/js/drug-info.js").read_text()
+
+
+def test_rxclass_skips_combinations(recorded, monkeypatch):
+    combo = {"rxclassDrugInfoList": {"rxclassDrugInfo": [{"minConcept": {"rxcui": "1", "name": "isoniazid / rifampin", "tty": "MIN"}, "rxclassMinConceptItem": {"classId": "J04AM"}}]}}
+    monkeypatch.setattr(recorded, "_rxnav", lambda path, **k: combo)
+    assert recorded.nlm_atc("rifampicin") == []
 
 
 def test_a_label_only_fills_what_is_missing(recorded):

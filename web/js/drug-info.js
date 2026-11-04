@@ -32,17 +32,17 @@ function hierarchy(entry) {
     list.append(row);
   }
   const last = el("li");
-  if (entry.substance) last.append(el("b", "", entry.code), entry.substance);
-  else last.append("Substance code not yet assigned");
-  list.append(last);
+  if (entry.substance) {
+    last.append(el("b", "", entry.code), entry.substance);
+    list.append(last);
+  }
   return list;
 }
 
 let nextId = 0;
 
 function atcBlock(mol) {
-  if (mol.atc_status === "none") return el("p", "atc-none", "ATC code not yet assigned");
-  if (!mol.atc?.length) return null; // could not be checked, then it says nothing
+  if (!mol.atc?.length) return null; // no code found says nothing about whether one exists, so the field stays out
   const box = el("div", "atc");
   const chips = el("div", "atc-chips");
   box.append(chips);
