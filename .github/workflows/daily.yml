@@ -33,6 +33,7 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
           NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}  # optional, empty means the web search is skipped
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}  # optional, empty means plain mode
         run: python run_daily.py --push-later
 
@@ -64,10 +65,12 @@ jobs:
     uses: ./.github/workflows/pages.yml
     secrets: inherit
 
-  # after the deploy, with its retries, so today's molecule image can be there. a failed deploy still gets a push
+  # after the deploy, with its retries, so today's molecule image can be there. whatever happened to the deploy (three
+  # failed tries, failing tests, cancelled by a newer deploy) the push still goes out, then without the image. always()
+  # and not !cancelled(), so a cancelled deploy can't take the push down with it
   push:
     needs: [brief, deploy]
-    if: ${{ !cancelled() && needs.brief.result == 'success' }}
+    if: ${{ always() && needs.brief.result == 'success' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -84,10 +87,30 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
         run: python scripts/send_push.py
 
+  # a run this late started after the last night check, so nothing else would tell me its deploy failed.
+  # site_check.py only alerts after 06:00 UTC, an ordinary evening stays quiet and the night check takes it from there
+  late-check:
+    needs: deploy
+    if: ${{ always() && needs.deploy.result == 'failure' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - env:
+          APP_URL: ${{ secrets.APP_URL }}
+          ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
+        run: python scripts/site_check.py --alert --evening-done
+
   # no brief or no push. a failed deploy does not alert here, the night check retries it and alerts if that fails too
   alert:
     needs: [brief, push]
-    if: ${{ !cancelled() && (needs.brief.result == 'failure' || needs.push.result == 'failure') }}
+    if: ${{ always() && (needs.brief.result == 'failure' || needs.push.result == 'failure') }}
     runs-on: ubuntu-24.04
     steps:
       - name: Tell me

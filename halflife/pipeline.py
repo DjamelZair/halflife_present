@@ -10,7 +10,7 @@ import pandas as pd
 
 from halflife import config, history, schedule, source_log, topics
 from halflife.interactions import cyp, figures as ifig, model
-from halflife.molecules import drug_info, figures as mfig, properties, pubchem, structure
+from halflife.molecules import drug_info, figures as mfig, properties, pubchem, structure, web_search
 from halflife.notify import ntfy
 from halflife.report import overview, poster
 from halflife.sources.collect import collect_all
@@ -26,6 +26,7 @@ IKI_BY_ROLE = {"strong inhibitor": 50.0, "moderate inhibitor": 5.0}
 INDUCTION_BY_ROLE = {"strong inducer": 10.0, "moderate inducer": 3.0}  # strong gives 80 percent lower or more
 
 SPARSE = 1  # out of 3: ATC, used for, how it works. at this or below, the FDA table gets a look too
+DISCOVERY_WINS = 2  # a Discovery drug with this many is the molecule, whatever the others have
 FDA_TABLE_TRIES = 5
 
 
@@ -112,20 +113,38 @@ def _best(candidates, cards, items) -> tuple | None:
     return best
 
 
+def _more_complete(best, other) -> tuple | None:
+    # on a tie the one that is already there stays
+    if other and (best is None or completeness(other[2]) > completeness(best[2])):
+        return other
+    return best
+
+
+def _with_web(found: tuple | None) -> tuple | None:
+    if not found:
+        return None
+    comp, kind, info = found
+    return comp, kind, web_search.fill(comp.name, info)
+
+
 def pick_molecule(cards, pair: tuple[str, str], demo: bool, items=()) -> tuple:
-    """The molecule, where it comes from and what is known about it. Today's drugs first: the Discovery card and the
-    interaction, the most complete one wins. A sparse one only stays when the FDA table has nothing better."""
+    """The molecule, where it comes from and what is known about it. A Discovery drug with a structure and at least two
+    of the three fields wins, new drugs are the point of it. Otherwise the most complete of today's drugs, and a sparse
+    one only stays when the FDA table has nothing better. The web search can lift the Discovery drug over that line,
+    if it was not needed there it goes to the final pick. Never inside lookup, that runs for every candidate."""
     if demo:
         return _demo_molecule(cards, pair)
-    today = [(d, "discovery") for c in cards if c.lane == "discovery" for d in c.drugs] + [(d, "interaction") for d in pair]
-    best = _best(today, cards, items)
+    best = _best([(d, "discovery") for c in cards if c.lane == "discovery" for d in c.drugs], cards, items)
+    if completeness(best[2] if best else None) < DISCOVERY_WINS:
+        best = _with_web(best)
+    if completeness(best[2] if best else None) >= DISCOVERY_WINS:
+        return best
+    best = _more_complete(best, _best([(d, "interaction") for d in pair], cards, items))
     if completeness(best[2] if best else None) <= SPARSE:
         drugs = [d for d in cyp.all_drugs() if " and " not in d and d.lower() not in cyp.VAGUE]
         start = date.today().toordinal()
-        table = _best([(drugs[(start + k) % len(drugs)], "fda_table") for k in range(FDA_TABLE_TRIES)], cards, items)
-        if table and (best is None or completeness(table[2]) > completeness(best[2])):
-            best = table
-    return best if best else (None, "none", None)
+        best = _more_complete(best, _best([(drugs[(start + k) % len(drugs)], "fda_table") for k in range(FDA_TABLE_TRIES)], cards, items))
+    return _with_web(best) or (None, "none", None)
 
 
 def _long_date(iso: str) -> str:

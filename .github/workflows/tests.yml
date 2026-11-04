@@ -1,0 +1,46 @@
+name: Tests
+
+on:
+  push: {}  # every push on every branch
+  workflow_call:  # the deploy calls this first, see pages.yml
+    inputs:
+      ref:
+        type: string
+        default: ""
+    outputs:
+      sha:
+        description: The commit that passed, the deploy builds exactly this one
+        value: ${{ jobs.test.outputs.sha }}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.commit.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - id: commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # no secrets here on purpose, and tests/conftest.py stops any test that tries to reach the internet
+      - name: Run the tests
+        run: python -m pytest -q

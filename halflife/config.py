@@ -14,6 +14,8 @@ DATA_DIR = ROOT / "data"
 SAMPLE_DIR = DATA_DIR / "sample"
 OUTPUT_ROOT = ROOT / "outputs"
 SOURCE_HISTORY = OUTPUT_ROOT / "source_history.csv"  # items per source per day, kept in the repo
+WEB_SEARCH_STORE = OUTPUT_ROOT / "web_search.json"  # the last search and what it found per drug, snippets only
+ADMIN_LOG = OUTPUT_ROOT / "admin_log.csv"  # small things I want to be able to look up, without a push
 CYP_TABLE = DATA_DIR / "cyp_reference.csv"
 TRANSPORTER_TABLE = DATA_DIR / "transporter_reference.csv"
 BRIEF_SCHEMA = DATA_DIR / "brief.schema.json"
@@ -101,6 +103,7 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-5-5")
 NCBI_EMAIL = os.getenv("NCBI_EMAIL", "")
 NCBI_API_KEY = os.getenv("NCBI_API_KEY", "")
+SERPAPI_KEY = os.getenv("SERPAPI_KEY", "")  # optional, without it the web search is skipped
 
 # ntfy topic name, pick something long and random since anyone who knows it can read it
 NTFY_TOPIC = os.getenv("NTFY_TOPIC", "")

@@ -24,7 +24,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # failing tests can never reach the site, whichever way a deploy gets started
+  test:
+    uses: ./.github/workflows/tests.yml
+    with:
+      ref: main  # called from the daily job this has to include the brief it just saved
+
   deploy:
+    needs: test
     runs-on: ubuntu-24.04
     environment:
       name: github-pages
@@ -32,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: main  # called from the daily job this has to include the brief it just saved
+          ref: ${{ needs.test.outputs.sha }}  # the commit that passed, not whatever main is by now
 
       - uses: actions/setup-python@v7
         with:

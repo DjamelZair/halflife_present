@@ -25,6 +25,8 @@ DAILYMED = "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid={id}"
 LABEL_SENTENCES = 3  # a label section can run for pages, the source is one tap away
 BOILERPLATE = re.compile(r"This is a summary of the European public assessment report", re.I)
 LEVELS = {1: 1, 3: 2, 4: 3, 5: 4, 7: 5}  # how long an ATC code is at each level
+UNKNOWN_MECHANISM = re.compile(r"\bmechanisms?\b.*\b(?:unknown|unclear|not (?:been |yet )?(?:fully |completely |well )?(?:known|understood|established|elucidated))\b", re.I)
+NOT_UNDERSTOOD = "Mechanism not fully understood (FDA label)"
 
 
 def _chembl(path: str, **params) -> dict:
@@ -192,7 +194,12 @@ def label_mechanism(label: dict | None, name: str) -> list[dict]:
     text = _label_section(label, "mechanism_of_action", name) if label else ""
     if not text:
         return []
-    return [{"text": " ".join(_sentences(text, LABEL_SENTENCES)), "source": "FDA label", "url": DAILYMED.format(id=label.get("set_id", ""))}]
+    sentences = _sentences(text, LABEL_SENTENCES)
+    url = DAILYMED.format(id=label.get("set_id", ""))
+    # only when the section opens with it. "it blocks X, the relevance of that is unknown" is still an answer
+    if UNKNOWN_MECHANISM.search(sentences[0]):
+        return [{"text": NOT_UNDERSTOOD, "source": "DailyMed", "url": url}]
+    return [{"text": " ".join(sentences), "source": "FDA label", "url": url}]
 
 
 def used_for(name: str, row: dict | None, fda_use: str = "", fda_url: str = "") -> tuple[dict | None, list[str]]:

@@ -25,14 +25,25 @@ The person building it (the repo owner) wants the **easiest version** first.
   so a pair linked only by a transporter gets no ratio. FDA footnotes stay, like rifampicin as a single dose.
 * The molecule section says why it is there (`molecule.reason` in brief.json): the Discovery card, today's interaction
   or the FDA table. `molecules/drug_info.py`: ATC from ChEMBL then EMA, "used for" from the Overview on EMA's page, then
-  EMA's indication, then FDA's approved use, then the openFDA label, mechanism from ChEMBL then the openFDA label. The
-  most complete of today's drugs is the molecule, the FDA table only gets a look when that one is sparse. No text of our own, brand names swapped for the INN.
+  EMA's indication, then FDA's approved use, then the openFDA label, mechanism from ChEMBL then the openFDA label. A label
+  that opens with an unknown mechanism shows "Mechanism not fully understood (FDA label)". A Discovery drug with a structure and at
+  least 2 of the 3 fields is the molecule. Otherwise the most complete of today's drugs, the FDA table only gets a look when that one is sparse.
+  No text of our own, brand names swapped for the INN.
+* The last fallback for those two fields is a web search (`molecules/web_search.py`, SerpAPI, secret `SERPAPI_KEY`): only when the
+  other sources really looked and have nothing, only trusted domains, one whole sentence from the snippet with source and link, at most one
+  search a day, cached per drug in `outputs/web_search.json`, a gap is asked again after 30 days. It runs on the Discovery drug or the final
+  pick, never inside `lookup`. Free plan is 250 a month. No key or no quota: skipped, a line in `outputs/admin_log.csv`, no push.
+  The key goes in the url and requests puts the url in its errors, so **never keep or log an error's text from that call**.
   `atc_status` keeps "none" (both sources looked) apart from "unknown" (a lookup failed), only "none" may say
   "ATC code not yet assigned". `data/atc_reference.csv` feeds the Lab pickers, refreshed by hand with `scripts/update_atc.py`.
 * The evening job: brief, deploy (`pages.yml`, 3 tries, 3 minutes apart), then the push, because the image must be on
-  the site first (`ntfy.image_is_live`, without it the push goes out without the image). A failed deploy alone does not
-  alert: `night-check.yml` at about 04:00 UTC redeploys when the live brief is older than today, and only alerts when
-  it is still stale after that.
+  the site first (`ntfy.image_is_live`, without it the push goes out without the image). Only the brief decides on the push, a failed,
+  cancelled or skipped deploy never stops it. A failed deploy alone does not alert: `night-check.yml` at about 04:00 and 06:00 UTC
+  redeploys when the live brief is older than today and the evening run has finished, never while that run is queued or running.
+  It only alerts from 06:00 UTC on, when the site is still stale and that run has finished. A run that ends after that tells me itself.
+* Tests guard the site: `tests.yml` on every push, and `pages.yml` runs it first and deploys exactly the commit that passed.
+  `tests/conftest.py` blocks the internet and blanks the key for every test. Local hook: `git config core.hooksPath scripts/hooks`,
+  it runs pytest and refuses a staged diff with the search key in it.
 * Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages** (HTML, CSS,
   JavaScript with three.js), `web/index.html` at the main address, the portfolio page at `/about.html`, reading the
   JSON the pipeline writes. `scripts/build_site.py` checks `brief.json` against `data/brief.schema.json` first, a
@@ -78,7 +89,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 203 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 267 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflows, the web app in `web/`.

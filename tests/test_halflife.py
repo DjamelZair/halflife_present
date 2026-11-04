@@ -1,11 +1,13 @@
 """Tests that run without internet. I run these before every push: pytest -q"""
 
 import json
+import logging
+import os
 import re
 import shutil
 import subprocess
 from pathlib import Path
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 
 import pytest
 import requests
@@ -1216,9 +1218,25 @@ def test_a_label_only_fills_what_is_missing(recorded):
     assert info["used_for"]["source"].startswith("EMA") and info["mechanisms"][0]["source"] == "ChEMBL"  # EMA and ChEMBL come first
 
 
-def test_dronedarone_label_says_unknown_and_that_is_what_shows(recorded):
+def test_dronedarone_label_says_unknown_and_shows_the_fixed_line(recorded):
     label = recorded.fda_labels("dronedarone")[0]
-    assert "unknown" in recorded.label_mechanism(label, "dronedarone")[0]["text"]  # the honest answer, not a gap
+    fact = recorded.label_mechanism(label, "dronedarone")[0]
+    assert fact["text"] == "Mechanism not fully understood (FDA label)"
+    assert fact["url"].startswith("https://dailymed.nlm.nih.gov/") and fact["source"] == "DailyMed"  # the text already says FDA label
+
+
+@pytest.mark.parametrize("section,replaced", [
+    ("The mechanism of action of X is unknown. It has properties.", True),
+    ("The exact mechanism by which X works is not fully understood.", True),
+    ("12.1 Mechanism of Action The mechanism of action has not been established.", True),
+    ("X blocks channels. The mechanism of the side effect is unknown.", False),  # opens with an answer, so it stays
+    ("X blocks channels. The clinical relevance is unknown.", False),
+    ("X inhibits a kinase through a well known mechanism.", False),
+])
+def test_only_a_section_that_opens_with_unknown_gets_the_fixed_line(section, replaced):
+    from halflife.molecules.drug_info import NOT_UNDERSTOOD, label_mechanism
+    text = label_mechanism({"set_id": "a", "mechanism_of_action": [section]}, "x")[0]["text"]
+    assert (text == NOT_UNDERSTOOD) is replaced
 
 
 def test_label_text_is_cleaned_and_only_ever_cut():
@@ -1307,11 +1325,25 @@ def test_a_tie_keeps_the_discovery_drug(choice):
     assert comp.name == "newdrug" and kind == "discovery"
 
 
-def test_more_complete_beats_discovery(choice):
+def test_a_discovery_drug_with_two_fields_beats_a_complete_partner(choice):
     pipeline, known = choice
-    known.update(newdrug=TWO, a=FULL, b=EMPTY)
+    known.update(newdrug=TWO, a=FULL, b=FULL)
     comp, kind, _ = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
-    assert comp.name == "a" and kind == "interaction"
+    assert comp.name == "newdrug" and kind == "discovery"
+
+
+def test_a_discovery_drug_with_one_field_falls_back_to_the_most_complete(choice):
+    pipeline, known = choice
+    known.update(newdrug=ONE, a=TWO, b=FULL)
+    comp, kind, _ = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
+    assert comp.name == "b" and kind == "interaction"
+
+
+def test_a_discovery_drug_without_a_structure_can_not_win(choice):
+    pipeline, known = choice
+    known.update(a=ONE, b=TWO)  # newdrug is not in PubChem
+    comp, _, _ = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
+    assert comp.name == "b"
 
 
 def test_the_fda_table_only_steps_in_for_a_sparse_molecule(choice):
@@ -1393,28 +1425,129 @@ def test_stale_means_older_than_today_or_unreadable():
     assert not site.is_stale("2026-11-05", today)  # the evening run publishes tomorrow's brief
 
 
-@pytest.mark.parametrize("stale,flag,alerts", [(True, True, 1), (True, False, 0), (False, True, 0)])
-def test_only_the_last_check_alerts(monkeypatch, tmp_path, stale, flag, alerts):
+NIGHT = datetime(2026, 11, 5, 4, 7, tzinfo=timezone.utc)
+FINAL = datetime(2026, 11, 5, 6, 7, tzinfo=timezone.utc)
+FINISHED = {"status": "completed", "conclusion": "failure", "created_at": "2026-11-04T18:40:00Z"}
+RUNNING = {"status": "in_progress", "conclusion": None, "created_at": "2026-11-04T23:50:00Z"}
+QUEUED = {"status": "queued", "conclusion": None, "created_at": "2026-11-05T05:50:00Z"}
+YESTERDAY = {"status": "completed", "conclusion": "success", "created_at": "2026-11-03T18:40:00Z"}
+
+
+@pytest.mark.parametrize("runs,state", [
+    ([FINISHED, YESTERDAY], "finished"),
+    ([RUNNING, FINISHED], "running"),
+    ([QUEUED, YESTERDAY], "running"),
+    ([YESTERDAY], "not_started"),  # a late cron is not listed at all until GitHub creates the run
+    ([], "not_started"),
+])
+def test_evening_state_keeps_finished_apart_from_busy_and_not_started(runs, state):
+    assert _site_check().evening_state(runs, FINAL) == state
+
+
+@pytest.mark.parametrize("stale,evening,now,alerts", [
+    (True, "finished", FINAL, True),
+    (True, "finished", NIGHT, False),  # the 04:00 check never alerts, 06:00 comes after it
+    (True, "running", FINAL, False),
+    (True, "not_started", FINAL, False),
+    (True, "unknown", FINAL, False),
+    (False, "finished", FINAL, False),
+])
+def test_only_a_finished_evening_at_the_last_check_alerts(stale, evening, now, alerts):
+    assert _site_check().should_alert(stale, evening, now) is alerts
+
+
+def _run_site_check(monkeypatch, tmp_path, runs, args, now=FINAL, live="2020-01-01"):
     site = _site_check()
-    monkeypatch.delenv("GITHUB_OUTPUT", raising=False)
-    monkeypatch.setattr(site, "live_brief_date", lambda: "2020-01-01" if stale else "2999-01-01")
+    output = tmp_path / "github_output"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(output))
+    monkeypatch.setattr(site, "live_brief_date", lambda: live)
+    monkeypatch.setattr(site, "evening_runs", lambda: runs)
+    monkeypatch.setattr(site, "now_utc", lambda: now)
     sent = []
     monkeypatch.setattr(site.admin, "send", lambda title, message: sent.append(title))
-    monkeypatch.setattr(site.sys, "argv", ["site_check.py"] + (["--alert"] if flag else []))
+    monkeypatch.setattr(site.sys, "argv", ["site_check.py", *args])
     assert site.main() == 0
-    assert len(sent) == alerts
+    return sent, output.read_text()
+
+
+def test_a_busy_evening_run_gets_no_alert_and_no_redeploy_that_would_cancel_it(monkeypatch, tmp_path):
+    sent, output = _run_site_check(monkeypatch, tmp_path, [RUNNING], ["--alert"])
+    assert sent == [] and "stale=true" in output and "redeploy=false" in output
+
+
+def test_a_finished_evening_run_gets_a_redeploy_and_then_an_alert(monkeypatch, tmp_path):
+    sent, output = _run_site_check(monkeypatch, tmp_path, [FINISHED], ["--alert"])
+    assert sent == ["Halflife: the site is stale"] and "redeploy=true" in output
+
+
+def test_github_being_unreachable_does_not_alert(monkeypatch, tmp_path):
+    sent, output = _run_site_check(monkeypatch, tmp_path, None, ["--alert"])
+    assert sent == [] and "evening=unknown" in output and "redeploy=false" in output
+
+
+def test_a_run_that_ends_after_the_last_check_tells_me_itself(monkeypatch, tmp_path):
+    late = datetime(2026, 11, 5, 7, 0, tzinfo=timezone.utc)
+    assert _run_site_check(monkeypatch, tmp_path, None, ["--alert", "--evening-done"], now=late)[0]
+    assert not _run_site_check(monkeypatch, tmp_path, None, ["--alert", "--evening-done"], now=NIGHT)[0]  # the night check still comes
 
 
 def test_workflows_put_the_push_after_the_deploy_and_stay_quiet_on_a_failed_deploy():
     daily = (config.ROOT / ".github/workflows/daily.yml").read_text()
     assert "run_daily.py --push-later" in daily and "NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}" in daily.split("  push:")[1]
-    assert "needs: [brief, deploy]" in daily.split("  push:")[1].split("steps:")[0]
+    push_job = daily.split("  push:")[1].split("steps:")[0]
+    # always queued: only the brief decides, three failed tries, failing tests or a cancelled deploy can't stop it
+    assert "needs: [brief, deploy]" in push_job and "always() && needs.brief.result == 'success'" in push_job
+    assert "needs.deploy" not in push_job
     alert = daily.split("  alert:")[1].split("steps:")[0]
     assert "needs: [brief, push]" in alert and "failure()" not in alert  # failure() would also see the deploy
     pages = (config.ROOT / ".github/workflows/pages.yml").read_text()
     assert pages.count("actions/deploy-pages@v5") == 3 and pages.count("sleep 180") == 2
     night = (config.ROOT / ".github/workflows/night-check.yml").read_text()
     assert "--alert" in night.split("  verify:")[1] and "--alert" not in night.split("  verify:")[0]
+    assert '"7 4 * * *"' in night and '"7 6 * * *"' in night and "actions: read" in night
+    assert "needs.check.outputs.redeploy == 'true'" in night.split("\n  redeploy:")[1].split("uses:")[0]
+    assert "--evening-done" in daily.split("  late-check:")[1]
+
+
+def test_a_dead_image_still_queues_the_push_after_three_failed_deploys(monkeypatch, tmp_path):
+    import importlib.util
+    from halflife import pipeline
+    spec = importlib.util.spec_from_file_location("send_push", config.ROOT / "scripts/send_push.py")
+    script = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(script)
+    day = tmp_path / "2026-11-05"
+    (day / "data").mkdir(parents=True)
+    (day / "figures").mkdir()
+    (day / "figures/structure_2d.png").write_bytes(b"png")
+    (day / "data/brief.json").write_text(json.dumps({"date": "2026-11-05", "cards": [], "molecule": {"name": "x"}}))
+    monkeypatch.setattr(config, "APP_URL", "https://site.example/")
+    monkeypatch.setattr(script.config, "dated_output_dirs", lambda: [day])
+    monkeypatch.setattr(pipeline.ntfy, "image_is_live", lambda url: False)  # what a failed deploy leaves behind
+    sent = []
+    monkeypatch.setattr(pipeline.ntfy, "send", lambda cards, name, d, image, at: sent.append((name, image)) or True)
+    script.main()
+    assert sent == [("x", "")]
+
+
+def test_deploys_depend_on_the_tests_and_build_the_commit_that_passed():
+    root = config.ROOT / ".github/workflows"
+    tests = (root / "tests.yml").read_text()
+    assert "push: {}" in tests and "workflow_call:" in tests and "pytest" in tests and "secrets." not in tests
+    pages = (root / "pages.yml").read_text()
+    deploy = pages.split("  deploy:")[1]
+    assert "uses: ./.github/workflows/tests.yml" in pages.split("  deploy:")[0]
+    assert "needs: test" in deploy and "ref: ${{ needs.test.outputs.sha }}" in deploy
+    # every way to the site goes through pages.yml
+    for workflow in ("daily.yml", "night-check.yml"):
+        text = (root / workflow).read_text()
+        assert "uses: ./.github/workflows/pages.yml" in text and "deploy-pages" not in text
+
+
+def test_the_pre_commit_hook_runs_the_tests_and_looks_for_the_key():
+    hook = config.ROOT / "scripts/hooks/pre-commit"
+    assert os.access(hook, os.X_OK)
+    text = hook.read_text()
+    assert "pytest" in text and "SERPAPI_KEY" in text
 
 
 def test_old_ema_pages_use_their_own_section_and_never_the_boilerplate():
@@ -1430,3 +1563,225 @@ def test_dronedarone_is_the_real_old_page_case(recorded):
     info = recorded.lookup("dronedarone")
     assert info["used_for"]["text"].startswith("Dronedarone is an antiarrhythmic medicine used to maintain normal heart rhythm")
     assert "European public assessment" not in info["used_for"]["text"] and "Multaq" not in info["used_for"]["text"]
+
+
+# the web search, the last fallback. never the real key, conftest.py blanks it and blocks the internet
+
+FAKE_KEY = "fake-key-for-tests-0123456789"
+NOTHING = {"atc": [], "atc_status": "none", "atc_source": None, "used_for": None, "mechanisms": [], "problems": []}
+SEVABERTINIB_RESULTS = [
+    {"link": "https://www.reddit.com/r/x", "snippet": "Sevabertinib is used to treat everything."},
+    {"link": "https://www.fda.gov/drugs/resources/fda-approves-sevabertinib",
+     "snippet": "Nov 19, 2025 — Hyrnuo (sevabertinib) is indicated for adults with non-small cell lung cancer with HER2 mutations. It was reviewed..."},
+    {"link": "https://medlineplus.gov/druginfo/meds/a0.html",
+     "snippet": "Sevabertinib is in a class of medications called kinase inhibitors. Take it with food."},
+]
+
+
+class _Answer:
+    def __init__(self, results=(), status=200):
+        self.status_code, self.results = status, list(results)
+
+    def json(self):
+        return {"organic_results": self.results}
+
+
+@pytest.fixture
+def search(monkeypatch):
+    from halflife.molecules import web_search
+    monkeypatch.setattr(config, "SERPAPI_KEY", FAKE_KEY)
+    calls = []
+
+    def answer_with(response):
+        def fake_get(url, params=None, **kwargs):
+            calls.append(params)
+            if isinstance(response, Exception):
+                raise response
+            return response
+        monkeypatch.setattr(web_search.requests, "get", fake_get)
+    return web_search, calls, answer_with
+
+
+TODAY = date(2026, 11, 5)
+
+
+def test_sevabertinib_gets_one_sentence_per_field_with_source_and_link(search):
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    info = web_search.fill("sevabertinib", NOTHING, TODAY)
+    assert info["used_for"] == {"text": "Sevabertinib is indicated for adults with non-small cell lung cancer with HER2 mutations.",
+                                "source": "FDA, web search snippet", "url": "https://www.fda.gov/drugs/resources/fda-approves-sevabertinib"}
+    assert info["mechanisms"] == [{"text": "Sevabertinib is in a class of medications called kinase inhibitors.",
+                                   "source": "MedlinePlus, web search snippet", "url": "https://medlineplus.gov/druginfo/meds/a0.html"}]
+    assert "Hyrnuo" not in json.dumps(info)
+    assert len(calls) == 1 and all(f"site:{d}" in calls[0]["q"] for d in web_search.TRUSTED)
+
+
+def test_the_filled_molecule_passes_the_schema(search):
+    from halflife import validate
+    web_search, _, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    info = dict(web_search.fill("sevabertinib", NOTHING, TODAY))
+    info.pop("problems")
+    assert validate.problems({**GOOD_BRIEF, "molecule": {**GOOD_BRIEF["molecule"], **info}}) == []
+
+
+@pytest.mark.parametrize("url,name", [
+    ("https://www.ema.europa.eu/en/medicines/x", "EMA"), ("https://www.fda.gov/x", "FDA"), ("https://accessdata.fda.gov/x", "FDA"),
+    ("https://dailymed.nlm.nih.gov/x", "DailyMed"), ("https://www.geneesmiddeleninformatiebank.nl/x", "Geneesmiddeleninformatiebank"),
+    ("https://www.cbg-meb.nl/x", "CBG-MEB"), ("https://www.farmacotherapeutischkompas.nl/x", "Farmacotherapeutisch Kompas"),
+    ("https://www.nhs.uk/medicines/x", "NHS"), ("https://medlineplus.gov/x", "MedlinePlus"),
+    ("https://fda.gov.evil.example/x", None), ("https://notfda.gov/x", None), ("https://evil.example/www.fda.gov", None),
+    ("http://www.fda.gov/x", None), ("", None),
+])
+def test_only_the_trusted_domains_count(url, name):
+    from halflife.molecules.web_search import source_of
+    assert source_of(url) == name
+
+
+def test_no_trusted_result_shows_nothing_and_is_remembered(search):
+    web_search, calls, answer_with = search
+    answer_with(_Answer([{"link": "https://www.reddit.com/x", "snippet": "Sevabertinib is indicated for everything."}]))
+    assert web_search.fill("sevabertinib", NOTHING, TODAY) == NOTHING
+    assert web_search.fill("sevabertinib", NOTHING, TODAY + timedelta(days=1)) == NOTHING
+    assert len(calls) == 1  # asked again only after a while
+    web_search.fill("sevabertinib", NOTHING, TODAY + timedelta(days=web_search.RETRY_AFTER_DAYS))
+    assert len(calls) == 2
+
+
+@pytest.mark.parametrize("snippet", [
+    "Sevabertinib is indicated for adults with...",  # cut off
+    "...is indicated for adults with lung cancer.",  # starts halfway
+    "Sevabertinib is being investigated for the treatment of lung cancer.",
+    "A phase 3 study of sevabertinib in the treatment of lung cancer.",
+    "Hyrnuo is indicated for adults with lung cancer.",  # only the brand, not known to be this drug
+    "Sevabertinib® is indicated for adults with lung cancer.",
+    "Rivaroxaban is indicated for adults with lung cancer.",  # about another drug
+    "Sevabertinib is not indicated for children.",
+])
+def test_a_snippet_that_is_no_whole_true_sentence_about_this_drug_stays_out(snippet):
+    from halflife.molecules.web_search import facts_from
+    found = facts_from([{"link": "https://www.fda.gov/x", "snippet": snippet}], "sevabertinib")
+    assert found == {"used_for": None, "mechanism": None}
+
+
+def test_one_sentence_never_fills_both_fields():
+    from halflife.molecules.web_search import facts_from
+    found = facts_from([{"link": "https://www.fda.gov/x", "snippet": "Sevabertinib is a kinase inhibitor indicated for lung cancer."}], "sevabertinib")
+    assert found["used_for"] and not found["mechanism"]
+
+
+def test_at_most_one_search_a_day_across_drugs(search):
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    web_search.fill("sevabertinib", NOTHING, TODAY)
+    assert web_search.fill("otherdrug", NOTHING, TODAY) == NOTHING
+    assert len(calls) == 1
+    web_search.fill("otherdrug", NOTHING, TODAY + timedelta(days=1))
+    assert len(calls) == 2
+
+
+def test_the_cache_answers_without_a_search_and_without_a_key(search, monkeypatch):
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    first = web_search.fill("sevabertinib", NOTHING, TODAY)
+    monkeypatch.setattr(config, "SERPAPI_KEY", "")
+    assert web_search.fill("sevabertinib", NOTHING, TODAY + timedelta(days=200)) == first
+    assert len(calls) == 1
+
+
+def test_only_empty_fields_are_filled_and_a_full_molecule_never_searches(search):
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    full = {**NOTHING, "used_for": {"text": "EMA says", "source": "EMA"}, "mechanisms": [{"text": "ChEMBL says", "source": "ChEMBL"}]}
+    assert web_search.fill("sevabertinib", full, TODAY) is full and calls == []
+    partly = web_search.fill("sevabertinib", {**NOTHING, "used_for": {"text": "EMA says", "source": "EMA"}}, TODAY)
+    assert partly["used_for"]["source"] == "EMA" and partly["mechanisms"][0]["source"].startswith("MedlinePlus")
+
+
+def test_a_source_that_was_down_is_no_reason_to_search(search):
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    down = {**NOTHING, "problems": ["openFDA failed: down"]}
+    assert web_search.fill("sevabertinib", down, TODAY) is down and calls == []
+
+
+def _admin_log():
+    return config.ADMIN_LOG.read_text(encoding="utf-8") if config.ADMIN_LOG.exists() else ""
+
+
+def test_no_key_skips_and_notes_it_once(monkeypatch):
+    from halflife.molecules import web_search
+    assert web_search.fill("sevabertinib", NOTHING, TODAY) == NOTHING
+    web_search.fill("sevabertinib", NOTHING, TODAY)
+    assert _admin_log().count("no SERPAPI_KEY") == 1
+
+
+@pytest.mark.parametrize("status,words", [(429, "quota is used up"), (401, "did not accept the key"), (500, "answered 500")])
+def test_a_refused_search_skips_and_notes_it(search, status, words):
+    web_search, _, answer_with = search
+    answer_with(_Answer(status=status))
+    assert web_search.fill("sevabertinib", NOTHING, TODAY) == NOTHING
+    assert words in _admin_log()
+    assert FAKE_KEY not in _admin_log()
+
+
+def test_the_key_never_reaches_a_log_a_store_or_a_brief(search, caplog):
+    # what requests really does: the url with the key ends up in the message of the error
+    web_search, _, answer_with = search
+    answer_with(requests.ConnectionError(f"Max retries exceeded with url: /search.json?api_key={FAKE_KEY}"))
+    with caplog.at_level(logging.DEBUG):
+        info = web_search.fill("sevabertinib", NOTHING, TODAY)
+    assert info == NOTHING and "ConnectionError" in _admin_log()
+    assert FAKE_KEY not in _admin_log() and FAKE_KEY not in caplog.text and FAKE_KEY not in json.dumps(info)
+    assert FAKE_KEY not in config.WEB_SEARCH_STORE.read_text()
+
+
+def test_a_successful_search_keeps_no_key_either(search):
+    web_search, _, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    assert FAKE_KEY not in json.dumps(web_search.fill("sevabertinib", NOTHING, TODAY))
+    assert FAKE_KEY not in config.WEB_SEARCH_STORE.read_text()
+
+
+def test_a_broken_answer_or_store_never_breaks_the_run(search):
+    web_search, _, answer_with = search
+    config.WEB_SEARCH_STORE.write_text("not json")
+    answer_with(_Answer([{"link": "https://www.fda.gov/x"}, "not even a dict"]))
+    assert web_search.fill("sevabertinib", NOTHING, TODAY) == NOTHING
+
+
+def test_no_real_key_in_any_tracked_file():
+    # a SerpAPI key is 64 hex characters
+    tracked = subprocess.run(["git", "ls-files"], cwd=config.ROOT, capture_output=True, text=True, check=True).stdout.split()
+    for name in tracked:
+        path = config.ROOT / name
+        if not path.is_file() or path.suffix in {".png", ".woff2", ".js"}:
+            continue
+        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            assert not re.search(r"(?i)(serpapi|api_key).{0,40}\b[0-9a-f]{64}\b", line), name
+
+
+def test_the_search_can_lift_a_discovery_drug_over_the_line(search, choice, monkeypatch):
+    pipeline, known = choice
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    known.update(sevabertinib=NOTHING, a=FULL, b=FULL)
+    comp, kind, info = pipeline.pick_molecule(_discovery("sevabertinib"), ("a", "b"), demo=False)
+    assert comp.name == "sevabertinib" and kind == "discovery" and pipeline.completeness(info) == 2 and len(calls) == 1
+
+
+def test_the_search_goes_to_the_final_pick_when_discovery_has_no_structure(search, choice):
+    pipeline, known = choice
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    known.update(sevabertinib={**NOTHING, "atc_status": "assigned", "used_for": {"text": "EMA says", "source": "EMA"}}, b=EMPTY)
+    comp, _, info = pipeline.pick_molecule([], ("sevabertinib", "b"), demo=False)
+    assert comp.name == "sevabertinib" and info["mechanisms"][0]["source"].startswith("MedlinePlus") and len(calls) == 1
+
+
+def test_no_key_changes_nothing_about_the_choice(choice):
+    pipeline, known = choice
+    known.update(newdrug=EMPTY, a=FULL, b=TWO)
+    comp, _, info = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
+    assert comp.name == "a" and info is FULL

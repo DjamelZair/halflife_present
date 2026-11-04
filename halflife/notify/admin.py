@@ -1,7 +1,8 @@
 """Pushes for me, the builder, on a separate topic. Nothing here may ever break the morning brief."""
 
+import csv
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import requests
 
@@ -29,6 +30,21 @@ def send(title: str, message: str, topic: str | None = None) -> bool:
     except requests.RequestException as e:
         log.warning("Could not send the alert %s: %s", title, e)
         return False
+
+
+def note(message: str, day: date | None = None) -> None:
+    """A line in the admin log, no push. For things worth looking up, not worth waking up for. Once per day per message."""
+    log.warning(message)
+    row = [(day or date.today()).isoformat(), message]
+    try:
+        rows = list(csv.reader(config.ADMIN_LOG.open(encoding="utf-8"))) if config.ADMIN_LOG.exists() else [["date", "note"]]
+        if row in rows:
+            return
+        config.ADMIN_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with config.ADMIN_LOG.open("w", encoding="utf-8", newline="") as f:
+            csv.writer(f).writerows([*rows, row])
+    except (OSError, csv.Error) as e:
+        log.warning("Could not write the admin log: %s", e)
 
 
 def rearm_no_run_alarm(topic: str | None = None, now: datetime | None = None) -> bool:

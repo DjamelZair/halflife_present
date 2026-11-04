@@ -1,0 +1,21 @@
+#!/bin/sh
+# no commit with failing tests, and never one with the search key in it.
+# switch it on once per clone: git config core.hooksPath scripts/hooks
+
+root=$(git rev-parse --show-toplevel)
+cd "$root" || exit 1
+
+if [ -f .env ]; then
+  key=$(sed -n 's/^SERPAPI_KEY=//p' .env | tr -d '"'"'"' \r')
+  if [ -n "$key" ] && git diff --cached | grep -qF -- "$key"; then
+    echo "Stopped: the staged changes contain SERPAPI_KEY." >&2
+    exit 1
+  fi
+fi
+
+python=python3
+[ -x .venv/bin/python ] && python=.venv/bin/python
+"$python" -m pytest -q || {
+  echo "Stopped: the tests fail, nothing was committed." >&2
+  exit 1
+}

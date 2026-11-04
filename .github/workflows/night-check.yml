@@ -2,11 +2,13 @@ name: Night check
 
 on:
   schedule:
-    # the last try of the night. if the evening deploy failed three times, or GitHub ran it late, this catches it
+    # if the evening deploy failed three times this catches it. two tries, only from the last one on it may alert me
     - cron: "7 4 * * *"
+    - cron: "7 6 * * *"
   workflow_dispatch: {}
 
 permissions:
+  actions: read  # to see whether the evening run is still queued or running
   contents: read
   pages: write
   id-token: write
@@ -16,6 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       stale: ${{ steps.site.outputs.stale }}
+      redeploy: ${{ steps.site.outputs.redeploy }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -28,18 +31,20 @@ jobs:
       - id: site
         env:
           APP_URL: ${{ secrets.APP_URL }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/site_check.py
 
+  # not while the evening run is busy, this deploy would cancel the one in that run
   redeploy:
     needs: check
-    if: needs.check.outputs.stale == 'true'
+    if: needs.check.outputs.redeploy == 'true'
     uses: ./.github/workflows/pages.yml
     secrets: inherit
 
-  # this is the only place a stale site alerts me, a failed evening deploy alone stays quiet
+  # site_check.py decides whether this alerts: still stale, evening run finished, and after the last check of the night
   verify:
     needs: [check, redeploy]
-    if: ${{ !cancelled() && needs.check.outputs.stale == 'true' }}
+    if: ${{ !cancelled() && needs.check.outputs.redeploy == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -53,4 +58,5 @@ jobs:
       - env:
           APP_URL: ${{ secrets.APP_URL }}
           ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python scripts/site_check.py --alert --wait 10
