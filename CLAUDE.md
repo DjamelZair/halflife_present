@@ -90,7 +90,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   Model values are illustrative and labelled as such. Every news card links to its source.
 
 ## Status
-Built and tested (`pytest -q`, 267 tests, and `python run_daily.py --demo`):
+Built and tested (`pytest -q`, 306 tests, and `python run_daily.py --demo`):
 config, sources, ranking, plain cards, PubChem module with offline fallback, RDKit properties,
 FDA table lookups, ICH M12 static model (inhibition and induction), all figures, HTML poster,
 ntfy notifier, GitHub workflows, the web app in `web/`.
@@ -114,6 +114,10 @@ Use a virtualenv in `.venv/`, it is ignored by git.
 9. Shorter headlines: built in `summarise/headline.py`, plain rules. The Claude API key can improve them later.
 10. Technical work, in this order: reliability, source health, content correctness, transporter data, clean-up.
     Later, parked on purpose: fine tuning the molecule look, restyling the poster and figures, a design review.
+    In between, feedback from a pharmacist on the Lab: too kinetic, too many sliders. `web/lab-story.html` is the prototype of a
+    visual story in three steps, waiting for my approval, the app is not changed yet. Off the site, its data is local:
+    `python scripts/build_lab_story_data.py`. The organ per transporter there is textbook, not from the FDA table, a pharmacist should check it.
+    No `study_ratio` exists in brief.json yet, so until the pipeline gets one the number is always the illustrative one.
 11. A test week on my phone.
 12. Christmas handover: his own ntfy topic, QR card.
 

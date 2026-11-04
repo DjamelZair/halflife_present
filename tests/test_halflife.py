@@ -2019,3 +2019,55 @@ def test_no_key_changes_nothing_about_the_choice(choice):
     known.update(newdrug=EMPTY, a=FULL, b=TWO)
     comp, _, info = pipeline.pick_molecule(_discovery("newdrug"), ("a", "b"), demo=False)
     assert comp.name == "a" and info is FULL
+
+
+# the lab story prototype
+
+def _stories(tmp_path, pairs, brief=None):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("story_data", config.ROOT / "scripts/build_lab_story_data.py")
+    data = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(data)
+    site = data._site_builder()
+    files = {"cyp": site.cyp_json(), "model": {**site.model_json(), "organs": data.ORGANS}, "brief": brief or {}}
+    for name, content in files.items():
+        (tmp_path / f"{name}.json").write_text(json.dumps(content), encoding="utf-8")
+    out = subprocess.run(["node", str(config.ROOT / "tests/lab_story_check.mjs"), *(str(tmp_path / f"{n}.json") for n in ("cyp", "model", "brief")), *pairs],
+                         capture_output=True, text=True, check=True).stdout
+    return json.loads(out)
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="needs node")
+def test_the_three_example_stories(tmp_path):
+    out = _stories(tmp_path, ["ceritinib,rivaroxaban", "midazolam,rifampicin", "probenecid,methotrexate", "paracetamol,caffeine"])
+    inhibit, induce, door, nothing = out["stories"]
+    assert inhibit["kind"] == "inhibit" and inhibit["victim"] == "rivaroxaban" and inhibit["perpetrator"] == "ceritinib"
+    assert inhibit["target"] == "CYP3A" and inhibit["ratioLabel"] == "illustrative" and inhibit["ratio"] > 1 and inhibit["up"]
+    assert induce["kind"] == "induce" and induce["victim"] == "midazolam" and induce["ratio"] < 1 and not induce["up"]
+    assert door["kind"] == "transporter" and door["target"] == "OAT3" and door["organ"] == "kidney"
+    assert door["ratio"] is None and door["number"] is None and "can be higher" in door["steps"][2]["text"]  # never a made up ratio
+    assert nothing is None
+    assert out["formats"][0]["big"] == "5.0×" and out["formats"][1] == {"big": "10×", "words": "lower exposure"}
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="needs node")
+def test_the_studys_own_number_wins_but_only_for_its_own_pair(tmp_path):
+    brief = {"pair": {"a": "ceritinib", "b": "rivaroxaban", "study_ratio": 2.3}}
+    mine, other = _stories(tmp_path, ["rivaroxaban,ceritinib", "midazolam,rifampicin"], brief)["stories"]
+    assert mine["ratio"] == 2.3 and mine["ratioLabel"] == "from the study"
+    assert other["ratioLabel"] == "illustrative"
+
+
+def test_every_transporter_in_the_table_has_an_organ():
+    import importlib.util
+    import pandas as pd
+    spec = importlib.util.spec_from_file_location("story_data", config.ROOT / "scripts/build_lab_story_data.py")
+    data = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(data)
+    assert set(pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)["transporter"]) <= set(data.ORGANS)
+
+
+def test_the_prototype_stays_off_the_site():
+    assert '"lab-story*"' in (config.ROOT / "scripts/build_site.py").read_text()
+    assert "lab-story-data" in (config.ROOT / ".gitignore").read_text()
+    assert "lab-story" not in (config.ROOT / "web/index.html").read_text()

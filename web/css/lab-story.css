@@ -1,0 +1,264 @@
+/* the Lab prototype. every value comes from tokens.css */
+
+.story-page {
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+.story-main {
+  padding: var(--space-lg) var(--gutter) var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* in a column a child may not grow past the page because of what is inside it, the charts */
+.story-main > *,
+.story-nerds > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.story-nerds svg { max-width: 100%; }
+
+.story-below .role-group h2 {
+  margin: 0 0 var(--space-xs);
+  font: 600 var(--text-sm) var(--font-display);
+}
+
+.story-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.story-head h1 {
+  margin: 0;
+  font: 600 var(--text-md) var(--font-display);
+}
+
+.story-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.story-head button { flex: none; white-space: nowrap; }
+
+.story-examples {
+  display: flex;
+  gap: var(--space-sm);
+  overflow-x: auto;
+  padding-bottom: var(--space-xs);
+  scrollbar-width: none;
+}
+
+.story-examples button {
+  flex: none;
+  white-space: nowrap;
+  min-height: var(--touch);
+}
+
+.story-progress {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+  margin: 0 0 var(--space-sm);
+  padding: 0;
+}
+
+.story-progress li {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--chip-line);
+  transition: background-color var(--duration-fast);
+}
+
+.story-progress li.done { background: var(--accent); }
+
+.story-stage {
+  --stage-w: 100cqw;
+  --stage-h: 100cqh;
+  position: relative;
+  container-type: size;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--hero);
+  border: 1px solid var(--card-line);
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* app.css sizes #scene for the hero, this canvas has to stay exactly the shape of the stage */
+.story-stage #scene,
+.story-stage img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+  cursor: default;
+}
+
+.stage-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.stage-labels span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  font: 500 var(--text-sm) var(--font-body);
+  color: var(--text);
+}
+
+.stage-labels .label-target {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.stage-labels [hidden] { display: none; }
+
+.story-result {
+  position: absolute;
+  top: var(--space-md);
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.story-result[hidden] { display: none; }
+
+.story-result p { margin: 0; }
+
+.story-big {
+  font: 700 var(--text-hero) / 1 var(--font-display);
+  color: var(--text);
+}
+
+.story-big[hidden] { display: none; }
+
+.story-words {
+  margin-top: var(--space-xs);
+  font: 500 var(--text-md) var(--font-body);
+}
+
+.story-label {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}
+
+.story-label[hidden] { display: none; }
+
+/* top right, that corner is free once the perpetrator has left it */
+.story-toggle {
+  position: absolute;
+  right: var(--space-sm);
+  top: var(--space-sm);
+  min-height: var(--touch);
+  background: var(--tabbar-bg);
+}
+
+.story-toggle[hidden] { display: none; }
+
+.story-caption {
+  min-height: 5.5rem;
+  padding-top: var(--space-md);
+}
+
+.story-caption h2,
+.story-still h2 {
+  margin: 0 0 var(--space-xs);
+  font: 600 var(--text-md) var(--font-display);
+}
+
+.story-caption p,
+.story-still figcaption p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.story-nav {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-sm);
+}
+
+.story-nav button {
+  min-height: var(--touch);
+}
+
+.button-primary {
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--page);
+  font: 600 var(--text-sm) var(--font-body);
+  cursor: pointer;
+}
+
+.story-nav button:disabled { opacity: 0.4; }
+
+.story-schematic { margin-top: var(--space-md); }
+
+.story-below {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.story-below .findings { margin: 0; }
+
+.story-roles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.story-stills {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.story-stills[hidden] { display: none; }
+
+.story-still { margin: 0; }
+
+.story-still figcaption { padding-top: var(--space-md); }
+
+.story-nerds {
+  margin-top: var(--space-lg);
+  border-top: 1px solid var(--card-line);
+  padding-top: var(--space-md);
+}
+
+.story-nerds summary {
+  min-height: var(--touch);
+  display: flex;
+  align-items: center;
+  font: 600 var(--text-md) var(--font-display);
+  cursor: pointer;
+}
+
+/* lab.js shows this list, the story already says the same above */
+.story-nerds #lab-results { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .story-progress li { transition: none; }
+}
