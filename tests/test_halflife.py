@@ -1037,6 +1037,26 @@ class _Recorded:
             raise requests.HTTPError(str(self.status_code))
 
 
+# as answered live on 4 November 2026, cut down to the parts that matter
+FDA_TABLE = """<table><tr><td>38.</td><td><a href="https://www.accessdata.fda.gov/label.pdf">Hyrnuo</a></td><td>sevabertinib</td><td>11/19/2025</td>
+<td>To treat locally advanced or metastatic non-squamous non-small cell lung cancer with tumors that have activating HER2 tyrosine kinase domain activating mutations in patients who received a systemic therapy<br>
+<a href="/drugs/drug-trials-snapshots/drug-trials-snapshot-hyrnuo" title="Drug Trials Snapshot: HYRNUO">Drug Trials Snapshot</a></td></tr></table>"""
+WHO_FOUND = """<div id="content"><p align="right"><a href="./">New search</a><h2>Found 1 entry starting with 'sevabertinib'.</h2><table><tr><td>L01EH06</td><td><a href="./?code=L01EH06">sevabertinib</a></td></tr></table></div>"""
+WHO_RIFAMPICIN = """<div id="content"><h2>Found 3 entries starting with 'rifampicin'.</h2><table><tr><td>J04AB02</td><td><a href="./?code=J04AB02">rifampicin</a></td></tr><tr><td>J04AB02</td><td><a href="./?code=J04AB02">rifampicin</a></td></tr><tr><td>J04AM02</td><td><a href="./?code=J04AM02">rifampicin and isoniazid</a></td></tr></table></div>"""
+WHO_CODE = """<div id="content"><p align="right"><a href="./">New search</a></p>L <b><a href="./?code=L&showdescription=yes">ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS</a></b><br/>
+L01 <b><a href="./?code=L01&showdescription=no">ANTINEOPLASTIC AGENTS</a></b><br/>
+L01E <b><a href="./?code=L01E&showdescription=no">PROTEIN KINASE INHIBITORS</a></b><br/>
+L01EH <b><a href="./?code=L01EH&showdescription=no">Human epidermal growth factor receptor 2 (HER2) tyrosine kinase inhibitors</a></b><br/>
+<p><ul><table><tr><td>ATC code&nbsp;&nbsp;</td><td>Name&nbsp;&nbsp;</td></tr><tr><td>L01EH06&nbsp;</td><td><a href="./?code=L01EH06&showdescription=yes">sevabertinib</a>&nbsp;</td></tr></table></ul></div>"""
+WHO_NONE = """<div id="content"><h1>ATC/DDD Index 2026</h1><h2>No match found. Please try again.</h2></div>"""
+
+
+def _who_answer(params):
+    if params.get("code"):
+        return WHO_CODE
+    return WHO_FOUND if params["name"].lower() == "sevabertinib" else WHO_NONE
+
+
 def _rxnav_answer(url, params):
     # as answered live on 4 November 2026
     if "byDrugName" in url:
@@ -1058,10 +1078,15 @@ def recorded(monkeypatch):
     from halflife.sources import ema
     data = json.loads((config.ROOT / "tests/fixtures_drug_info.json").read_text(encoding="utf-8"))
     drug_info._atc_record.cache_clear()
+    who_status = 200
 
     def fake_get(url, params=None, **kwargs):
         if "rxnav" in url:
             return _Recorded({"status": 200, "json": _rxnav_answer(url, params)})
+        if "atcddd" in url:
+            return _Recorded({"status": who_status, "text": _who_answer(params)})
+        if "novel-drug-approvals" in url:
+            return _Recorded({"status": 200, "text": FDA_TABLE if url.endswith("2025") else "<table></table>"})
         key = url + "?" + "&".join(f"{a}={b}" for a, b in sorted((params or {}).items()))
         return _Recorded(data["http"][key])
     monkeypatch.setattr(drug_info.requests, "get", fake_get)
@@ -1138,21 +1163,138 @@ def test_not_assigned_is_only_said_when_both_sources_looked(monkeypatch):
     monkeypatch.setattr(ema, "medicines", lambda: [])
     monkeypatch.setattr(drug_info, "fda_labels", lambda name: [])
     monkeypatch.setattr(drug_info, "nlm_atc", lambda name: [])
+    monkeypatch.setattr(drug_info.who_atc, "lookup", lambda name: [])
+    monkeypatch.setattr(drug_info.fda_novel, "approved_use", lambda name: None)
     assert drug_info.lookup("newdrug")["atc_status"] == "none"
     monkeypatch.setattr(drug_info, "find_molecule", _down)
     down = drug_info.lookup("newdrug")
     assert down["atc_status"] == "unknown" and down["atc"] == [] and "ChEMBL failed" in down["problems"][0]
 
 
-def test_an_fda_drug_uses_the_approved_use(monkeypatch):
+def test_sevabertinib_gets_its_full_approved_use_from_the_fda_table(recorded):
+    used = recorded.lookup("sevabertinib")["used_for"]
+    assert used["source"] == "FDA Novel Drug Approvals" and used["url"].endswith("novel-drug-approvals-2025")
+    assert used["text"].startswith("To treat locally advanced or metastatic non-squamous non-small cell lung cancer")
+    assert used["text"].endswith("who received a systemic therapy")  # no "Drug Trials Snapshot", that is a link in the cell
+    assert "Hyrnuo" not in used["text"]
+
+
+def test_the_table_counts_toward_two_of_three_so_sevabertinib_can_win(recorded):
+    from halflife.pipeline import completeness
+    assert completeness(recorded.lookup("sevabertinib")) == 2
+
+
+def test_the_fda_table_swaps_the_brand_and_only_for_this_drug(monkeypatch):
     from halflife.molecules import drug_info
-    from halflife.sources import ema
-    monkeypatch.setattr(drug_info, "find_molecule", lambda name: None)
-    monkeypatch.setattr(ema, "medicines", lambda: [])
-    monkeypatch.setattr(drug_info, "fda_labels", lambda name: [])
-    monkeypatch.setattr(drug_info, "nlm_atc", lambda name: [])
-    info = drug_info.lookup("pritelivir", "treat herpes lesions", "https://fda.example/p")
-    assert info["used_for"] == {"text": "Treat herpes lesions", "source": "FDA approved use", "url": "https://fda.example/p"}
+    from halflife.sources import fda_novel
+    page = FDA_TABLE.replace("To treat locally", "Hyrnuo treats locally")
+    monkeypatch.setattr(fda_novel.requests, "get", lambda url, **k: _Recorded({"status": 200, "text": page if url.endswith("2025") else ""}))
+    assert fda_novel.approved_use("rivaroxaban", date(2026, 11, 5)) is None
+    assert drug_info.used_for("sevabertinib", None)[0]["text"].startswith("Sevabertinib treats locally")
+
+
+def test_card_titles_no_longer_end_in_the_snapshot_link():
+    from halflife.sources import fda_novel
+    row = fda_novel.parse_page(FDA_TABLE)[0]
+    assert "Snapshot" not in row["use"] and row["use"].startswith("locally advanced")
+    assert row["approved_use"].startswith("To treat") and row["brand"] == "Hyrnuo"
+    assert fda_novel.parse_page(FDA_TABLE.replace("<td>38.</td>", "<td>1.</td>"))[0]["ingredient"] == "sevabertinib"
+
+
+def test_the_fda_table_being_down_is_a_problem_not_a_crash(monkeypatch):
+    from halflife.molecules import drug_info
+    from halflife.sources import fda_novel
+    monkeypatch.setattr(fda_novel.requests, "get", _down)
+    used, problems = drug_info.used_for("sevabertinib", None)
+    assert used is None and "FDA novel approvals failed" in problems[0]
+
+
+def _who(monkeypatch, pages):
+    from halflife.molecules import who_atc
+    asked = []
+
+    def fake_get(url, params=None, **kwargs):
+        asked.append((params, kwargs.get("headers")))
+        answer = pages(params)
+        if isinstance(answer, Exception):
+            raise answer
+        return _Recorded({"status": 200, "text": answer})
+    monkeypatch.setattr(who_atc.requests, "get", fake_get)
+    return who_atc, asked
+
+
+def test_who_gives_sevabertinib_its_code_with_words_unchanged_and_attribution(recorded):
+    from halflife.molecules import who_atc
+    info = recorded.lookup("sevabertinib")
+    assert info["atc_source"] == "WHO Collaborating Centre for Drug Statistics Methodology" and info["atc_url"].endswith("?code=L01EH06")
+    atc = info["atc"][0]
+    assert atc["code"] == "L01EH06" and atc["substance"] == "sevabertinib"
+    assert [lv["code"] for lv in atc["levels"]] == ["L", "L01", "L01E", "L01EH"]
+    assert atc["levels"][0]["name"] == "ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS"  # WHO does not allow changing it
+    assert who_atc.ATTRIBUTION == info["atc_source"]
+
+
+def test_who_is_asked_honestly_once_a_month_per_drug(monkeypatch):
+    who_atc, asked = _who(monkeypatch, _who_answer)
+    day = date(2026, 11, 5)
+    first = who_atc.lookup("sevabertinib", day)
+    assert len(asked) == 2 and all(h == config.HTTP_HEADERS for _, h in asked)
+    assert who_atc.lookup("sevabertinib", day + timedelta(days=20)) == first and len(asked) == 2
+    who_atc.lookup("sevabertinib", day + timedelta(days=who_atc.RECHECK_DAYS))
+    assert len(asked) == 4
+
+
+def test_who_waits_ten_seconds_between_requests(monkeypatch):
+    from halflife.molecules import who_atc
+    who_atc, _ = _who(monkeypatch, _who_answer)
+    monkeypatch.setattr(who_atc, "DELAY", 10)
+    waits = []
+    monkeypatch.setattr(who_atc.time, "sleep", waits.append)
+    who_atc.lookup("sevabertinib", date(2026, 11, 5))
+    assert len(waits) >= 1 and 9 < waits[-1] <= 10
+
+
+def test_who_takes_only_the_exact_name_never_a_combination():
+    from halflife.molecules.who_atc import parse_search
+    assert parse_search(WHO_RIFAMPICIN, "rifampicin") == ["J04AB02"]
+    assert parse_search(WHO_NONE, "x") == []
+
+
+@pytest.mark.parametrize("answer", [requests.ConnectionError("down"), "<div id='content'>Please complete the challenge</div>"])
+def test_who_not_working_skips_it_and_nlm_takes_over(recorded, monkeypatch, answer):
+    from halflife.molecules import who_atc
+    real_get = who_atc.requests.get
+
+    def fake_get(url, params=None, **kwargs):
+        if "atcddd" not in url:
+            return real_get(url, params=params, **kwargs)
+        if isinstance(answer, Exception):
+            raise answer
+        return _Recorded({"status": 200, "text": answer})
+    monkeypatch.setattr(who_atc.requests, "get", fake_get)
+    info = recorded.lookup("sevabertinib")
+    assert info["atc_source"] == "NLM RxClass" and info["atc"][0]["code"] == "L01EH06"
+    assert info["problems"] == [] and "WHO ATC index skipped" in _admin_log()
+
+
+def test_who_does_not_get_asked_when_chembl_has_the_full_code(recorded):
+    assert recorded.lookup("rivaroxaban")["atc_source"] == "ChEMBL"
+
+
+def test_the_atc_check_reports_differences():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("check_atc", config.ROOT / "scripts/check_atc.py")
+    check = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(check)
+    a, b = {"B01AF01"}, {"B01AF02"}
+    assert check.verdict(a, a, a) == "same as WHO"
+    assert check.verdict(a, b, None) == "differs from WHO"
+    assert check.verdict(set(), a, None) == "missing, WHO has it"
+    assert check.verdict({"A", "B"}, {"A"}, None) == "only in ours"
+    assert check.verdict({"A"}, {"A", "B"}, None) == "WHO has more"
+    assert check.verdict(a, set(), {"B01AF"}) == "same as NLM, WHO has none under this name"
+    assert check.verdict(a, set(), {"C01AF"}) == "differs from NLM"
+    assert check.verdict(a, None, None) == "could not check"
 
 
 def test_atc_words_keep_their_acronyms():
@@ -1227,11 +1369,14 @@ def test_lab_atc_table_is_complete_enough():
 
 # openFDA labels, the third source
 
-def test_sevabertinib_has_no_label_and_nothing_gets_made_up(recorded):
+def test_sevabertinib_has_no_label_and_no_mechanism_gets_made_up(recorded):
     info = recorded.lookup("sevabertinib")  # checked live, 404 under every name field
-    assert info["used_for"] is None and info["mechanisms"] == [] and info["problems"] == []
-    assert info["atc_status"] == "assigned" and info["atc_source"] == "NLM RxClass"
-    atc = info["atc"][0]
+    assert info["mechanisms"] == [] and info["problems"] == []
+    assert info["atc_status"] == "assigned" and info["atc"][0]["code"] == "L01EH06"
+
+
+def test_nlm_gives_the_full_code_and_its_levels(recorded):
+    atc = recorded.nlm_atc("sevabertinib")[0]
     assert atc["code"] == "L01EH06" and atc["substance"] == "sevabertinib"
     assert [lv["code"] for lv in atc["levels"]] == ["L", "L01", "L01E", "L01EH"]
 

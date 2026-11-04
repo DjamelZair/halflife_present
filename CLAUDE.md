@@ -25,7 +25,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   so a pair linked only by a transporter gets no ratio. FDA footnotes stay, like rifampicin as a single dose.
 * The molecule section says why it is there (`molecule.reason` in brief.json): the Discovery card, today's interaction
   or the FDA table. `molecules/drug_info.py`: ATC from ChEMBL then EMA, "used for" from the Overview on EMA's page, then
-  EMA's indication, then FDA's approved use, then the openFDA label, mechanism from ChEMBL then the openFDA label. A label
+  EMA's indication, then FDA's Novel Drug Approvals table (`fda_novel.approved_use`, full wording, three years back, counts as structured), then the openFDA label, mechanism from ChEMBL then the openFDA label. A label
   that opens with an unknown mechanism shows "Mechanism not fully understood (FDA label)". A Discovery drug with a structure and at
   least 2 of the 3 fields is the molecule. Otherwise the most complete of today's drugs, the FDA table only gets a look when that one is sparse.
   No text of our own, brand names swapped for the INN.
@@ -34,7 +34,7 @@ The person building it (the repo owner) wants the **easiest version** first.
   search a day, cached per drug in `outputs/web_search.json`, a gap is asked again after 30 days. It only fills gaps in the molecule
   that has been chosen, the choice itself is on structured sources only, so snippets never count toward the 2 of 3. Free plan is 250 a month. No key or no quota: skipped, a line in `outputs/admin_log.csv`, no push.
   The key goes in the url and requests puts the url in its errors, so **never keep or log an error's text from that call**.
-  ATC goes ChEMBL, EMA, then NLM (RxClass for the class, RxNorm for the full code). `atc_status` "none" only means these sources
+  ATC goes ChEMBL, EMA, the WHO index (`molecules/who_atc.py`, also when EMA's code stops above the substance: honest user agent, 10 seconds between requests, each drug at most monthly in `outputs/who_atc.json`, WHO's words unchanged, attribution with a link in the app), then NLM (RxClass for the class, RxNorm for the full code). `scripts/check_atc.py` compares the Lab's table with WHO and NLM and only reports. `atc_status` "none" only means these sources
   have nothing, they lag behind WHO, so the app never says a code is not assigned: no code found, no field. `data/atc_reference.csv` feeds the Lab pickers, refreshed by hand with `scripts/update_atc.py`.
 * The evening job: brief, deploy (`pages.yml`, 3 tries, 3 minutes apart), then the push, because the image must be on
   the site first (`ntfy.image_is_live`, without it the push goes out without the image). Only the brief decides on the push, a failed,

@@ -95,7 +95,7 @@ def _demo_molecule(cards, pair, demo=True):
     return pubchem.load_sample(names[date.today().toordinal() % len(names)]), "sample", None
 
 
-def _best(candidates, cards, items) -> tuple | None:
+def _best(candidates) -> tuple | None:
     """The most complete of these, among those PubChem knows. On a tie the first in the list wins."""
     best = None
     for name, kind in dict.fromkeys(candidates):
@@ -107,7 +107,7 @@ def _best(candidates, cards, items) -> tuple | None:
         if not small_enough(comp):
             log.info("%s is too big for the 3D view", name)
             continue
-        info = drug_info.lookup(comp.name, *_fda_use(comp.name, cards, items))
+        info = drug_info.lookup(comp.name)
         if best is None or completeness(info) > completeness(best[2]):
             best = (comp, kind, info)
     return best
@@ -127,21 +127,21 @@ def _with_web(found: tuple | None) -> tuple | None:
     return comp, kind, web_search.fill(comp.name, info)
 
 
-def pick_molecule(cards, pair: tuple[str, str], demo: bool, items=()) -> tuple:
+def pick_molecule(cards, pair: tuple[str, str], demo: bool) -> tuple:
     """The molecule, where it comes from and what is known about it. A Discovery drug with a structure and at least two
     of the three fields wins, new drugs are the point of it. Otherwise the most complete of today's drugs, and a sparse
     one only stays when the FDA table has nothing better. All on structured sources: the web search only fills gaps
     in the molecule that has already been chosen, so a snippet can never decide which one that is."""
     if demo:
         return _demo_molecule(cards, pair)
-    best = _best([(d, "discovery") for c in cards if c.lane == "discovery" for d in c.drugs], cards, items)
+    best = _best([(d, "discovery") for c in cards if c.lane == "discovery" for d in c.drugs])
     if completeness(best[2] if best else None) >= DISCOVERY_WINS:
         return _with_web(best)
-    best = _more_complete(best, _best([(d, "interaction") for d in pair], cards, items))
+    best = _more_complete(best, _best([(d, "interaction") for d in pair]))
     if completeness(best[2] if best else None) <= SPARSE:
         drugs = [d for d in cyp.all_drugs() if " and " not in d and d.lower() not in cyp.VAGUE]
         start = date.today().toordinal()
-        best = _more_complete(best, _best([(drugs[(start + k) % len(drugs)], "fda_table") for k in range(FDA_TABLE_TRIES)], cards, items))
+        best = _more_complete(best, _best([(drugs[(start + k) % len(drugs)], "fda_table") for k in range(FDA_TABLE_TRIES)]))
     return _with_web(best) or (None, "none", None)
 
 
@@ -170,16 +170,6 @@ def why_today(kind: str, name: str, cards, items, pair: tuple[str, str]) -> dict
     if kind == "fda_table":
         return {"kind": "fda_table", "text": "From the FDA interaction table", "url": None}
     return {"kind": kind, "text": "From the saved samples", "url": None}
-
-
-def _fda_use(name: str, cards, items) -> tuple[str, str]:
-    # only the FDA card knows the approved use, and only for a drug that came in through it
-    for c in cards:
-        if name.lower() in (d.lower() for d in c.drugs):
-            for i in items:
-                if i.url == c.url and i.extra.get("use"):
-                    return i.extra["use"], i.url
-    return "", ""
 
 
 def _image_url(figs_dir, day: date) -> str:
@@ -219,7 +209,7 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     # 2. molecule of the day
     figures, molecule = {}, None
     a, b = pick_pair(cards, day)
-    comp, why_kind, info = pick_molecule(cards, (a, b), demo, items)
+    comp, why_kind, info = pick_molecule(cards, (a, b), demo)
     if comp:
         figures["molecule"] = figs_dir / "molecule.png"
         mfig.property_figure(comp.name, comp.smiles, figures["molecule"])

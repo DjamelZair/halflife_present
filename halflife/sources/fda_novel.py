@@ -9,6 +9,7 @@ import html
 import logging
 import re
 from datetime import date, datetime, timedelta
+from functools import lru_cache
 
 import requests
 
@@ -20,6 +21,7 @@ log = logging.getLogger(__name__)
 
 PAGE = "https://www.fda.gov/drugs/novel-drug-approvals-fda/novel-drug-approvals-{year}"
 OPENFDA = "https://api.fda.gov/drug/drugsfda.json"
+USE_YEARS = 3  # how far back the table counts as new
 DRUGS_AT_FDA = "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo={appl}"
 
 
@@ -34,10 +36,12 @@ def _use(text: str) -> str:
 
 
 def parse_page(page: str) -> list[dict]:
-    """Every row of the table: ingredient, approval date and the approved use. The brand name stays out."""
+    """Every row of the table: ingredient, approval date, the approved use with and without its "To treat". The brand
+    is only kept so it can be swapped for the INN, it never goes on a card."""
     rows = []
     for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", page, re.S):
-        cells = [_clean(c) for c in re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)]
+        raw = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
+        cells = [_clean(c) for c in raw]
         if len(cells) < 5:
             continue  # header row or something else
         try:
@@ -45,9 +49,32 @@ def parse_page(page: str) -> list[dict]:
         except ValueError:
             continue
         link = re.search(r'href="([^"]+)"', tr)
-        rows.append({"ingredient": re.sub(r"\s+", " ", cells[2]).lower(), "date": approved.isoformat(),
-                     "use": _use(cells[4]), "link": link.group(1) if link else ""})
+        # the use cell also holds links like "Drug Trials Snapshot", those are not part of the use
+        approved_use = re.sub(r"\s+", " ", _clean(re.sub(r"<a\b.*?</a>", " ", raw[4], flags=re.S))).strip().rstrip(".")
+        rows.append({"ingredient": re.sub(r"\s+", " ", cells[2]).lower(), "date": approved.isoformat(), "brand": cells[1],
+                     "use": _use(approved_use), "approved_use": approved_use, "link": link.group(1) if link else ""})
     return rows
+
+
+@lru_cache(maxsize=8)
+def _year_rows(year: int) -> tuple:
+    r = requests.get(PAGE.format(year=year), headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT)
+    if r.status_code == 404:  # early January this year's page may not be there yet
+        return ()
+    r.raise_for_status()
+    return tuple(parse_page(r.text))
+
+
+def approved_use(name: str, today: date | None = None) -> dict | None:
+    """FDA's own approved use from the table, in full, for any drug in it. Years back, a new drug is not always this year's.
+    The brand name is in the row, the caller swaps it for the INN."""
+    inn = to_inn(name).lower()
+    this_year = (today or date.today()).year
+    for year in range(this_year, this_year - USE_YEARS, -1):
+        for row in _year_rows(year):
+            if to_inn(row["ingredient"]).lower() == inn and row["approved_use"]:
+                return {"text": row["approved_use"], "brand": row["brand"], "url": PAGE.format(year=year)}
+    return None
 
 
 def _rows_to_items(rows: list[dict], since: str, page_url: str) -> list[Item]:

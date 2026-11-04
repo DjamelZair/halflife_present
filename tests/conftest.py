@@ -6,6 +6,8 @@ import socket
 import pytest
 
 from halflife import config
+from halflife.molecules import who_atc
+from halflife.sources import fda_novel
 
 
 @pytest.fixture(autouse=True)
@@ -28,5 +30,8 @@ def sealed(monkeypatch, tmp_path):
     monkeypatch.setattr(config, "SERPAPI_KEY", "")
     monkeypatch.setattr(config, "ADMIN_LOG", tmp_path / "admin_log.csv")
     monkeypatch.setattr(config, "WEB_SEARCH_STORE", tmp_path / "web_search.json")
+    monkeypatch.setattr(config, "WHO_ATC_STORE", tmp_path / "who_atc.json")
+    monkeypatch.setattr(who_atc, "DELAY", 0)
+    fda_novel._year_rows.cache_clear()
     yield
     assert not tried, f"this test tried to reach the internet: {tried[:3]}"

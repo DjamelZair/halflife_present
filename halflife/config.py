@@ -15,6 +15,7 @@ SAMPLE_DIR = DATA_DIR / "sample"
 OUTPUT_ROOT = ROOT / "outputs"
 SOURCE_HISTORY = OUTPUT_ROOT / "source_history.csv"  # items per source per day, kept in the repo
 WEB_SEARCH_STORE = OUTPUT_ROOT / "web_search.json"  # the last search and what it found per drug, snippets only
+WHO_ATC_STORE = OUTPUT_ROOT / "who_atc.json"  # what the WHO index said per drug, so it is asked at most once a month
 ADMIN_LOG = OUTPUT_ROOT / "admin_log.csv"  # small things I want to be able to look up, without a push
 CYP_TABLE = DATA_DIR / "cyp_reference.csv"
 TRANSPORTER_TABLE = DATA_DIR / "transporter_reference.csv"

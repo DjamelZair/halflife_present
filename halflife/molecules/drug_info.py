@@ -14,7 +14,8 @@ import requests
 
 from halflife import config
 from halflife.names import europeanise, normalise_query, to_inn
-from halflife.sources import ema
+from halflife.molecules import who_atc
+from halflife.sources import ema, fda_novel
 
 log = logging.getLogger(__name__)
 
@@ -231,8 +232,8 @@ def label_mechanism(label: dict | None, name: str) -> list[dict]:
     return [{"text": " ".join(sentences), "source": "FDA label", "url": url}]
 
 
-def used_for(name: str, row: dict | None, fda_use: str = "", fda_url: str = "") -> tuple[dict | None, list[str]]:
-    """EMA's plain language summary, then EMA's indication, then FDA's approved use. lookup() adds the label after that."""
+def used_for(name: str, row: dict | None) -> tuple[dict | None, list[str]]:
+    """EMA's plain language summary, then EMA's indication, then FDA's table of novel approvals. lookup() adds the label after that."""
     problems = []
     inn = to_inn(name)
     if row and row.get("medicine_status") == "Authorised" and row.get("medicine_url"):
@@ -249,8 +250,13 @@ def used_for(name: str, row: dict | None, fda_use: str = "", fda_url: str = "") 
     if row and row.get("therapeutic_indication"):
         text = ema._plain(row["therapeutic_indication"])
         return {"text": without_brand(text, row, inn), "source": "EMA indication", "url": row.get("medicine_url", "")}, problems
-    if fda_use:
-        return {"text": fda_use[:1].upper() + fda_use[1:], "source": "FDA approved use", "url": fda_url}, problems
+    try:
+        fda = fda_novel.approved_use(name)
+    except requests.RequestException as e:
+        problems.append(f"FDA novel approvals failed: {e}")
+        return None, problems
+    if fda:
+        return {"text": _swap_brands(fda["text"], [fda["brand"]], inn), "source": "FDA Novel Drug Approvals", "url": fda["url"]}, problems
     return None, problems
 
 
@@ -261,7 +267,7 @@ def mechanisms(chembl_id: str) -> list[dict]:
     return [{"text": text, "source": "ChEMBL", "url": url} for text in texts]
 
 
-def lookup(name: str, fda_use: str = "", fda_url: str = "") -> dict:
+def lookup(name: str) -> dict:
     """Everything the molecule section shows. Missing fields stay out, "problems" says what could not be checked."""
     info = {"atc": [], "atc_status": "unknown", "atc_source": None, "used_for": None, "mechanisms": []}
     problems = []
@@ -286,7 +292,11 @@ def lookup(name: str, fda_use: str = "", fda_url: str = "") -> dict:
     if not codes:
         codes = ema_atc_codes(row)
         source = "EMA" if codes else None
-    if codes:
+    # WHO when nobody has a code, or EMA's stops above the substance. it stays out of problems, NLM is there if it fails
+    who = who_atc.lookup(name) if all(len(c) < 7 for c in codes) else None
+    if who:
+        info["atc"], info["atc_status"], info["atc_source"], info["atc_url"] = who, "assigned", who_atc.ATTRIBUTION, who[0]["url"]
+    elif codes:
         try:
             info["atc"] = [atc_hierarchy(code) for code in codes]
         except Exception as e:  # the code itself is still true without its words
@@ -294,7 +304,7 @@ def lookup(name: str, fda_use: str = "", fda_url: str = "") -> dict:
             info["atc"] = [{"code": code, "levels": [], "substance": None} for code in codes]
         info["atc_status"], info["atc_source"] = "assigned", source
     else:
-        # these lag behind WHO, so "none" only means none of them has it. the app shows nothing then, never "not assigned"
+        # "none" only means none of these has it. the app shows nothing then, never "not assigned"
         try:
             info["atc"] = nlm_atc(name)
             if info["atc"]:
@@ -304,7 +314,7 @@ def lookup(name: str, fda_use: str = "", fda_url: str = "") -> dict:
         except Exception as e:
             problems.append(f"RxClass failed: {type(e).__name__}")
 
-    info["used_for"], used_problems = used_for(name, row, fda_use, fda_url)
+    info["used_for"], used_problems = used_for(name, row)
     problems += used_problems
     # the third source, only asked for what EMA and ChEMBL left open
     if not info["used_for"] or not info["mechanisms"]:

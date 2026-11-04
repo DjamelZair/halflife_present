@@ -489,6 +489,8 @@ h2 {
   color: var(--accent);
 }
 
+.atc-source { display: block; margin-top: var(--space-sm); }
+
 .atc-levels {
   display: flex;
   flex-direction: column;

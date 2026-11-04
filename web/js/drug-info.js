@@ -62,6 +62,12 @@ function atcBlock(mol) {
     chips.append(button);
     box.append(panel);
   }
+  // WHO asks to be named wherever its index is used
+  if (mol.atc_url) {
+    const source = sourceLink(mol.atc_source, mol.atc_url);
+    source.classList.add("atc-source");
+    box.append(source);
+  }
   return box;
 }
 
