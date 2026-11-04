@@ -31,16 +31,17 @@ The person building it (the repo owner) wants the **easiest version** first.
   No text of our own, brand names swapped for the INN.
 * The last fallback for those two fields is a web search (`molecules/web_search.py`, SerpAPI, secret `SERPAPI_KEY`): only when the
   other sources really looked and have nothing, only trusted domains, one whole sentence from the snippet with source and link, at most one
-  search a day, cached per drug in `outputs/web_search.json`, a gap is asked again after 30 days. It runs on the Discovery drug or the final
-  pick, never inside `lookup`. Free plan is 250 a month. No key or no quota: skipped, a line in `outputs/admin_log.csv`, no push.
+  search a day, cached per drug in `outputs/web_search.json`, a gap is asked again after 30 days. It only fills gaps in the molecule
+  that has been chosen, the choice itself is on structured sources only, so snippets never count toward the 2 of 3. Free plan is 250 a month. No key or no quota: skipped, a line in `outputs/admin_log.csv`, no push.
   The key goes in the url and requests puts the url in its errors, so **never keep or log an error's text from that call**.
   `atc_status` keeps "none" (both sources looked) apart from "unknown" (a lookup failed), only "none" may say
   "ATC code not yet assigned". `data/atc_reference.csv` feeds the Lab pickers, refreshed by hand with `scripts/update_atc.py`.
 * The evening job: brief, deploy (`pages.yml`, 3 tries, 3 minutes apart), then the push, because the image must be on
   the site first (`ntfy.image_is_live`, without it the push goes out without the image). Only the brief decides on the push, a failed,
   cancelled or skipped deploy never stops it. A failed deploy alone does not alert: `night-check.yml` at about 04:00 and 06:00 UTC
-  redeploys when the live brief is older than today and the evening run has finished, never while that run is queued or running.
-  It only alerts from 06:00 UTC on, when the site is still stale and that run has finished. A run that ends after that tells me itself.
+  redeploys when the live brief is older than today and the evening run is over, never while that run is queued or running.
+  From 06:00 UTC on a stale site always alerts and says why: run still queued, still running, failed, cancelled or never started. Before 06:00
+  nothing alerts. A run that ends after the last check tells me itself.
 * Tests guard the site: `tests.yml` on every push, and `pages.yml` runs it first and deploys exactly the commit that passed.
   `tests/conftest.py` blocks the internet and blanks the key for every test. Local hook: `git config core.hooksPath scripts/hooks`,
   it runs pytest and refuses a staged diff with the search key in it.

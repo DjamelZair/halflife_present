@@ -130,15 +130,13 @@ def _with_web(found: tuple | None) -> tuple | None:
 def pick_molecule(cards, pair: tuple[str, str], demo: bool, items=()) -> tuple:
     """The molecule, where it comes from and what is known about it. A Discovery drug with a structure and at least two
     of the three fields wins, new drugs are the point of it. Otherwise the most complete of today's drugs, and a sparse
-    one only stays when the FDA table has nothing better. The web search can lift the Discovery drug over that line,
-    if it was not needed there it goes to the final pick. Never inside lookup, that runs for every candidate."""
+    one only stays when the FDA table has nothing better. All on structured sources: the web search only fills gaps
+    in the molecule that has already been chosen, so a snippet can never decide which one that is."""
     if demo:
         return _demo_molecule(cards, pair)
     best = _best([(d, "discovery") for c in cards if c.lane == "discovery" for d in c.drugs], cards, items)
-    if completeness(best[2] if best else None) < DISCOVERY_WINS:
-        best = _with_web(best)
     if completeness(best[2] if best else None) >= DISCOVERY_WINS:
-        return best
+        return _with_web(best)
     best = _more_complete(best, _best([(d, "interaction") for d in pair], cards, items))
     if completeness(best[2] if best else None) <= SPARSE:
         drugs = [d for d in cyp.all_drugs() if " and " not in d and d.lower() not in cyp.VAGUE]

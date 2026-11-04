@@ -4,8 +4,8 @@
     python scripts/site_check.py --alert --wait 10    keeps looking for 10 minutes, then alerts me if that is called for
     python scripts/site_check.py --alert --evening-done   from the evening run itself, when its deploy failed late
 
-An alert needs three things: the site is stale, the evening run has finished, and it is after the last check of the
-night. While that run is queued or running its own deploy can still fix it, a redeploy would even cancel that deploy.
+From the last check of the night on, a stale site always alerts and says why. Before that it stays quiet. A redeploy only
+happens when the evening run is over, while it is queued or running a redeploy would cancel the deploy in that run.
 """
 
 import argparse
@@ -26,6 +26,16 @@ from halflife.notify import admin  # noqa: E402
 EVENING_HOUR = 18  # UTC, when the daily job is due
 FINAL_HOUR = 6  # UTC. by the clock and not by which cron fired, GitHub can run the 04:00 one late or drop the 06:00 one
 RUNS_URL = "https://api.github.com/repos/{repo}/actions/workflows/daily.yml/runs"
+OVER = ("finished", "failed", "cancelled")  # the states where nothing else can still deploy tonight
+WHY = {
+    "queued": "the evening run is still queued",
+    "running": "the evening run is still running",
+    "failed": "the evening run failed",
+    "cancelled": "the evening run was cancelled",
+    "finished": "the evening run finished but the site did not update",
+    "not_started": "the evening run never started",
+    "unknown": "GitHub would not say how the evening run went",
+}
 
 
 def today() -> date:
@@ -55,16 +65,18 @@ def is_stale(live: str | None, day: date) -> bool:
 
 
 def evening_state(runs: list[dict], now: datetime) -> str:
-    """running, finished or not_started. GitHub only lists a scheduled run once it has created it, so a cron that is
-    running late looks like nothing at all, and that is why not_started is not the same as finished."""
-    if any(run["status"] != "completed" for run in runs):
-        return "running"
+    """queued, running, finished, failed, cancelled or not_started. GitHub only lists a scheduled run once it has created
+    it, so a cron that is running late looks like nothing at all, and that is why not_started is its own state."""
+    active = [run["status"] for run in runs if run["status"] != "completed"]
+    if active:
+        return "running" if "in_progress" in active else "queued"
     since = now.replace(hour=EVENING_HOUR, minute=0, second=0, microsecond=0)
     if since > now:
         since -= timedelta(days=1)
     for run in runs:
-        if datetime.fromisoformat(run["created_at"].replace("Z", "+00:00")) >= since:
-            return "finished"
+        if datetime.fromisoformat(run["created_at"].replace("Z", "+00:00")) >= since:  # newest first
+            conclusion = run.get("conclusion")
+            return "finished" if conclusion == "success" else "cancelled" if conclusion == "cancelled" else "failed"
     return "not_started"
 
 
@@ -82,8 +94,13 @@ def evening_runs() -> list[dict] | None:
         return None
 
 
-def should_alert(stale: bool, evening: str, now: datetime) -> bool:
-    return stale and evening == "finished" and FINAL_HOUR <= now.hour < EVENING_HOUR
+def is_final(now: datetime) -> bool:
+    # until the next evening run is due, after that yesterday's brief is simply what the site should still show
+    return FINAL_HOUR <= now.hour < EVENING_HOUR
+
+
+def should_alert(stale: bool, now: datetime) -> bool:
+    return stale and is_final(now)
 
 
 def main() -> int:
@@ -102,20 +119,21 @@ def main() -> int:
         time.sleep(30)
 
     if args.evening_done:
-        evening = "finished"
+        evening = "failed"  # only called when the deploy of this run failed
     else:
         runs = evening_runs()
         evening = "unknown" if runs is None else evening_state(runs, now_utc())
-    redeploy = stale and evening == "finished"
+    redeploy = stale and evening in OVER
     print(f"Live brief: {live}, today: {today()}, stale: {stale}, evening run: {evening}")
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-            f.write(f"stale={'true' if stale else 'false'}\nevening={evening}\nredeploy={'true' if redeploy else 'false'}\n")
-    if args.alert and should_alert(stale, evening, now_utc()):
+            f.write(f"stale={'true' if stale else 'false'}\nevening={evening}\nredeploy={'true' if redeploy else 'false'}\n"
+                    f"final={'true' if is_final(now_utc()) else 'false'}\n")
+    if args.alert and should_alert(stale, now_utc()):
         newest = next((p.name for p in config.dated_output_dirs()), "none")
-        admin.send("Halflife: the site is stale",
-                   f"The live site shows the brief of {live or 'nothing readable'} and today is {today()}, the evening "
-                   f"run has finished and the redeploys did not help. Newest brief in the repo: {newest}.")
+        admin.send(f"Halflife: stale site, {WHY[evening]}",
+                   f"The live site shows the brief of {live or 'nothing readable'} and today is {today()}. Why: {WHY[evening]}. "
+                   f"Newest brief in the repo: {newest}.")
     return 0
 
 

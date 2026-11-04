@@ -2,7 +2,7 @@ name: Night check
 
 on:
   schedule:
-    # if the evening deploy failed three times this catches it. two tries, only from the last one on it may alert me
+    # if the evening deploy failed three times this catches it. two tries, from the 06:00 one on a stale site always alerts
     - cron: "7 4 * * *"
     - cron: "7 6 * * *"
   workflow_dispatch: {}
@@ -19,6 +19,7 @@ jobs:
     outputs:
       stale: ${{ steps.site.outputs.stale }}
       redeploy: ${{ steps.site.outputs.redeploy }}
+      final: ${{ steps.site.outputs.final }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,10 +42,11 @@ jobs:
     uses: ./.github/workflows/pages.yml
     secrets: inherit
 
-  # site_check.py decides whether this alerts: still stale, evening run finished, and after the last check of the night
+  # after a redeploy, and always at the last check, also when there was nothing to redeploy. site_check.py alerts from
+  # 06:00 UTC on when the site is still stale, and says why. always(), a skipped redeploy must not stop this
   verify:
     needs: [check, redeploy]
-    if: ${{ !cancelled() && needs.check.outputs.redeploy == 'true' }}
+    if: ${{ always() && needs.check.outputs.stale == 'true' && (needs.check.outputs.redeploy == 'true' || needs.check.outputs.final == 'true') }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7

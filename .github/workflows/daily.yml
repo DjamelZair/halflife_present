@@ -87,7 +87,7 @@ jobs:
           APP_URL: ${{ secrets.APP_URL }}
         run: python scripts/send_push.py
 
-  # a run this late started after the last night check, so nothing else would tell me its deploy failed.
+  # a run that ends after the last night check, nothing else would tell me its deploy failed.
   # site_check.py only alerts after 06:00 UTC, an ordinary evening stays quiet and the night check takes it from there
   late-check:
     needs: deploy

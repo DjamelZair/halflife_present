@@ -1427,7 +1427,9 @@ def test_stale_means_older_than_today_or_unreadable():
 
 NIGHT = datetime(2026, 11, 5, 4, 7, tzinfo=timezone.utc)
 FINAL = datetime(2026, 11, 5, 6, 7, tzinfo=timezone.utc)
-FINISHED = {"status": "completed", "conclusion": "failure", "created_at": "2026-11-04T18:40:00Z"}
+FINISHED = {"status": "completed", "conclusion": "success", "created_at": "2026-11-04T18:40:00Z"}
+FAILED = {**FINISHED, "conclusion": "failure"}
+CANCELLED = {**FINISHED, "conclusion": "cancelled"}
 RUNNING = {"status": "in_progress", "conclusion": None, "created_at": "2026-11-04T23:50:00Z"}
 QUEUED = {"status": "queued", "conclusion": None, "created_at": "2026-11-05T05:50:00Z"}
 YESTERDAY = {"status": "completed", "conclusion": "success", "created_at": "2026-11-03T18:40:00Z"}
@@ -1435,8 +1437,13 @@ YESTERDAY = {"status": "completed", "conclusion": "success", "created_at": "2026
 
 @pytest.mark.parametrize("runs,state", [
     ([FINISHED, YESTERDAY], "finished"),
+    ([FAILED, YESTERDAY], "failed"),
+    ([CANCELLED, YESTERDAY], "cancelled"),
+    ([FINISHED, FAILED], "finished"),  # newest first, a rerun that worked counts
     ([RUNNING, FINISHED], "running"),
-    ([QUEUED, YESTERDAY], "running"),
+    ([QUEUED, YESTERDAY], "queued"),
+    ([{**QUEUED, "status": "waiting"}, YESTERDAY], "queued"),
+    ([QUEUED, RUNNING], "running"),
     ([YESTERDAY], "not_started"),  # a late cron is not listed at all until GitHub creates the run
     ([], "not_started"),
 ])
@@ -1444,19 +1451,19 @@ def test_evening_state_keeps_finished_apart_from_busy_and_not_started(runs, stat
     assert _site_check().evening_state(runs, FINAL) == state
 
 
-@pytest.mark.parametrize("stale,evening,now,alerts", [
-    (True, "finished", FINAL, True),
-    (True, "finished", NIGHT, False),  # the 04:00 check never alerts, 06:00 comes after it
-    (True, "running", FINAL, False),
-    (True, "not_started", FINAL, False),
-    (True, "unknown", FINAL, False),
-    (False, "finished", FINAL, False),
+@pytest.mark.parametrize("stale,now,alerts", [
+    (True, FINAL, True),
+    (True, NIGHT, False),  # only before 06:00 it stays quiet
+    (True, FINAL.replace(hour=5, minute=59), False),
+    (True, FINAL.replace(hour=6, minute=0), True),
+    (True, FINAL.replace(hour=23, minute=30), False),  # a failed evening deploy, the night check still comes
+    (False, FINAL, False),
 ])
-def test_only_a_finished_evening_at_the_last_check_alerts(stale, evening, now, alerts):
-    assert _site_check().should_alert(stale, evening, now) is alerts
+def test_a_stale_site_alerts_from_six_on(stale, now, alerts):
+    assert _site_check().should_alert(stale, now) is alerts
 
 
-def _run_site_check(monkeypatch, tmp_path, runs, args, now=FINAL, live="2020-01-01"):
+def _run_site_check(monkeypatch, tmp_path, runs, args, now=FINAL, live="2020-01-01", bodies=None):
     site = _site_check()
     output = tmp_path / "github_output"
     monkeypatch.setenv("GITHUB_OUTPUT", str(output))
@@ -1464,30 +1471,47 @@ def _run_site_check(monkeypatch, tmp_path, runs, args, now=FINAL, live="2020-01-
     monkeypatch.setattr(site, "evening_runs", lambda: runs)
     monkeypatch.setattr(site, "now_utc", lambda: now)
     sent = []
-    monkeypatch.setattr(site.admin, "send", lambda title, message: sent.append(title))
+    def send(title, message):
+        sent.append(title)
+        if bodies is not None:
+            bodies.append(message)
+    monkeypatch.setattr(site.admin, "send", send)
     monkeypatch.setattr(site.sys, "argv", ["site_check.py", *args])
     assert site.main() == 0
     return sent, output.read_text()
 
 
-def test_a_busy_evening_run_gets_no_alert_and_no_redeploy_that_would_cancel_it(monkeypatch, tmp_path):
-    sent, output = _run_site_check(monkeypatch, tmp_path, [RUNNING], ["--alert"])
-    assert sent == [] and "stale=true" in output and "redeploy=false" in output
+@pytest.mark.parametrize("runs,why,redeploy", [
+    ([QUEUED, YESTERDAY], "still queued", False),  # a redeploy would cancel the deploy in that run
+    ([RUNNING], "still running", False),
+    ([FAILED], "failed", True),
+    ([CANCELLED], "cancelled", True),
+    ([FINISHED], "finished but the site did not update", True),
+    ([YESTERDAY], "never started", False),
+    ([], "never started", False),
+    (None, "would not say", False),
+])
+def test_at_six_a_stale_site_always_alerts_and_says_why(monkeypatch, tmp_path, runs, why, redeploy):
+    bodies = []
+    sent, output = _run_site_check(monkeypatch, tmp_path, runs, ["--alert"], bodies=bodies)
+    assert len(sent) == 1 and why in sent[0] and why in bodies[0]
+    assert f"redeploy={'true' if redeploy else 'false'}" in output and "final=true" in output
 
 
-def test_a_finished_evening_run_gets_a_redeploy_and_then_an_alert(monkeypatch, tmp_path):
-    sent, output = _run_site_check(monkeypatch, tmp_path, [FINISHED], ["--alert"])
-    assert sent == ["Halflife: the site is stale"] and "redeploy=true" in output
+@pytest.mark.parametrize("runs", [[QUEUED], [RUNNING], [FAILED], [FINISHED], [YESTERDAY], None])
+def test_before_six_nothing_alerts_whatever_the_run_is_doing(monkeypatch, tmp_path, runs):
+    sent, output = _run_site_check(monkeypatch, tmp_path, runs, ["--alert"], now=NIGHT)
+    assert sent == [] and "final=false" in output
 
 
-def test_github_being_unreachable_does_not_alert(monkeypatch, tmp_path):
-    sent, output = _run_site_check(monkeypatch, tmp_path, None, ["--alert"])
-    assert sent == [] and "evening=unknown" in output and "redeploy=false" in output
+def test_a_fresh_site_never_alerts(monkeypatch, tmp_path):
+    sent, output = _run_site_check(monkeypatch, tmp_path, [FAILED], ["--alert"], live="2999-01-01")
+    assert sent == [] and "redeploy=false" in output
 
 
 def test_a_run_that_ends_after_the_last_check_tells_me_itself(monkeypatch, tmp_path):
     late = datetime(2026, 11, 5, 7, 0, tzinfo=timezone.utc)
-    assert _run_site_check(monkeypatch, tmp_path, None, ["--alert", "--evening-done"], now=late)[0]
+    assert "failed" in _run_site_check(monkeypatch, tmp_path, None, ["--alert", "--evening-done"], now=late)[0][0]
     assert not _run_site_check(monkeypatch, tmp_path, None, ["--alert", "--evening-done"], now=NIGHT)[0]  # the night check still comes
 
 
@@ -1506,6 +1530,8 @@ def test_workflows_put_the_push_after_the_deploy_and_stay_quiet_on_a_failed_depl
     assert "--alert" in night.split("  verify:")[1] and "--alert" not in night.split("  verify:")[0]
     assert '"7 4 * * *"' in night and '"7 6 * * *"' in night and "actions: read" in night
     assert "needs.check.outputs.redeploy == 'true'" in night.split("\n  redeploy:")[1].split("uses:")[0]
+    verify = night.split("  verify:")[1].split("steps:")[0]
+    assert "always()" in verify and "needs.check.outputs.final == 'true'" in verify  # the last check alerts without a redeploy too
     assert "--evening-done" in daily.split("  late-check:")[1]
 
 
@@ -1762,16 +1788,46 @@ def test_no_real_key_in_any_tracked_file():
             assert not re.search(r"(?i)(serpapi|api_key).{0,40}\b[0-9a-f]{64}\b", line), name
 
 
-def test_the_search_can_lift_a_discovery_drug_over_the_line(search, choice, monkeypatch):
+def test_snippets_do_not_count_toward_the_two_of_three(search, choice):
     pipeline, known = choice
     web_search, calls, answer_with = search
     answer_with(_Answer(SEVABERTINIB_RESULTS))
     known.update(sevabertinib=NOTHING, a=FULL, b=FULL)
     comp, kind, info = pipeline.pick_molecule(_discovery("sevabertinib"), ("a", "b"), demo=False)
-    assert comp.name == "sevabertinib" and kind == "discovery" and pipeline.completeness(info) == 2 and len(calls) == 1
+    assert comp.name == "a" and kind == "interaction" and info is FULL
+    assert calls == []  # the chosen one has no gaps, so the search is not spent on the one that lost
 
 
-def test_the_search_goes_to_the_final_pick_when_discovery_has_no_structure(search, choice):
+def test_a_cached_snippet_does_not_count_either(search, choice):
+    pipeline, known = choice
+    web_search, _, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    web_search.fill("sevabertinib", NOTHING, date.today())  # already in the cache
+    known.update(sevabertinib=NOTHING, a=TWO, b=EMPTY)
+    comp, _, _ = pipeline.pick_molecule(_discovery("sevabertinib"), ("a", "b"), demo=False)
+    assert comp.name == "a"
+
+
+def test_the_search_fills_a_gap_in_a_discovery_drug_that_won_on_its_own(search, choice):
+    pipeline, known = choice
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    known.update(sevabertinib={**NOTHING, "atc_status": "assigned", "used_for": {"text": "EMA says", "source": "EMA"}}, a=FULL, b=FULL)
+    comp, kind, info = pipeline.pick_molecule(_discovery("sevabertinib"), ("a", "b"), demo=False)
+    assert comp.name == "sevabertinib" and kind == "discovery" and len(calls) == 1
+    assert info["used_for"]["source"] == "EMA" and info["mechanisms"][0]["source"].startswith("MedlinePlus")
+
+
+def test_a_sparse_molecule_that_nothing_beats_still_gets_its_gaps_filled(search, choice):
+    pipeline, known = choice
+    web_search, calls, answer_with = search
+    answer_with(_Answer(SEVABERTINIB_RESULTS))
+    known.update(sevabertinib=NOTHING)
+    comp, kind, info = pipeline.pick_molecule(_discovery("sevabertinib"), ("nope", "nada"), demo=False)
+    assert comp.name == "sevabertinib" and kind == "discovery" and info["used_for"] and info["mechanisms"] and len(calls) == 1
+
+
+def test_the_search_goes_to_the_final_pick_when_there_is_no_discovery_drug(search, choice):
     pipeline, known = choice
     web_search, calls, answer_with = search
     answer_with(_Answer(SEVABERTINIB_RESULTS))
