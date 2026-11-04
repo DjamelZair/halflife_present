@@ -123,18 +123,19 @@ def _first_block(section: str) -> str:
 
 
 def _section(page: str, heading: str) -> str:
-    start = re.search(rf"<h[1-6][^>]*>\s*{heading}\s*</h[1-6]>", page, re.I)
-    if not start:
-        return ""
-    rest = page[start.end():]
-    stop = re.search(r"<h[1-6][^>]*>", rest)
-    return rest[:stop.start()] if stop else rest
+    # by the text of the heading, the older pages have a span or a link inside it
+    headings = list(re.finditer(r"<h[1-6][^>]*>(.*?)</h[1-6]>", page, re.S))
+    for k, match in enumerate(headings):
+        if re.fullmatch(heading, _plain(match.group(1)), re.I):
+            end = headings[k + 1].start() if k + 1 < len(headings) else len(page)
+            return page[match.end():end]
+    return ""
 
 
 def parse_overview(page: str) -> str:
     """What EMA says it is used for. Older pages have a section for it and an Overview that is only boilerplate
     about the report, newer ones say it in the Overview. An empty answer beats that boilerplate."""
-    for heading in (r"What is [^<]{1,80}used for\??", "Overview"):
+    for heading in (r"What is .{1,80}used for\??", "Overview"):
         text = _first_block(_section(page, heading))
         if text and not BOILERPLATE.match(text):
             return text
@@ -178,7 +179,13 @@ def label_used_for(label: dict | None, name: str) -> dict | None:
     start = next((i for i, s in enumerate(sentences) if re.search(r"(?<!not )\bindicated\b", s, re.I)), None)
     if start is None:
         return None
-    return {"text": " ".join(sentences[start:start + LABEL_SENTENCES]), "source": "FDA label", "url": DAILYMED.format(id=label.get("set_id", ""))}
+    first = sentences[start]
+    # a heading can run into the sentence, "Tuberculosis Rifampin is indicated"
+    subject = re.search(re.escape(to_inn(name)), first, re.I)
+    if subject and 0 < subject.start() and len(first[:subject.start()].split()) <= 2:
+        first = first[subject.start():]
+    text = " ".join([first[:1].upper() + first[1:], *sentences[start + 1:start + LABEL_SENTENCES]])
+    return {"text": text, "source": "FDA label", "url": DAILYMED.format(id=label.get("set_id", ""))}
 
 
 def label_mechanism(label: dict | None, name: str) -> list[dict]:

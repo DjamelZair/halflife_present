@@ -1104,6 +1104,7 @@ def test_chembl_is_asked_for_the_us_name(recorded):
     # not in EMA's data, the label fills it. it opens with a warning about resistance, the use starts where it says indicated
     assert info["used_for"]["source"] == "FDA label" and "indicated" in info["used_for"]["text"]
     assert "resistant cells" not in info["used_for"]["text"] and "rifampin" not in info["used_for"]["text"].lower()
+    assert info["used_for"]["text"].startswith("Rifampicin is indicated")  # no run-in heading in front of it
 
 
 def _down(*args, **kwargs):
@@ -1419,7 +1420,7 @@ def test_workflows_put_the_push_after_the_deploy_and_stay_quiet_on_a_failed_depl
 def test_old_ema_pages_use_their_own_section_and_never_the_boilerplate():
     from halflife.molecules.drug_info import parse_overview
     old = """<h2>Overview</h2><p>This is a summary of the European public assessment report (EPAR) for Multaq.</p>
-             <h2>What is Multaq and what is it used for?</h2><p>Multaq is an antiarrhythmic medicine.</p><p>More.</p><h2>How is Multaq used?</h2>"""
+             <h2><span>What is Multaq and what is it used for?</span></h2><p>Multaq is an antiarrhythmic medicine.</p><p>More.</p><h2>How is Multaq used?</h2>"""
     assert parse_overview(old) == "Multaq is an antiarrhythmic medicine."
     only_boilerplate = "<h2>Overview</h2><p>This is a summary of the European public assessment report (EPAR).</p><h2>Next</h2>"
     assert parse_overview(only_boilerplate) == ""  # then the indication takes over
