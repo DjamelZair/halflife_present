@@ -1,0 +1,174 @@
+{
+  "date": "2026-11-06",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 48,
+      "clinic/bioRxiv": 19,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 15,
+      "discovery/ClinicalTrials.gov": 49
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 48,
+      "Preprints": 20,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 2,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 15,
+      "Phase 3 results": 49,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 3,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Pharmacokinetic and pharmacodynamic strategies to optimize antifungal therapy, prevent resistance and minimize treatment failure.",
+      "what": "Invasive fungal diseases (IFDs) present significant challenges in clinical practice due to high morbidity and mortality rates, compounded by antifungal resistance, diagnostic limitations and pharmacokinetic (PK) and pharmacodynamic (PD) complexities. The main antifungal classes, triazoles, polyenes, echinocandins and pyrimidine analogues, are essential for managing IFDs but are increasingly undermined by resistance due to genetic mutations, efflux pump over-expression and biofilm formation.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, JAC-antimicrobial resistance",
+      "url": "https://doi.org/10.1093/jacamr/dlag231",
+      "peer_reviewed": true,
+      "original_title": "Pharmacokinetic and pharmacodynamic strategies to optimize antifungal therapy, prevent resistance and minimize treatment failure.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Pharmacokinetic and pharmacodynamic strategies to optimize antifungal therapy, prevent resistance"
+    },
+    {
+      "title": "Drug-Drug Interactions of Cenobamate With Medications: Dose-Dependent Induction/Inhibition and Clinical Implications.",
+      "what": "Cenobamate causes dose-dependent cytochrome P450 (CYP)2B6 and CYP3A4 induction and CYP2C19 inhibition, raising concern over multi-pathway drug-drug interactions (DDIs) in patients with epilepsy treated with cardiovascular co-medications. We developed a physiologically based pharmacokinetic (PBPK) model for cenobamate and verified it using reported DDIs for cenobamate 200 mg using three probe substrates: bupropion (CYP2B6), midazolam (CYP3A4), and omeprazole (CYP2C19).",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, CPT: pharmacometrics & systems pharmacology",
+      "url": "https://doi.org/10.1002/psp4.70358",
+      "peer_reviewed": true,
+      "original_title": "Drug-Drug Interactions of Cenobamate With Medications: Dose-Dependent Induction/Inhibition and Clinical Implications.",
+      "drugs": [
+        "bupropion",
+        "cenobamate",
+        "clopidogrel",
+        "midazolam",
+        "omeprazole",
+        "rivaroxaban"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Drug-Drug Interactions of Cenobamate With Medications"
+    },
+    {
+      "title": "Double-blind, Randomized, Placebo-controlled, Prospective Phase III Study Evaluating Efficacy and Safety of Panzyga in Primary Infection Prophylaxis in Patients With Chronic Lymphocytic Leukemia (\"PRO-SID\" Study)",
+      "what": "Study Evaluating Efficacy and Safety of Panzyga in Primary Infection Prophylaxis in Patients with Chronic Lymphocytic Leukemia",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT04502030?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Double-blind, Randomized, Placebo-controlled, Prospective Phase III Study Evaluating Efficacy and Safety of Panzyga in Primary Infection Prophylaxis in Patients With Chronic Lymphocytic Leukemia (\"PRO-SID\" Study)",
+      "drugs": [
+        "panzyga"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Double-blind, Randomized, Placebo-controlled, Prospective Phase III Study Evaluating Efficacy"
+    }
+  ],
+  "molecule": {
+    "name": "cenobamate",
+    "smiles": "C1=CC=C(C(=C1)[C@H](CN2N=CN=N2)OC(=O)N)Cl",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/11962412",
+    "Formula": "C10H10ClN5O2",
+    "Molecular weight": 267.7,
+    "logP": 1.16,
+    "H bond donors": 1,
+    "H bond acceptors": 5,
+    "TPSA": 95.9,
+    "Rotatable bonds": 4,
+    "Rings": 2,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: cenobamate and midazolam",
+      "url": "#lab?a=cenobamate&b=midazolam"
+    },
+    "atc": [
+      {
+        "code": "N03AX25",
+        "levels": [
+          {
+            "level": 1,
+            "code": "N",
+            "name": "Nervous system"
+          },
+          {
+            "level": 2,
+            "code": "N03",
+            "name": "Antiepileptics"
+          },
+          {
+            "level": 3,
+            "code": "N03A",
+            "name": "Antiepileptics"
+          },
+          {
+            "level": 4,
+            "code": "N03AX",
+            "name": "Other antiepileptics"
+          }
+        ],
+        "substance": "cenobamate"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Cenobamate is an epilepsy medicine for treating epileptic fits starting in one specific part of the brain (focal seizures), including those that eventually spread to the whole brain (secondary generalisation).",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/ontozry"
+    },
+    "mechanisms": [
+      {
+        "text": "GABA-A receptor; anion channel positive allosteric modulator",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3989949"
+      },
+      {
+        "text": "Sodium channel alpha subunit inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3989949"
+      }
+    ]
+  },
+  "pair": {
+    "a": "cenobamate",
+    "b": "midazolam",
+    "sentences": [
+      "cenobamate is a moderate inducer of CYP3A and midazolam is a sensitive substrate of CYP3A, so midazolam exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.36,
+    "category": "moderate decrease"
+  }
+}
