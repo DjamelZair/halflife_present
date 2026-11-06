@@ -64,6 +64,11 @@ Details get fine tuned later, `web/molecule-lab.html` holds the earlier style ex
 * Atom positions from the real 3D structure (PubChem 3D SDF, or an RDKit conformer as fallback). Never a
   generated or decorative shape. A rigid turn shows the flattest side to the viewer. When PubChem has no 3D record,
   the Molecule screen says "Structure: computed 3D model (RDKit)". The Today screen does not mention it.
+* Any molecule can be looked up on the Molecule screen (search above the stage, PubChem by name, brand or US name
+  shown as the INN). Shape in this order: PubChem 3D, a prepared RDKit shape in `web/structures/` for big ones PubChem has
+  none for, then OpenChemLib in the browser. A looked up molecule always says where its shape came from, the properties
+  are PubChem's. Today keeps the molecule of the day.
+* The Lab story's step three is a blood vessel cut open, jewel pink (`--vessel-*` tokens), not real blood red.
 * Proportions: atom radius 0.25 to 0.3 of the molecule's average bond length, thin bonds, clear space between atoms.
 * Colour, tokens in `web/css/tokens.css`, hydrogens hidden by default, a legend on the Molecule screen:
 

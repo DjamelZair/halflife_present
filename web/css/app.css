@@ -573,6 +573,45 @@ h2 {
 
 .stage #scene { touch-action: none; }
 
+/* look up any molecule, above the stage. the top bar floats over it, so it starts below that */
+.lookup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: calc(env(safe-area-inset-top) + 64px);
+  padding-bottom: var(--space-sm);
+}
+
+.lookup-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-sm);
+}
+
+.lookup input {
+  width: 100%;
+  min-height: var(--touch);
+  padding-inline: var(--space-md);
+  border: 1px solid var(--chip-line);
+  border-radius: var(--space-md);
+  background: var(--chip-bg);
+  color: var(--text);
+  font: 400 var(--text-md) var(--font-body); /* 16 px or more, or an iPhone zooms in on focus */
+}
+
+.lookup-status {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+}
+
+.lookup-status[hidden],
+.lookup-back[hidden] { display: none; }
+
+.lookup-back { align-self: flex-start; }
+
+/* the search sits above, so the title no longer has to clear the top bar */
+.lookup + .stage .stage-title { top: var(--space-lg); }
+
 .stage-title {
   position: absolute;
   left: max(var(--gutter), env(safe-area-inset-left));

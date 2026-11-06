@@ -118,6 +118,12 @@ Use a virtualenv in `.venv/`, it is ignored by git.
     visual story in three steps, waiting for my approval, the app is not changed yet. Off the site, its data is local:
     `python scripts/build_lab_story_data.py`. The organ per transporter there is textbook, not from the FDA table, a pharmacist should check it.
     No `study_ratio` exists in brief.json yet, so until the pipeline gets one the number is always the illustrative one.
+    Step three of that story is a blood vessel cut open with red cells, the drug's own molecules flow in it and their number is the level.
+    The Molecule screen can look up any molecule (`web/js/lookup.js`): PubChem from the browser by name (salts become the parent, a brand or
+    US name shows as the INN), properties from PubChem, shape from PubChem 3D, else `web/structures/<CID>.json` (RDKit, prepared by hand with
+    `python scripts/build_structures.py` for every drug in the Lab's tables plus `data/big_molecules.txt`, only where PubChem has no 3D), else
+    OpenChemLib in a web worker (`web/vendor/openchemlib/`, 9.25.0, loaded only then, vancomycin takes about 20 s on a laptop). The search lives in
+    the address (`#molecule?q=`), Today always goes back to the molecule of the day.
 11. A test week on my phone.
 12. Christmas handover: his own ntfy topic, QR card.
 

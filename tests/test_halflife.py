@@ -2071,3 +2071,71 @@ def test_the_prototype_stays_off_the_site():
     assert '"lab-story*"' in (config.ROOT / "scripts/build_site.py").read_text()
     assert "lab-story-data" in (config.ROOT / ".gitignore").read_text()
     assert "lab-story" not in (config.ROOT / "web/index.html").read_text()
+
+
+# looking up any molecule
+
+# a sodium salt: the ion is a piece of its own and has to go, the molecule itself stays and is centred
+SALT_MOLFILE = """salt
+  test
+
+  5  3  0  0  0  0  0  0  0  0999 V2000
+    1.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    2.0000    0.0000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+    3.0000    0.0000    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+    3.0000    1.0000    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+    9.0000    9.0000    9.0000 Na  0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  2  0  0  0  0
+  3  4  1  0  0  0  0
+M  END
+"""
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="needs node")
+def test_lookup_keeps_the_molecule_and_its_inn(tmp_path):
+    from halflife.names import US_TO_INN
+    (tmp_path / "salt.mol").write_text(SALT_MOLFILE, encoding="utf-8")
+    (tmp_path / "names.json").write_text(json.dumps({us.lower(): inn.lower() for us, inn in US_TO_INN.items()}), encoding="utf-8")
+    out = json.loads(subprocess.run(["node", str(config.ROOT / "tests/lookup_check.mjs"), str(tmp_path / "salt.mol"), str(tmp_path / "names.json")],
+                                    capture_output=True, text=True, check=True).stdout)
+    mol = out["molecule"]
+    assert [a[0] for a in mol["atoms"]] == ["C", "C", "O", "H"]  # no sodium
+    assert mol["bonds"] == [[0, 1, 1], [1, 2, 2], [2, 3, 1]] and mol["coords"] == "PubChem 3D"
+    assert [a[1] for a in mol["atoms"][:3]] == [-1, 0, 1]  # centred on the heavy atoms
+    assert out["names"] == ["paracetamol", "vancomycin", "L-DOPA", "ciclosporin"]  # never a US name
+    card = out["card"]
+    assert card["Molecular weight"] == 1449.2 and card["logP"] == -3.1 and card["source"] == "PubChem" and card["lookup"]
+    assert "H bond acceptors" not in card  # a number PubChem did not give stays out
+
+
+def _structures_script():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_structures", config.ROOT / "scripts/build_structures.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_prepared_shapes_only_where_pubchem_has_none(tmp_path):
+    script = _structures_script()
+    assert script.needs_prepared({"ConformerCount3D": 0, "HeavyAtomCount": 101})  # vancomycin
+    assert not script.needs_prepared({"ConformerCount3D": 2, "HeavyAtomCount": 11})  # paracetamol, PubChem has it
+    assert not script.needs_prepared({"HeavyAtomCount": 400})  # a protein
+    names = script.names_to_check()
+    assert "vancomycin" in names and "ciclosporin" in names and "midazolam" in names
+    assert not any(n.startswith("#") for n in names)
+    (tmp_path / "14969.json").write_text("{}")
+    (tmp_path / "5284373.json").write_text("{}")
+    assert script.write_index(tmp_path) == [14969, 5284373]
+    assert json.loads((tmp_path / "index.json").read_text()) == [14969, 5284373]
+
+
+def test_prepared_shapes_are_real_structures():
+    folder = config.ROOT / "web/structures"
+    index = json.loads((folder / "index.json").read_text())
+    assert 14969 in index  # vancomycin, the one that started this
+    for cid in index:
+        shape = json.loads((folder / f"{cid}.json").read_text())
+        assert shape["coords"] == "RDKit conformer" and shape["atoms"] and shape["bonds"]
+        assert all(len(a) == 4 for a in shape["atoms"])

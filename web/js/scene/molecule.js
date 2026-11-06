@@ -308,6 +308,10 @@ export class MoleculeScene {
   buildMolecule() {
     const mol = this.mol;
     if (!mol) return;
+    // the old molecule leaves the graphics memory too, a phone runs out after a few lookups otherwise
+    const old = new Set();
+    for (const group of [this.group, this.depthGroup]) group.traverse((o) => { if (o.geometry) old.add(o.geometry); if (o.material) old.add(o.material); });
+    old.forEach((thing) => thing.dispose());
     for (const group of [this.group, this.depthGroup]) group.clear();
     const segments = this.coarse ? 32 : 48;
     const sphere = new THREE.SphereGeometry(1, segments, Math.round(segments * 0.7));

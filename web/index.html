@@ -75,6 +75,16 @@
 </main>
 
 <main id="view-molecule" data-view="molecule" hidden>
+  <form class="column lookup" id="lookup" role="search" aria-label="Look up a molecule">
+    <div class="lookup-row">
+      <input id="lookup-name" type="search" list="lookup-list" aria-label="Molecule name" placeholder="Any molecule, like vancomycin"
+        enterkeyhint="search" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <button class="button-quiet" type="submit">Show</button>
+    </div>
+    <datalist id="lookup-list"></datalist>
+    <p class="lookup-status" id="lookup-status" role="status" hidden></p>
+    <button class="button-quiet lookup-back" id="lookup-back" type="button" hidden>Back to today's molecule</button>
+  </form>
   <section class="stage" id="molecule-stage" aria-labelledby="molecule-title">
     <div class="stage-title">
       <h1 id="molecule-title"></h1>
@@ -95,8 +105,8 @@
     <section class="drug-info" id="drug-info-full" aria-label="About this molecule"></section>
     <h2>Properties</h2>
     <dl class="properties" id="molecule-properties"></dl>
-    <p class="note">Calculated with RDKit from the structure.</p>
-    <p class="note" id="molecule-structure" hidden>Structure: computed 3D model (RDKit)</p>
+    <p class="note" id="molecule-props-note">Calculated with RDKit from the structure.</p>
+    <p class="note" id="molecule-structure" hidden></p>
     <a class="text-link" id="molecule-source" target="_blank" rel="noopener"></a>
     <h2>Atom colours</h2>
     <ul class="legend" id="molecule-legend" aria-label="Atom colours"></ul>

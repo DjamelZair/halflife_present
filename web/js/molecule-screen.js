@@ -17,6 +17,13 @@ const ROWS = [
 
 const byId = (id) => document.getElementById(id);
 
+// where the 3D shape came from, said plainly. a calculated shape is one likely shape, not the measured one
+const STRUCTURE_NOTES = {
+  "PubChem 3D": "Structure: 3D shape from PubChem",
+  "RDKit conformer": "Structure: computed 3D model (RDKit)",
+  "OpenChemLib conformer": "Structure: computed in this browser (OpenChemLib), one likely shape",
+};
+
 export function formulaNodes(formula) {
   // C48H48 becomes C, subscript 48, H, subscript 48
   return formula.split(/(\d+)/).filter(Boolean).map((part) => {
@@ -92,13 +99,17 @@ export function renderMoleculeScreen(mol, structure, cyp) {
   }
 
   const source = byId("molecule-source");
+  source.hidden = !mol.url;
   if (mol.url) {
     source.href = mol.url;
     source.textContent = `View ${mol.name} on ${mol.source}`;
-  } else {
-    source.hidden = true;
   }
-  byId("molecule-structure").hidden = structure?.coords !== "RDKit conformer";
-  byId("molecule-no-3d").hidden = Boolean(structure);
+  byId("molecule-props-note").textContent = mol.lookup ? "Computed by PubChem." : "Calculated with RDKit from the structure.";
+  const note = byId("molecule-structure");
+  note.textContent = STRUCTURE_NOTES[structure?.coords] ?? "";
+  note.hidden = !structure || (!mol.lookup && structure.coords === "PubChem 3D");
+  const no3d = byId("molecule-no-3d");
+  no3d.textContent = mol.lookup ? "No 3D shape for this one, the properties are all here." : "No 3D structure today, the properties are all here.";
+  no3d.hidden = Boolean(structure);
   if (structure) legend(structure, false);
 }

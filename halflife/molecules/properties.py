@@ -45,7 +45,8 @@ def describe(smiles: str) -> dict:
 def conformer_molblock(smiles: str, seed: int = 42) -> str:
     """3D coordinates with ETKDG plus a quick force field clean up. Good enough for a viewer."""
     mol = Chem.AddHs(mol_from_smiles(smiles))
-    if AllChem.EmbedMolecule(mol, randomSeed=seed) != 0:
+    # big rings and peptides often fail the normal start, a start from random coordinates usually works for them
+    if AllChem.EmbedMolecule(mol, randomSeed=seed) != 0 and AllChem.EmbedMolecule(mol, randomSeed=seed, useRandomCoords=True) != 0:
         raise RuntimeError("Could not embed a 3D conformer")
     AllChem.MMFFOptimizeMolecule(mol)
     return Chem.MolToMolBlock(mol)
