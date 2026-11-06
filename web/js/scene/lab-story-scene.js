@@ -146,11 +146,11 @@ export class StoryScene {
     this.camera = new THREE.PerspectiveCamera(FOV, WIDTH / HEIGHT, 1, 200);
     this.camera.position.z = (HEIGHT / 2) / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
     this.scene.environment = this.studio();
-    const key = new THREE.PointLight(color("--strip-main"), parseFloat(token("--light-key")) * 40, 0, 1.6);
-    key.position.set(-5, 7, 9);
-    const warm = new THREE.PointLight(color("--strip-warm"), parseFloat(token("--light-warm")) * 30, 0, 1.6);
-    warm.position.set(6, -5, 7);
-    this.scene.add(key, warm);
+    this.keyLight = new THREE.PointLight(color("--strip-main"), parseFloat(token("--light-key")) * 40, 0, 1.6);
+    this.keyLight.position.set(-5, 7, 9);
+    this.warmLight = new THREE.PointLight(color("--strip-warm"), parseFloat(token("--light-warm")) * 30, 0, 1.6);
+    this.warmLight.position.set(6, -5, 7);
+    this.scene.add(this.keyLight, this.warmLight);
 
     this.glow = parseFloat(token("--glass-glow"));
     this.world = new THREE.Group();
@@ -159,7 +159,8 @@ export class StoryScene {
     this.step = 0;
     this.stepClock = 0;
     this.perpetratorIn = false;
-    this.running = true;
+    this.running = false;
+    this.token = 0;
     this.visible = true;
     this.fill = NORMAL_UP;
     this.particleNext = 0;
@@ -167,13 +168,39 @@ export class StoryScene {
     new ResizeObserver(() => this.resize()).observe(canvas);
     new IntersectionObserver(([entry]) => { this.visible = entry.isIntersecting; }).observe(canvas);
     this.resize();
-    this.loop = this.loop.bind(this);
   }
 
+  // the app starts it when the Lab opens and stops it when another tab opens. a token, so a quick stop and start
+  // never leaves two loops running
   start() {
+    if (this.running) return;
     this.running = true;
     this.last = performance.now();
-    requestAnimationFrame(this.loop);
+    const token = ++this.token;
+    const tick = (now) => {
+      if (!this.running || token !== this.token) return;
+      requestAnimationFrame(tick);
+      this.loop(now);
+    };
+    requestAnimationFrame(tick);
+  }
+
+  // the colours are read when a story is built, so a new theme builds the same story again
+  setTheme(theme) {
+    this.theme = theme;
+    this.renderer.toneMapping = theme === "dark" ? THREE.NeutralToneMapping : THREE.NoToneMapping;
+    this.scene.background = color("--hero");
+    this.scene.environment?.dispose();
+    this.scene.environment = this.studio();
+    this.keyLight.color = color("--strip-main");
+    this.keyLight.intensity = parseFloat(token("--light-key")) * 40;
+    this.warmLight.color = color("--strip-warm");
+    this.warmLight.intensity = parseFloat(token("--light-warm")) * 30;
+    this.glow = parseFloat(token("--glass-glow"));
+    if (!this.story) return;
+    const step = this.step;
+    this.setStory(this.story, ...this.raws);
+    this.setStep(step);
   }
 
   stop() {
@@ -209,7 +236,12 @@ export class StoryScene {
 
   // a new pair. a molecule without a structure gets a plain glass bead, the story still works
   setStory(story, victimRaw, perpetratorRaw) {
+    // the last pair leaves the graphics memory as well
+    const old = new Set();
+    this.world.traverse((o) => { if (o.geometry) old.add(o.geometry); if (o.material) old.add(o.material); });
+    old.forEach((thing) => thing.dispose());
     this.world.clear();
+    this.raws = [victimRaw, perpetratorRaw];
     this.story = story;
     this.reduced = false;
     const placeholder = { atoms: [["C", 0, 0, 0]], bonds: [] };
@@ -251,6 +283,7 @@ export class StoryScene {
     this.gates = [];
     this.buildPassage();
     this.buildVessel();
+    if (this.noGlass) this.plainGlass(); // a phone that was too slow stays on the cheaper look for every pair
     this.reset();
   }
 
@@ -687,6 +720,14 @@ export class StoryScene {
     this.onLabels(this.labels());
   }
 
+  // real glass renders the whole scene behind it again, a slow phone gets plain shiny atoms instead
+  plainGlass() {
+    this.heroMaterial.transmission = 0;
+    this.heroMaterial.roughness = 0.12;
+    this.heroMaterial.clearcoat = 0.8;
+    this.heroMaterial.needsUpdate = true;
+  }
+
   watchSpeed(ms) {
     if (!this.quality.length) return;
     this.frameMs.push(ms);
@@ -697,10 +738,8 @@ export class StoryScene {
     if (average <= SLOW_FRAME_MS) return;
     const step = this.quality.shift();
     if (step === "no glass") {
-      this.heroMaterial.transmission = 0;
-      this.heroMaterial.roughness = 0.12;
-      this.heroMaterial.clearcoat = 0.8;
-      this.heroMaterial.needsUpdate = true;
+      this.noGlass = true;
+      this.plainGlass();
     } else {
       this.pixelRatio = Math.min(this.pixelRatio, step === "ratio15" ? 1.5 : 1);
       this.renderer.setPixelRatio(this.pixelRatio);
@@ -710,8 +749,6 @@ export class StoryScene {
   }
 
   loop(now) {
-    if (!this.running) return;
-    requestAnimationFrame(this.loop);
     const elapsed = now - this.last;
     this.last = now;
     if (!this.visible || document.hidden || !this.story) return;

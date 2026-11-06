@@ -114,9 +114,10 @@ Use a virtualenv in `.venv/`, it is ignored by git.
 9. Shorter headlines: built in `summarise/headline.py`, plain rules. The Claude API key can improve them later.
 10. Technical work, in this order: reliability, source health, content correctness, transporter data, clean-up.
     Later, parked on purpose: fine tuning the molecule look, restyling the poster and figures, a design review.
-    In between, feedback from a pharmacist on the Lab: too kinetic, too many sliders. `web/lab-story.html` is the prototype of a
-    visual story in three steps, waiting for my approval, the app is not changed yet. Off the site, its data is local:
-    `python scripts/build_lab_story_data.py`. The organ per transporter there is textbook, not from the FDA table, a pharmacist should check it.
+    In between, feedback from a pharmacist on the Lab: too kinetic, too many sliders. The Lab is now a visual story in three steps
+    (`web/js/lab-story.js`, live since 6 November 2026), the old sliders and charts sit under "For the nerds". One structure per drug in
+    `web/lab-structures/` (`python scripts/build_lab_structures.py` after the FDA tables change). The organ per transporter
+    (`halflife/interactions/organs.py`, in model.json) is textbook, not from the FDA table, a pharmacist should check it.
     No `study_ratio` exists in brief.json yet, so until the pipeline gets one the number is always the illustrative one.
     Step three of that story is a blood vessel cut open with red cells, the drug's own molecules flow in it and their number is the level.
     The Molecule screen can look up any molecule (`web/js/lookup.js`): PubChem from the browser by name (salts become the parent, a brand or

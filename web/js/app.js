@@ -3,6 +3,7 @@
 import { renderToday, renderTodayError } from "./today.js";
 import { renderMoleculeScreen, showHydrogensInLegend } from "./molecule-screen.js";
 import { labUnavailable, openFromHash, setupLab } from "./lab.js";
+import { openStoryFromPickers, setStoryActive, setStoryTheme, setupStory } from "./lab-story.js";
 import { displayName, findCompound, moleculeCard, structureFor, suggestions } from "./lookup.js";
 
 const VIEWS = ["today", "molecule", "lab"];
@@ -28,6 +29,7 @@ function paintTheme() {
   const next = theme === "dark" ? "light" : "dark";
   document.getElementById("theme").setAttribute("aria-label", `Switch to ${next} mode`);
   scene?.setTheme(theme);
+  setStoryTheme(theme);
 }
 
 function toggleTheme() {
@@ -50,7 +52,11 @@ function showView() {
     else tab.removeAttribute("aria-current");
   });
   placeCanvas(view);
-  if (view === "lab" && labReady) openFromHash(brief?.pair);
+  if (view === "lab" && labReady) {
+    openFromHash(brief?.pair);
+    openStoryFromPickers();
+  }
+  setStoryActive(view === "lab");
   if (dataReady) showLookup(view === "molecule" ? new URLSearchParams(location.hash.split("?")[1] ?? "").get("q") : null, view);
   window.scrollTo(0, 0);
 }
@@ -232,8 +238,12 @@ async function load() {
     renderMoleculeScreen(brief.molecule, molecule, cyp);
     if (cyp && model) {
       setupLab(cyp, model);
+      setupStory(cyp, model, brief);
       labReady = true;
-      if (location.hash.startsWith("#lab")) openFromHash(brief.pair);
+      if (location.hash.startsWith("#lab")) {
+        openFromHash(brief.pair);
+        openStoryFromPickers();
+      }
     } else {
       labUnavailable();
     }

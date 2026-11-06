@@ -1,34 +1,29 @@
-// the Lab prototype: two drugs, three steps, one number. the sliders and charts are the app's own, behind a button
+// the Lab: two drugs, three steps, one number. the sliders and charts are lab.js, folded away under "For the nerds".
+// app.js hands over the data and says when the Lab is open, the 3D only runs while it is
 
-import { setupLab, labUnavailable } from "./lab.js";
 import { buildStory } from "./lab-story-model.js";
 
-const DATA = "lab-story-data";
-const THEME_KEY = "halflife-theme";
+const STRUCTURES = "lab-structures";
 const EXAMPLES = [["ceritinib", "rivaroxaban"], ["rifampicin", "midazolam"], ["probenecid", "methotrexate"]];
 
 const byId = (id) => document.getElementById(id);
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const params = new URLSearchParams(location.search);
-history.scrollRestoration = "manual"; // a story starts at its top, also after a reload
-const stills = params.get("still") === "1" || matchMedia("(prefers-reduced-motion: reduce)").matches;
+const stills = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let cyp;
 let model;
 let brief;
 let scene = null;
+let scenePromise = null;
 let story = null;
 let step = 0;
 let loadId = 0;
-
-async function json(path) {
-  const r = await fetch(`${DATA}/${path}`);
-  if (!r.ok) throw new Error(`${path}: ${r.status}`);
-  return r.json();
-}
+let active = false;
+let opened = "";
 
 const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const structure = (name) => json(`structures/${slug(name)}.json`).catch(() => null);
+const structure = (name) => fetch(`${STRUCTURES}/${slug(name)}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+const theme = () => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
 
 function resolve(typed) {
   const key = typed.trim().toLowerCase();
@@ -85,7 +80,7 @@ function showStep(next) {
   toggle.textContent = `Take ${story.perpetrator} away`;
   toggle.setAttribute("aria-pressed", "false");
   scene?.setStep(step);
-  byId("scene").setAttribute("aria-label", `${s.title}. ${s.text}`);
+  byId("story-scene").setAttribute("aria-label", `${s.title}. ${s.text}`);
 }
 
 function go(delta) {
@@ -140,7 +135,19 @@ function showStills() {
   byId("live").hidden = true;
 }
 
+async function getScene() {
+  scenePromise ??= import("./scene/lab-story-scene.js").then(({ StoryScene }) => {
+    scene = new StoryScene(byId("story-scene"), { theme: theme(), onLabels: (list) => paintLabels(list) });
+    if (active && !stills()) scene.start();
+    return scene;
+  });
+  return scenePromise;
+}
+
 async function open(a, b) {
+  const key = `${a}|${b}`;
+  if (key === opened) return;
+  opened = key;
   const id = ++loadId;
   story = buildStory({ cyp, model, a, b, brief });
   byId("story").hidden = !story;
@@ -151,30 +158,40 @@ async function open(a, b) {
   const [victim, perpetrator] = await Promise.all([structure(story.victim), structure(story.perpetrator)]);
   if (id !== loadId) return;
   byId("no-structure").hidden = !!(victim && perpetrator);
-  if (!scene) {
-    const { StoryScene } = await import("./scene/lab-story-scene.js");
-    scene = window.storyScene = new StoryScene(byId("scene"), { theme: document.documentElement.dataset.theme === "light" ? "light" : "dark", onLabels: (list) => paintLabels(list) });
-    if (!stills) scene.start();
+  try {
+    await getScene();
+  } catch (e) {
+    console.warn("No 3D for the Lab story on this device:", e);
+    return;
   }
+  if (id !== loadId) return;
   scene.setStory(story, victim, perpetrator);
   fillLabels(byId("stage-labels"));
   setNumber(byId("result"));
   fillBelow();
-  if (stills) showStills();
-  else {
-    const wanted = Number(params.get("step"));
-    showStep(wanted >= 1 && wanted <= 3 ? wanted - 1 : 0);
-    if (params.get("settle") === "1") scene.settle(step);
-  }
+  if (stills()) showStills();
+  else showStep(0);
 }
 
-function fromPickers() {
+// the pickers belong to lab.js, the story follows whatever pair they hold
+export function openStoryFromPickers() {
+  if (!cyp) return;
   const a = resolve(byId("lab-a").value);
   const b = resolve(byId("lab-b").value);
-  if (a && b && a !== b) {
-    byId("lab-message").textContent = "";
-    open(a, b);
-  }
+  if (a && b && a !== b) open(a, b);
+}
+
+export function setStoryActive(on) {
+  active = on;
+  if (!scene || stills()) return;
+  if (on) scene.start();
+  else scene.stop();
+}
+
+export function setStoryTheme(next) {
+  if (!scene) return;
+  scene.setTheme(next);
+  if (story && stills()) showStills();
 }
 
 function setPair(a, b) {
@@ -183,7 +200,11 @@ function setPair(a, b) {
   byId("lab-a").dispatchEvent(new Event("change"));
 }
 
-function bind() {
+// after setupLab, so lab.js has its listeners first and the story has the last word
+export function setupStory(cypData, modelData, briefData) {
+  cyp = cypData;
+  model = modelData;
+  brief = briefData;
   byId("back").addEventListener("click", () => go(-1));
   byId("next").addEventListener("click", () => go(1));
   byId("toggle").addEventListener("click", (e) => {
@@ -204,7 +225,7 @@ function bind() {
   });
   stage.addEventListener("pointercancel", () => { start = null; });
   addEventListener("keydown", (e) => {
-    if (e.target.matches("input")) return;
+    if (!active || e.target.matches("input, textarea")) return;
     if (e.key === "ArrowRight") go(1);
     if (e.key === "ArrowLeft") go(-1);
   });
@@ -217,29 +238,6 @@ function bind() {
   byId("nerds").addEventListener("toggle", () => {
     if (byId("nerds").open) byId("slider-fm").dispatchEvent(new Event("input"));
   });
-  byId("theme").addEventListener("click", () => {
-    const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
-    try { localStorage.setItem(THEME_KEY, next); } catch (e) { /* private window */ }
-    location.reload(); // the 3D scene reads its colours once
-  });
+  for (const id of ["lab-a", "lab-b"]) byId(id).addEventListener("change", openStoryFromPickers);
+  byId("lab-swap").addEventListener("click", openStoryFromPickers);
 }
-
-async function main() {
-  bind();
-  try {
-    [cyp, model, brief] = await Promise.all([json("cyp.json"), json("model.json"), json("brief.json").catch(() => null)]);
-  } catch (e) {
-    console.warn(e);
-    labUnavailable();
-    return;
-  }
-  setupLab(cyp, model);
-  // after lab.js has its own listeners, so the story has the last word on the message line
-  for (const id of ["lab-a", "lab-b"]) byId(id).addEventListener("change", fromPickers);
-  byId("lab-swap").addEventListener("click", fromPickers);
-  const [a, b] = [params.get("a"), params.get("b")];
-  setPair(a ?? brief?.pair?.a ?? EXAMPLES[0][0], b ?? brief?.pair?.b ?? EXAMPLES[0][1]);
-  document.body.classList.add("ready");
-}
-
-main();

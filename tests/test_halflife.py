@@ -2021,15 +2021,19 @@ def test_no_key_changes_nothing_about_the_choice(choice):
     assert comp.name == "a" and info is FULL
 
 
-# the lab story prototype
+# the lab story
+
+def _site_builder():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("build_site", config.ROOT / "scripts/build_site.py")
+    site = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(site)
+    return site
+
 
 def _stories(tmp_path, pairs, brief=None):
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("story_data", config.ROOT / "scripts/build_lab_story_data.py")
-    data = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(data)
-    site = data._site_builder()
-    files = {"cyp": site.cyp_json(), "model": {**site.model_json(), "organs": data.ORGANS}, "brief": brief or {}}
+    site = _site_builder()
+    files = {"cyp": site.cyp_json(), "model": site.model_json(), "brief": brief or {}}
     for name, content in files.items():
         (tmp_path / f"{name}.json").write_text(json.dumps(content), encoding="utf-8")
     out = subprocess.run(["node", str(config.ROOT / "tests/lab_story_check.mjs"), *(str(tmp_path / f"{n}.json") for n in ("cyp", "model", "brief")), *pairs],
@@ -2059,18 +2063,23 @@ def test_the_studys_own_number_wins_but_only_for_its_own_pair(tmp_path):
 
 
 def test_every_transporter_in_the_table_has_an_organ():
-    import importlib.util
     import pandas as pd
-    spec = importlib.util.spec_from_file_location("story_data", config.ROOT / "scripts/build_lab_story_data.py")
-    data = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(data)
-    assert set(pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)["transporter"]) <= set(data.ORGANS)
+    from halflife.interactions.organs import ORGANS
+    assert set(pd.read_csv(config.TRANSPORTER_TABLE, keep_default_na=False)["transporter"]) <= set(ORGANS)
+    assert _site_builder().model_json()["organs"] == ORGANS  # the app reads them from model.json
 
 
-def test_the_prototype_stays_off_the_site():
-    assert '"lab-story*"' in (config.ROOT / "scripts/build_site.py").read_text()
-    assert "lab-story-data" in (config.ROOT / ".gitignore").read_text()
-    assert "lab-story" not in (config.ROOT / "web/index.html").read_text()
+def test_the_story_is_in_the_app_with_its_structures(tmp_path):
+    from halflife.interactions import cyp
+    html = (config.ROOT / "web/index.html").read_text()
+    assert "lab-story.css" in html and 'id="story-scene"' in html and 'id="nerds"' in html
+    assert html.count('id="scene"') == 1  # the molecule and the story each keep their own canvas
+    script = (config.ROOT / "scripts/build_lab_structures.py").read_text()
+    slug = lambda name: re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+    have = {p.stem for p in (config.ROOT / "web/lab-structures").glob("*.json")}
+    missing = [d for d in cyp.all_drugs() if slug(d) not in have]
+    assert len(missing) <= 6, missing  # only mixtures and juices, they get a plain bead
+    assert "web/lab-structures" in script
 
 
 # looking up any molecule

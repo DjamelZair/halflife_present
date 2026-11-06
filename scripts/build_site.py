@@ -20,6 +20,7 @@ from halflife.notify import admin  # noqa: E402
 from halflife.molecules import structure  # noqa: E402
 from halflife.summarise import headline  # noqa: E402
 from halflife.interactions import cyp, model  # noqa: E402
+from halflife.interactions.organs import ORGANS  # noqa: E402
 from halflife.names import US_TO_INN  # noqa: E402
 from halflife.pipeline import FM_BY_ROLE, INDUCTION_BY_ROLE, IKI_BY_ROLE  # noqa: E402
 
@@ -88,12 +89,13 @@ def model_json() -> dict:
         "roles": {"substrate": sorted(cyp.SUBSTRATE_ROLES), "inhibitor": sorted(cyp.INHIBITOR_ROLES),
                   "inducer": sorted(cyp.INDUCER_ROLES)},
         "names": {us.lower(): inn.lower() for us, inn in US_TO_INN.items()},
+        "organs": ORGANS,  # where the Lab story draws a transporter's door
     }
 
 
 def build(src: Path, site: Path) -> None:
     shutil.rmtree(site, ignore_errors=True)
-    shutil.copytree(ROOT / "web", site, ignore=shutil.ignore_patterns("molecule-lab*", "lab-story*"))  # these are only for trying on my phone
+    shutil.copytree(ROOT / "web", site, ignore=shutil.ignore_patterns("molecule-lab*", "lab-story-data"))  # only for trying on my phone
     (site / "data").mkdir()
     brief = brief_json(src)
     files = {"brief": brief, "cyp": cyp_json(), "model": model_json()}

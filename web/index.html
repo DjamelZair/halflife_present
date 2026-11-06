@@ -16,6 +16,7 @@
 <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/lab-story.css">
 <script type="importmap">
   {"imports": {"three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/"}}
 </script>
@@ -120,63 +121,135 @@
 </main>
 
 <main id="view-lab" data-view="lab" class="column lab" hidden>
-  <h1>Lab</h1>
-  <p class="lab-intro">Pick two drugs to see their enzyme and transporter roles in the FDA table, then explore enzyme effects with the ICH M12 static model.</p>
+  <h1 id="pair-title">Lab</h1>
+  <p class="status" id="no-story" hidden>The FDA table shows no substrate with an inhibitor or inducer on a shared enzyme or transporter for this pair. The table lists examples, so this does not rule out an interaction.</p>
 
-  <div class="pickers">
-    <label>First drug<input id="lab-a" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
-    <button class="button-quiet swap" id="lab-swap" type="button" aria-label="Swap the two drugs">Swap</button>
-    <label>Second drug<input id="lab-b" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
-    <datalist id="lab-drugs"></datalist>
-  </div>
-  <p class="status" id="lab-message" role="status"></p>
+    <section id="story" hidden>
+      <div id="live">
+        <ol class="story-progress" aria-hidden="true"><li></li><li></li><li></li></ol>
+        <div class="story-stage" id="stage">
+          <canvas id="story-scene" role="img"></canvas>
+          <div class="stage-labels" id="stage-labels" aria-hidden="true">
+            <span data-label="victim"></span>
+            <span data-label="perpetrator"></span>
+            <span data-label="target" class="label-target"></span>
+            <span data-label="blood"></span>
+            <span data-label="other"></span>
+          </div>
+          <div class="story-result" id="result" hidden>
+            <p class="story-big"></p>
+            <p class="story-words"></p>
+            <p class="story-label"></p>
+          </div>
+          <button class="button-quiet story-toggle" id="toggle" type="button" hidden></button>
+        </div>
+        <div aria-live="polite" class="story-caption">
+          <h2 id="step-title"></h2>
+          <p id="step-text"></p>
+        </div>
+        <div class="story-nav">
+          <button class="button-quiet" id="back" type="button">Back</button>
+          <button class="button-primary" id="next" type="button">Next</button>
+        </div>
+      </div>
 
-  <section id="lab-results" aria-label="What the FDA table says" hidden>
-    <div class="role-group"><h2 id="lab-name-a"></h2><ul class="chips" id="lab-roles-a"></ul></div>
-    <div class="role-group"><h2 id="lab-name-b"></h2><ul class="chips" id="lab-roles-b"></ul></div>
-    <ul class="findings" id="lab-findings"></ul>
-    <a class="text-link" id="lab-source" target="_blank" rel="noopener">FDA table of enzyme and transporter interactions</a>
-    <p class="note" id="lab-source-date"></p>
-  </section>
+      <div id="stills" class="story-stills" hidden></div>
 
-  <section id="lab-model" aria-label="Illustrative model" hidden>
-    <div class="ratio" aria-live="polite">
-      <p class="eyebrow">Illustrative AUC ratio</p>
-      <p class="ratio-number" id="lab-ratio"></p>
-      <p id="lab-category"></p>
-      <p class="note">Illustrative model, not a prediction. Time dependent inhibition, transporters and metabolites are left out.</p>
-    </div>
+      <p class="note story-schematic">Schematic, not the real binding site</p>
+      <p class="note" id="no-structure" hidden>No 3D structure for one of these drugs, so a plain bead stands in for it.</p>
+    </section>
 
-    <div class="sliders">
-      <label for="slider-fm"><span>fm, share cleared by this enzyme</span><output id="value-fm"></output></label>
-      <input id="slider-fm" type="range" min="0" max="1" step="0.01">
-      <label for="slider-ikiLiver"><span>I/Ki in the liver</span><output id="value-ikiLiver"></output></label>
-      <input id="slider-ikiLiver" type="range" min="0" max="100" step="0.05">
-      <label for="slider-fg"><span>Fg, share escaping the gut</span><output id="value-fg"></output></label>
-      <input id="slider-fg" type="range" min="0.05" max="1" step="0.01">
-      <label for="slider-ikiGut"><span>I/Ki in the gut</span><output id="value-ikiGut"></output></label>
-      <input id="slider-ikiGut" type="range" min="0" max="100" step="0.05">
-      <label for="slider-induction"><span>Induction, fold</span><output id="value-induction"></output></label>
-      <input id="slider-induction" type="range" min="1" max="20" step="0.1">
-      <button class="button-quiet" id="lab-reset" type="button">Reset to the FDA role values</button>
-    </div>
+    <section class="story-pick" aria-label="Pick two drugs">
+      <div class="story-examples" id="examples"></div>
+      <div class="pickers">
+        <label>First drug<input id="lab-a" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
+        <button class="button-quiet swap" id="lab-swap" type="button" aria-label="Swap the two drugs">Swap</button>
+        <label>Second drug<input id="lab-b" list="lab-drugs" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Search the FDA table"></label>
+        <datalist id="lab-drugs"></datalist>
+      </div>
+      <p class="status" id="lab-message" role="status"></p>
+    </section>
 
-    <figure class="chart">
-      <figcaption>AUC ratio against fm, log scale</figcaption>
-      <svg id="chart-fm" role="img"></svg>
-    </figure>
-    <figure class="chart">
-      <figcaption>Illustrative curve for one dose</figcaption>
-      <ul class="chart-legend">
-        <li><span class="key key-before"></span>Before</li>
-        <li><span class="key key-after"></span>With the interaction</li>
-      </ul>
-      <svg id="chart-curve" role="img"></svg>
-    </figure>
-  </section>
+    <section id="story-facts" hidden>
+      <section class="story-below" aria-label="What the FDA table says">
+        <ul class="findings" id="story-sentences"></ul>
+        <div id="story-notes"></div>
+        <div class="story-roles">
+          <div class="role-group"><h2 id="role-title-a"></h2><ul class="chips" id="role-list-a"></ul></div>
+          <div class="role-group"><h2 id="role-title-b"></h2><ul class="chips" id="role-list-b"></ul></div>
+        </div>
+        <a class="text-link" id="story-source" target="_blank" rel="noopener">FDA table of enzyme and transporter interactions</a>
+      </section>
+    </section>
+
+    <details class="story-nerds" id="nerds">
+      <summary>For the nerds</summary>
+      <p class="note" id="nerds-transporter" hidden>A transporter interaction, so no ratio here. The static model in this lab covers enzymes.</p>
+
+      <!-- the app's own lab, lab.js fills it. its results list is hidden, the story shows those facts above -->
+      <section id="lab-results" hidden>
+        <h2 id="lab-name-a"></h2><ul id="lab-roles-a"></ul>
+        <h2 id="lab-name-b"></h2><ul id="lab-roles-b"></ul>
+        <ul id="lab-findings"></ul>
+        <a id="lab-source"></a>
+        <p id="lab-source-date"></p>
+      </section>
+
+      <section id="lab-model" aria-label="Illustrative model" hidden>
+        <div class="ratio" aria-live="polite">
+          <p class="eyebrow">Illustrative AUC ratio</p>
+          <p class="ratio-number" id="lab-ratio"></p>
+          <p id="lab-category"></p>
+          <p class="note">Illustrative model, not a prediction. Time dependent inhibition, transporters and metabolites are left out.</p>
+        </div>
+        <div class="sliders">
+          <label for="slider-fm"><span>fm, share cleared by this enzyme</span><output id="value-fm"></output></label>
+          <input id="slider-fm" type="range" min="0" max="1" step="0.01">
+          <label for="slider-ikiLiver"><span>I/Ki in the liver</span><output id="value-ikiLiver"></output></label>
+          <input id="slider-ikiLiver" type="range" min="0" max="100" step="0.05">
+          <label for="slider-fg"><span>Fg, share escaping the gut</span><output id="value-fg"></output></label>
+          <input id="slider-fg" type="range" min="0.05" max="1" step="0.01">
+          <label for="slider-ikiGut"><span>I/Ki in the gut</span><output id="value-ikiGut"></output></label>
+          <input id="slider-ikiGut" type="range" min="0" max="100" step="0.05">
+          <label for="slider-induction"><span>Induction, fold</span><output id="value-induction"></output></label>
+          <input id="slider-induction" type="range" min="1" max="20" step="0.1">
+          <button class="button-quiet" id="lab-reset" type="button">Reset to the FDA role values</button>
+        </div>
+        <figure class="chart">
+          <figcaption>AUC ratio against fm, log scale</figcaption>
+          <svg id="chart-fm" role="img"></svg>
+        </figure>
+        <figure class="chart">
+          <figcaption>Illustrative curve for one dose</figcaption>
+          <ul class="chart-legend">
+            <li><span class="key key-before"></span>Before</li>
+            <li><span class="key key-after"></span>With the interaction</li>
+          </ul>
+          <svg id="chart-curve" role="img"></svg>
+        </figure>
+      </section>
+    </details>
 
   <p class="disclaimer">For curiosity and learning, not for clinical decisions.</p>
 </main>
+
+<template id="still-template">
+  <figure class="story-still">
+    <div class="story-stage">
+      <img alt="">
+      <div class="stage-labels" aria-hidden="true"></div>
+      <div class="story-result">
+        <p class="story-big"></p>
+        <p class="story-words"></p>
+        <p class="story-label"></p>
+      </div>
+    </div>
+    <figcaption>
+      <h2 class="still-title"></h2>
+      <p class="still-text"></p>
+    </figcaption>
+  </figure>
+</template>
 
 <nav class="tabbar" aria-label="Main">
   <a href="#today" data-tab="today">Today</a>

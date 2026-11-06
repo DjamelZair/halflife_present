@@ -1,20 +1,7 @@
-/* the Lab prototype. every value comes from tokens.css */
-
-.story-page {
-  background: var(--page);
-  color: var(--text);
-  font-family: var(--font-body);
-}
-
-.story-main {
-  padding: var(--space-lg) var(--gutter) var(--space-3xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
+/* the Lab as a story in three steps. every value comes from tokens.css */
 
 /* in a column a child may not grow past the page because of what is inside it, the charts */
-.story-main > *,
+.lab > *,
 .story-nerds > * {
   min-width: 0;
   max-width: 100%;
@@ -27,26 +14,12 @@
   font: 600 var(--text-sm) var(--font-display);
 }
 
-.story-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-}
-
-.story-head h1 {
-  margin: 0;
-  font: 600 var(--text-md) var(--font-display);
-}
-
 .story-pick {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
   margin-top: var(--space-lg);
 }
-
-.story-head button { flex: none; white-space: nowrap; }
 
 .story-examples {
   display: flex;
@@ -96,8 +69,8 @@
   -webkit-user-select: none;
 }
 
-/* app.css sizes #scene for the hero, this canvas has to stay exactly the shape of the stage */
-.story-stage #scene,
+/* this canvas has to stay exactly the shape of the stage */
+.story-stage canvas,
 .story-stage img {
   position: absolute;
   inset: 0;
@@ -262,3 +235,6 @@
 @media (prefers-reduced-motion: reduce) {
   .story-progress li { transition: none; }
 }
+
+/* the pair is the heading, at the size of the Molecule screen's title so two long names fit */
+#pair-title { font-size: var(--text-lg); }
