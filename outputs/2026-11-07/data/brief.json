@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-07",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 43,
+      "clinic/bioRxiv": 10,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 15,
+      "discovery/ClinicalTrials.gov": 47
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 43,
+      "Preprints": 13,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 2,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 16,
+      "Phase 3 results": 47,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 4,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Potential drug-drug interaction risks of selective serotonin reuptake inhibitors in outpatients: a retrospective analysis using two screening databases.",
+      "what": "Potential drug-drug interactions (pDDIs) involving selective serotonin reuptake inhibitors (SSRIs) pose significant risks in psychiatric care, where polypharmacy often exacerbates pharmacokinetic and pharmacodynamic effects through cytochrome P450 enzyme pathways. This retrospective study aimed to assess the prevalence, characteristics, and risk factors of pDDIs associated with SSRIs in outpatients.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Frontiers in pharmacology",
+      "url": "https://doi.org/10.3389/fphar.2026.1965339",
+      "peer_reviewed": true,
+      "original_title": "Potential drug-drug interaction risks of selective serotonin reuptake inhibitors in outpatients: a retrospective analysis using two screening databases.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Potential drug-drug interaction risks of selective serotonin reuptake inhibitors"
+    },
+    {
+      "title": "Postmortem femoral venous blood concentrations, redistribution and toxicity of duloxetine.",
+      "what": "Duloxetine, a serotonin-norepinephrine reuptake inhibitor (SNRI), is widely prescribed for depression, anxiety, neuropathic pain, and other chronic pain conditions. Its pharmacokinetics show substantial interindividual variability due to sex, age, smoking, and CYP2D6 metabolism.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Journal of analytical toxicology",
+      "url": "https://doi.org/10.1093/jat/bkag095",
+      "peer_reviewed": true,
+      "original_title": "Postmortem femoral venous blood concentrations, redistribution and toxicity of duloxetine.",
+      "drugs": [
+        "duloxetine"
+      ],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Postmortem femoral venous blood concentrations, redistribution and toxicity of duloxetine"
+    },
+    {
+      "title": "A Phase 3 Trial of Epcoritamab vs Investigator's Choice Chemotherapy in Relapsed/Refractory (R/R) Diffuse Large B-cell Lymphoma (DLBCL)",
+      "what": "The purpose of this trial is to find out if epcoritamab, also known as EPKINLY™ and GEN3013, is safe and works well as treatment for participants with DLBCL that are not responding to treatment, have grown in size, or have come back following treatment with at least 1 prior systemic cancer therapy. All participants in this trial will be randomly assigned to receive either epcoritamab or a pre-specified investigator's choice (standard of care) chemotherapy (either rituximab + gemcitabine + oxaliplatin \\[R-GemOx\\], or bendamustine + rituximab \\[BR\\]).",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT04628494?tab=results",
+      "peer_reviewed": true,
+      "original_title": "A Phase 3 Trial of Epcoritamab vs Investigator's Choice Chemotherapy in Relapsed/Refractory (R/R) Diffuse Large B-cell Lymphoma (DLBCL)",
+      "drugs": [
+        "epcoritamab"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "A Phase 3 Trial of Epcoritamab vs Investigator's Choice Chemotherapy"
+    }
+  ],
+  "molecule": {
+    "name": "brigatinib",
+    "smiles": "CN1CCN(CC1)C2CCN(CC2)C3=CC(=C(C=C3)NC4=NC=C(C(=N4)NC5=CC=CC=C5P(=O)(C)C)Cl)OC",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/68165256",
+    "Formula": "C29H39ClN7O2P",
+    "Molecular weight": 584.1,
+    "logP": 5.09,
+    "H bond donors": 2,
+    "H bond acceptors": 9,
+    "TPSA": 85.9,
+    "Rotatable bonds": 8,
+    "Rings": 5,
+    "Rule of five violations": 2,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: brigatinib and lorlatinib",
+      "url": "#lab?a=brigatinib&b=lorlatinib"
+    },
+    "atc": [
+      {
+        "code": "L01ED04",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "Antineoplastic agents"
+          },
+          {
+            "level": 3,
+            "code": "L01E",
+            "name": "Protein kinase inhibitors"
+          },
+          {
+            "level": 4,
+            "code": "L01ED",
+            "name": "Anaplastic lymphoma kinase (ALK) inhibitors"
+          }
+        ],
+        "substance": "brigatinib"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Brigatinib is a cancer medicine that is used to treat adults with a type of lung cancer called non-small cell lung cancer (NSCLC). It is used in patients who have not been treated before with a medicine of the ALK inhibitor class or who have been treated before with the ALK-inhibitor crizotinib.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/alunbrig"
+    },
+    "mechanisms": [
+      {
+        "text": "ALK tyrosine kinase receptor inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3545311"
+      },
+      {
+        "text": "Epidermal growth factor receptor erbB1 inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3545311"
+      }
+    ]
+  },
+  "pair": {
+    "a": "brigatinib",
+    "b": "lorlatinib",
+    "sentences": [
+      "lorlatinib is a moderate inducer of CYP3A and brigatinib is a moderate sensitive substrate of CYP3A, so brigatinib exposure can be lower."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.42,
+    "category": "moderate decrease"
+  }
+}
