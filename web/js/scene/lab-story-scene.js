@@ -21,9 +21,16 @@ const HERO_X = 2.6;
 const HERO_RADIUS = 1.9;
 const COPY_RADIUS = 0.78;
 const GATE_RADIUS = 1.15;
-const NORMAL_UP = 0.2; // the fill of the glass before an interaction that raises it, so 5x is exactly full
-const NORMAL_DOWN = 0.62;
-const TRANSPORTER_FILL = 0.56; // no number for these, so it only shows the direction
+// step three is a blood vessel cut open. how full it is, is how many of the drug's molecules flow in it
+const VESSEL_MAX = 20;
+const NORMAL_UP = 0.2; // 4 of 20 before an interaction that raises it, so 5x is exactly full
+const NORMAL_DOWN = 0.8;
+const TRANSPORTER_FILL = 0.5; // no number for these, so it only shows the direction
+const VESSEL_R = 2.05;
+const VESSEL_LENGTH = 17;
+const VESSEL_OPEN = 1.1; // how far the cut reaches round from the front, in radians
+const VESSEL_SPEED = 1.4;
+const CELLS = 24;
 
 const SLOW_FRAME_MS = 26;
 const CHECK_EVERY_MS = 1500;
@@ -105,6 +112,16 @@ function withBody(material, glow) {
   };
   material.customProgramCacheKey = () => `story-${glow.toFixed(3)}`;
   return material;
+}
+
+// a red cell: a disc dented in the middle on both sides (the Evans and Fung shape), turned round its axis
+function cellGeometry() {
+  const height = (x) => 0.5 * Math.sqrt(Math.max(0, 1 - x * x)) * (0.207 + 2.003 * x * x - 1.123 * x ** 4);
+  const steps = 10;
+  const points = [];
+  for (let i = 0; i <= steps; i++) points.push(new THREE.Vector2(i / steps, height(i / steps)));
+  for (let i = steps - 1; i >= 0; i--) points.push(new THREE.Vector2(i / steps, -height(i / steps)));
+  return new THREE.LatheGeometry(points, 20);
 }
 
 function deviceIsSlow() {
@@ -217,7 +234,7 @@ export class StoryScene {
       vertexColors: true, roughness: 0.14, clearcoat: 0.8, envMapIntensity: this.theme === "dark" ? 1.7 : 1.05,
     }), this.glow * 2.5);
     // chunkier than real on purpose, at this size true proportions are only a thin line
-    this.copies = new THREE.InstancedMesh(moleculeGeometry(victim, 6, 2.3), copyMaterial, COPIES);
+    this.copies = new THREE.InstancedMesh(moleculeGeometry(victim, 6, 2.3), copyMaterial, VESSEL_MAX);
     this.copies.frustumCulled = false;
     this.world.add(this.copies);
 
@@ -233,7 +250,7 @@ export class StoryScene {
     });
     this.gates = [];
     this.buildPassage();
-    this.buildGlass();
+    this.buildVessel();
     this.reset();
   }
 
@@ -273,27 +290,90 @@ export class StoryScene {
     });
   }
 
-  buildGlass() {
-    this.glass = new THREE.Group();
-    const radius = 2.5;
-    const height = 7.4;
-    this.glassBottom = -5.2;
-    this.glassHeight = height;
-    const wall = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius * 0.92, height, 48, 1, true), new THREE.MeshPhysicalMaterial({
-      color: color("--strip-main"), roughness: 0.08, transparent: true, opacity: 0.2, envMapIntensity: 2, side: THREE.DoubleSide, depthWrite: false,
+  // a vessel cut open along the front, like a textbook drawing, with red cells and the drug flowing through
+  buildVessel() {
+    this.vessel = new THREE.Group();
+    this.vessel.position.set(0, -1.75, -0.4);
+    this.vessel.rotation.set(-0.38, 0, 0.36);
+    const inner = VESSEL_R * 0.84;
+    const tube = (radius) => {
+      const g = new THREE.CylinderGeometry(radius, radius, VESSEL_LENGTH, 72, 1, true, VESSEL_OPEN, Math.PI * 2 - VESSEL_OPEN * 2);
+      g.rotateZ(-Math.PI / 2);
+      return g;
+    };
+    const wallColour = color("--vessel-wall");
+    const outside = new THREE.Mesh(tube(VESSEL_R), new THREE.MeshPhysicalMaterial({
+      color: wallColour, roughness: 0.38, clearcoat: 0.7, clearcoatRoughness: 0.25, side: THREE.DoubleSide,
+      emissive: wallColour, emissiveIntensity: this.theme === "dark" ? 0.18 : 0.05,
     }));
-    wall.position.y = this.glassBottom + height / 2;
-    const rim = new THREE.Mesh(new THREE.TorusGeometry(radius, 0.06, 10, 60), new THREE.MeshPhysicalMaterial({ color: color("--strip-main"), roughness: 0.1, envMapIntensity: 2 }));
-    rim.rotation.x = Math.PI / 2.2;
-    rim.position.y = this.glassBottom + height;
-    this.liquid = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.96, radius * 0.9, 1, 48), new THREE.MeshPhysicalMaterial({
-      color: color(this.story.up ? "--chart-after" : "--chart-before"), roughness: 0.18, transparent: true, opacity: 0.62, depthWrite: false,
-      emissive: color(this.story.up ? "--chart-after" : "--chart-before"), emissiveIntensity: this.theme === "dark" ? 0.3 : 0.1,
+    const insideColour = wallColour.clone().lerp(color("--hero"), 0.35);
+    const inside = new THREE.Mesh(tube(inner), new THREE.MeshPhysicalMaterial({
+      color: insideColour, roughness: 0.6, side: THREE.DoubleSide, emissive: insideColour, emissiveIntensity: this.theme === "dark" ? 0.12 : 0.02,
     }));
-    this.mark = new THREE.Mesh(new THREE.BoxGeometry(radius * 2.15, 0.05, 0.05), new THREE.MeshBasicMaterial({ color: color("--text") }));
-    this.glass.add(this.liquid, wall, rim, this.mark);
-    this.glass.visible = false;
-    this.world.add(this.glass);
+    this.vessel.add(outside, inside);
+
+    // the cut edges show the layers of the wall
+    const lining = new THREE.MeshPhysicalMaterial({ color: color("--vessel-lining"), roughness: 0.45, emissive: color("--vessel-lining"), emissiveIntensity: this.theme === "dark" ? 0.12 : 0 });
+    const shine = new THREE.MeshBasicMaterial({ color: color("--strip-main") });
+    for (const angle of [VESSEL_OPEN, Math.PI * 2 - VESSEL_OPEN]) {
+      const layer = (from, to, material) => {
+        const middle = (from + to) / 2;
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(VESSEL_LENGTH, to - from, 0.035), material);
+        mesh.position.set(0, -middle * Math.sin(angle), middle * Math.cos(angle));
+        mesh.rotation.x = angle + Math.PI / 2;
+        return mesh;
+      };
+      this.vessel.add(layer(inner + 0.07, VESSEL_R, lining), layer(inner, inner + 0.07, shine));
+    }
+
+    this.vesselInner = inner;
+    this.cells = new THREE.InstancedMesh(cellGeometry(), new THREE.MeshPhysicalMaterial({
+      color: color("--vessel-cell"), roughness: 0.32, clearcoat: 0.6, sheen: 0.4, sheenColor: color("--vessel-lining"),
+      emissive: color("--vessel-cell"), emissiveIntensity: this.theme === "dark" ? 0.16 : 0.03,
+    }), CELLS);
+    this.cells.frustumCulled = false;
+    this.cellState = Array.from({ length: CELLS }, (_, i) => ({
+      ...this.inVessel(0.46, i),
+      u: -VESSEL_LENGTH / 2 + ((i * 0.618) % 1) * VESSEL_LENGTH,
+      speed: 0.8 + ((i * 0.37) % 1) * 0.4,
+      axis: new THREE.Euler(i * 1.3, i * 0.7, i * 2.1),
+      turn: 0.3 + (i % 4) * 0.15,
+    }));
+    this.vessel.add(this.cells);
+
+    // two more vessels far behind, out of focus, so it reads as a body and not a pipe
+    const far = new THREE.MeshStandardMaterial({ color: color("--vessel-far"), roughness: 0.9 });
+    const curve = (points) => new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(([x, y, z]) => new THREE.Vector3(x, y, z))), 40, 1.3, 16), far);
+    this.vesselFar = new THREE.Group();
+    this.vesselFar.add(
+      curve([[-16, 9, -22], [-6, 5, -24], [2, 8, -22], [14, 4, -24]]),
+      curve([[-14, -12, -26], [-4, -3, -24], [6, -9, -26], [16, -4, -24]]),
+    );
+
+    this.vesselRoot = new THREE.Group();
+    this.vesselRoot.add(this.vessel, this.vesselFar);
+    this.vesselRoot.visible = false;
+    this.world.add(this.vesselRoot);
+    this.vesselRoot.updateMatrixWorld(true);
+  }
+
+  // a random place in the round inside of the vessel, the same every time for the same seed
+  inVessel(size, seed) {
+    const room = this.vesselInner - size - 0.1;
+    const radius = room * Math.sqrt(((seed * 0.754877) % 1));
+    const angle = ((seed * 0.569840) % 1) * Math.PI * 2;
+    return { ry: -radius * Math.sin(angle), rz: radius * Math.cos(angle) };
+  }
+
+  // the molecules already in the blood when step three opens, spread along the whole vessel
+  seedVessel() {
+    const count = Math.max(1, Math.round(VESSEL_MAX * this.target().normal));
+    this.flow = Array.from({ length: count }, (_, i) => this.vesselMolecule(-VESSEL_LENGTH / 2 + ((i + 0.5) / count) * VESSEL_LENGTH, i + 1));
+    this.vesselWait = 0;
+  }
+
+  vesselMolecule(u, seed) {
+    return { u, ...this.inVessel(0.8, seed * 1.37 + 0.2), seed, spin: seed, turn: 0.4 + (seed % 3) * 0.15, size: 0.82, speed: 0.9 + ((seed * 0.29) % 1) * 0.3 };
   }
 
   target() {
@@ -323,6 +403,7 @@ export class StoryScene {
     if (step === 2) {
       this.fill = this.target().normal;
       this.bits.forEach((b) => { b.life = 0; });
+      this.seedVessel();
     }
   }
 
@@ -419,7 +500,7 @@ export class StoryScene {
     const e = new THREE.Euler();
     const p = new THREE.Vector3();
     const s = new THREE.Vector3();
-    for (let i = 0; i < COPIES; i++) {
+    for (let i = 0; i < this.copies.count; i++) {
       const v = this.flow[i];
       if (!v) {
         m.makeScale(0, 0, 0);
@@ -448,43 +529,48 @@ export class StoryScene {
     this.particles.instanceMatrix.needsUpdate = true;
   }
 
-  // the molecules inside the glass
-  simulateGlass(dt) {
-    const { after, normal, spills } = this.target();
-    this.fill += (after - this.fill) * Math.min(1, dt * 0.95);
-    const level = this.glassBottom + this.fill * this.glassHeight;
-    this.liquid.scale.y = Math.max(0.01, this.fill * this.glassHeight);
-    this.liquid.position.y = this.glassBottom + (this.fill * this.glassHeight) / 2;
-    this.mark.position.y = this.glassBottom + normal * this.glassHeight;
-    const wanted = Math.max(1, Math.round(COPIES * clamp(this.fill / 0.9, 0, 1)));
-    while (this.flow.length < wanted) {
-      const i = this.flow.length;
-      const a = (i * 2.4) % (Math.PI * 2);
-      this.flow.push({ gx: Math.cos(a) * (0.5 + ((i * 0.37) % 1) * 1.6), gz: Math.sin(a) * 0.7, gh: ((i * 0.618) % 1), seed: i, spin: i, turn: 0.3 + (i % 3) * 0.15, size: 0.5 });
+  // the blood fills up with the drug or loses it. new molecules flow in from the left, cleared ones fall apart
+  simulateVessel(dt) {
+    const { after } = this.target();
+    this.fill += (after - this.fill) * Math.min(1, dt * 0.6);
+    const wanted = Math.max(1, Math.round(VESSEL_MAX * this.fill));
+    this.vesselWait -= dt;
+    if (this.vesselWait <= 0 && this.flow.length !== wanted) {
+      this.vesselWait = 0.22;
+      if (this.flow.length < wanted) {
+        this.seedCount = (this.seedCount ?? 50) + 1;
+        this.flow.push(this.vesselMolecule(-6.6 - Math.random() * 0.8, this.seedCount));
+      } else {
+        // the one most in view goes, so you see it happen
+        const gone = this.flow.reduce((best, v) => (Math.abs(v.u) < Math.abs(best.u) ? v : best));
+        this.burst(gone);
+        this.flow = this.flow.filter((v) => v !== gone);
+      }
     }
-    this.flow.length = Math.min(this.flow.length, wanted);
+    const at = new THREE.Vector3();
+    const matrix = this.vessel.matrixWorld;
     for (const v of this.flow) {
-      if (v.gx === undefined) { v.gx = v.x > 2 ? 2 : Math.max(-2, (v.x ?? 0) / 2); v.gz = 0; v.gh = (v.seed % 1); v.size = 0.5; }
-      const tx = v.gx + Math.sin(this.clock * 0.7 + v.seed) * 0.08;
-      const ty = this.glassBottom + 0.45 + v.gh * Math.max(0.05, this.fill * this.glassHeight - 0.9) + Math.sin(this.clock + v.seed) * 0.06;
-      v.x = v.x === undefined ? tx : v.x + (tx - v.x) * Math.min(1, dt * 2.5);
-      v.y = v.y === undefined ? ty : v.y + (ty - v.y) * Math.min(1, dt * 2.5);
-      v.z = v.gz;
+      v.u += VESSEL_SPEED * v.speed * dt;
+      if (v.u > VESSEL_LENGTH / 2) v.u -= VESSEL_LENGTH;
+      at.set(v.u, v.ry + Math.sin(this.clock * 1.1 + v.seed) * 0.08, v.rz).applyMatrix4(matrix);
+      v.x = at.x;
+      v.y = at.y;
+      v.z = at.z;
       v.spin += v.turn * dt;
     }
-    if (spills && this.fill > after - 0.03 && Math.random() < dt * 9) {
-      // more than the glass holds, the number says how much
-      const bit = this.bits[this.particleNext];
-      const side = Math.random() < 0.5 ? -1 : 1;
-      bit.p.set(side * 2.5, level + 0.1, 0.4);
-      bit.v.set(side * (0.3 + Math.random() * 0.5), -0.5 - Math.random(), 0);
-      bit.max = 1.6;
-      bit.life = bit.max;
-      bit.r = 0.09;
-      this.particles.setColorAt(this.particleNext, new THREE.Color(this.liquid.material.color));
-      this.particles.instanceColor.needsUpdate = true;
-      this.particleNext = (this.particleNext + 1) % PARTICLES;
-    }
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion();
+    const p = new THREE.Vector3();
+    const size = new THREE.Vector3(0.46, 0.46, 0.46);
+    this.cellState.forEach((c, i) => {
+      c.u += VESSEL_SPEED * c.speed * dt;
+      if (c.u > VESSEL_LENGTH / 2) c.u -= VESSEL_LENGTH;
+      c.axis.x += c.turn * dt;
+      c.axis.z += c.turn * 0.6 * dt;
+      m.compose(p.set(c.u, c.ry, c.rz), q.setFromEuler(c.axis), size);
+      this.cells.setMatrixAt(i, m);
+    });
+    this.cells.instanceMatrix.needsUpdate = true;
   }
 
   placeActors(dt) {
@@ -496,9 +582,9 @@ export class StoryScene {
     this.perpetratorHero.rotation.x = 0.2 + Math.cos(this.clock * 0.35) * 0.12;
     const float = Math.sin(this.clock * 0.8) * 0.07;
 
-    const glassShown = step === 2;
+    const vesselShown = step === 2;
     this.victimHero.position.set(-HERO_X, HERO_Y + float, 0);
-    this.victimHero.scale.setScalar(HERO_RADIUS * (glassShown ? 0 : 1));
+    this.victimHero.scale.setScalar(HERO_RADIUS * (vesselShown ? 0 : 1));
 
     let target;
     let size;
@@ -518,7 +604,7 @@ export class StoryScene {
     const t = easeOut(this.moveClock / 1.1);
     this.perpetratorHero.position.lerpVectors(this.perpetratorFrom ?? target, target, t);
     const from = this.sizeFrom ?? HERO_RADIUS;
-    this.perpetratorHero.scale.setScalar(glassShown ? 0 : from + (size - from) * t);
+    this.perpetratorHero.scale.setScalar(vesselShown ? 0 : from + (size - from) * t);
     if (t >= 1) this.sizeFrom = size;
 
     const blocked = step === 1 && this.perpetratorIn && this.moveClock > 0.8;
@@ -527,7 +613,7 @@ export class StoryScene {
     this.gateMaterial.emissive.lerp(color(gateColor), Math.min(1, dt * 5));
 
     if (story.kind === "transporter") {
-      this.wall.visible = !glassShown;
+      this.wall.visible = !vesselShown;
       const closed = blocked ? 1 : 0;
       this.doorY = (this.doorY ?? 0) + (closed - (this.doorY ?? 0)) * Math.min(1, dt * 4);
       // it comes down out of the wall, open there is nothing in the way
@@ -537,20 +623,20 @@ export class StoryScene {
     } else {
       const extras = story.kind === "induce" && blocked;
       for (const g of this.gates) {
-        const want = glassShown ? 0 : !g.extra || extras ? 1 : 0;
+        const want = vesselShown ? 0 : !g.extra || extras ? 1 : 0;
         g.scale += (want - g.scale) * Math.min(1, dt * 5);
         g.mesh.scale.setScalar(Math.max(0.0001, g.scale));
         g.mesh.visible = g.scale > 0.01;
       }
     }
-    this.glass.visible = glassShown;
+    this.vesselRoot.visible = vesselShown;
   }
 
   update(dt) {
     this.clock += dt;
     this.stepClock += dt;
     this.placeActors(dt);
-    if (this.step === 2) this.simulateGlass(dt);
+    if (this.step === 2) this.simulateVessel(dt);
     else this.simulateFlow(dt);
     this.drawCopies();
     this.drawBits(dt);
@@ -558,7 +644,7 @@ export class StoryScene {
 
   // jumps ahead to where a step has settled, for the still frames and for screenshots
   settle(step) {
-    const seconds = [6, 24, 8][step];
+    const seconds = [6, 24, 12][step];
     this.setStep(step);
     for (let t = 0; t < seconds; t += 1 / 30) this.update(1 / 30);
   }
@@ -590,7 +676,8 @@ export class StoryScene {
         out.push({ id: "target", at: this.project(GATE_X, many ? LANE_Y + 2.75 + GATE_RADIUS + 0.45 : LANE_Y - GATE_RADIUS - 0.45) });
       }
     } else {
-      out.push({ id: "normal", at: this.project(-3.75, this.glassBottom + this.target().normal * this.glassHeight) });
+      const blood = new THREE.Vector3(-2.6, VESSEL_R + 0.55, 0).applyMatrix4(this.vessel.matrixWorld);
+      out.push({ id: "blood", at: this.project(blood.x, blood.y, blood.z) });
     }
     return out;
   }

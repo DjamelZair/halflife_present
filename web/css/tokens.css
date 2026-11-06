@@ -103,6 +103,11 @@
   /* the lab charts */
   --chart-before: #5490EC;
   --chart-after: #EC6440;
+  /* the blood vessel in the lab story, jewel pink instead of real blood red */
+  --vessel-wall: #7A1F4A;
+  --vessel-lining: #F4A9C0;
+  --vessel-cell: #E8436E;
+  --vessel-far: #3A1638;
 }
 
 :root[data-theme="light"] {
@@ -146,6 +151,10 @@
   /* the lab charts */
   --chart-before: #2F6FE0;
   --chart-after: #D9431F;
+  --vessel-wall: #C2325E;
+  --vessel-lining: #FBD5E0;
+  --vessel-cell: #E0335F;
+  --vessel-far: #F6D9E3;
 }
 
 /* the interaction card looks the same in both modes on the inside, its text is always on a dark surface */

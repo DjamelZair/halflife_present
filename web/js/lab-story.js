@@ -52,7 +52,6 @@ function fillLabels(root) {
   set("target", story.kind === "transporter" ? `${story.target}, ${story.organ} wall` : story.target);
   set("blood", "Blood");
   set("other", story.other ?? "");
-  set("normal", "Normal");
 }
 
 function setNumber(root) {
