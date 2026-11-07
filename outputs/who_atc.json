@@ -1,0 +1,228 @@
+{
+  "celecoxib": {
+    "checked": "2026-11-07",
+    "entries": [
+      {
+        "code": "L01XX33",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "ANTINEOPLASTIC AGENTS"
+          },
+          {
+            "level": 3,
+            "code": "L01X",
+            "name": "OTHER ANTINEOPLASTIC AGENTS"
+          },
+          {
+            "level": 4,
+            "code": "L01XX",
+            "name": "Other antineoplastic agents"
+          }
+        ],
+        "substance": "celecoxib",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=L01XX33"
+      },
+      {
+        "code": "M01AH01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "M",
+            "name": "MUSCULO-SKELETAL SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "M01",
+            "name": "ANTIINFLAMMATORY AND ANTIRHEUMATIC PRODUCTS"
+          },
+          {
+            "level": 3,
+            "code": "M01A",
+            "name": "ANTIINFLAMMATORY AND ANTIRHEUMATIC PRODUCTS, NON-STEROIDS"
+          },
+          {
+            "level": 4,
+            "code": "M01AH",
+            "name": "Coxibs"
+          }
+        ],
+        "substance": "celecoxib",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=M01AH01"
+      }
+    ]
+  },
+  "miconazole": {
+    "checked": "2026-11-07",
+    "entries": [
+      {
+        "code": "A01AB09",
+        "levels": [
+          {
+            "level": 1,
+            "code": "A",
+            "name": "ALIMENTARY TRACT AND METABOLISM"
+          },
+          {
+            "level": 2,
+            "code": "A01",
+            "name": "STOMATOLOGICAL PREPARATIONS"
+          },
+          {
+            "level": 3,
+            "code": "A01A",
+            "name": "STOMATOLOGICAL PREPARATIONS"
+          },
+          {
+            "level": 4,
+            "code": "A01AB",
+            "name": "Antiinfectives and antiseptics for local oral treatment"
+          }
+        ],
+        "substance": "miconazole",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=A01AB09"
+      },
+      {
+        "code": "A07AC01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "A",
+            "name": "ALIMENTARY TRACT AND METABOLISM"
+          },
+          {
+            "level": 2,
+            "code": "A07",
+            "name": "ANTIDIARRHEALS, INTESTINAL ANTIINFLAMMATORY/ANTIINFECTIVE AGENTS"
+          },
+          {
+            "level": 3,
+            "code": "A07A",
+            "name": "INTESTINAL ANTIINFECTIVES"
+          },
+          {
+            "level": 4,
+            "code": "A07AC",
+            "name": "Imidazole derivatives"
+          }
+        ],
+        "substance": "miconazole",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=A07AC01"
+      },
+      {
+        "code": "D01AC02",
+        "levels": [
+          {
+            "level": 1,
+            "code": "D",
+            "name": "DERMATOLOGICALS"
+          },
+          {
+            "level": 2,
+            "code": "D01",
+            "name": "ANTIFUNGALS FOR DERMATOLOGICAL USE"
+          },
+          {
+            "level": 3,
+            "code": "D01A",
+            "name": "ANTIFUNGALS FOR TOPICAL USE"
+          },
+          {
+            "level": 4,
+            "code": "D01AC",
+            "name": "Imidazole and triazole derivatives"
+          }
+        ],
+        "substance": "miconazole",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=D01AC02"
+      },
+      {
+        "code": "G01AF04",
+        "levels": [
+          {
+            "level": 1,
+            "code": "G",
+            "name": "GENITO URINARY SYSTEM AND SEX HORMONES"
+          },
+          {
+            "level": 2,
+            "code": "G01",
+            "name": "GYNECOLOGICAL ANTIINFECTIVES AND ANTISEPTICS"
+          },
+          {
+            "level": 3,
+            "code": "G01A",
+            "name": "ANTIINFECTIVES AND ANTISEPTICS, EXCL. COMBINATIONS WITH CORTICOSTEROIDS"
+          },
+          {
+            "level": 4,
+            "code": "G01AF",
+            "name": "Imidazole derivatives"
+          }
+        ],
+        "substance": "miconazole",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=G01AF04"
+      },
+      {
+        "code": "J02AB01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "J",
+            "name": "ANTIINFECTIVES FOR SYSTEMIC USE"
+          },
+          {
+            "level": 2,
+            "code": "J02",
+            "name": "ANTIMYCOTICS FOR SYSTEMIC USE"
+          },
+          {
+            "level": 3,
+            "code": "J02A",
+            "name": "ANTIMYCOTICS FOR SYSTEMIC USE"
+          },
+          {
+            "level": 4,
+            "code": "J02AB",
+            "name": "Imidazole derivatives"
+          }
+        ],
+        "substance": "miconazole",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=J02AB01"
+      },
+      {
+        "code": "S02AA13",
+        "levels": [
+          {
+            "level": 1,
+            "code": "S",
+            "name": "SENSORY ORGANS"
+          },
+          {
+            "level": 2,
+            "code": "S02",
+            "name": "OTOLOGICALS"
+          },
+          {
+            "level": 3,
+            "code": "S02A",
+            "name": "ANTIINFECTIVES"
+          },
+          {
+            "level": 4,
+            "code": "S02AA",
+            "name": "Antiinfectives"
+          }
+        ],
+        "substance": "miconazole",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=S02AA13"
+      }
+    ]
+  }
+}

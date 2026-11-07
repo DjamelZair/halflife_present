@@ -1,0 +1,192 @@
+{
+  "date": "2026-11-08",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 40,
+      "clinic/bioRxiv": 6,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 2,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 11,
+      "discovery/ClinicalTrials.gov": 46
+    },
+    "errors": {
+      "ChEMBL": "ChEMBL failed: 500 Server Error: Internal Server Error for url: https://www.ebi.ac.uk/chembl/api/data/molecule.json?pref_name__iexact=CELECOXIB&limit=1"
+    },
+    "sources": {
+      "PubMed": 40,
+      "Preprints": 6,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 2,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 13,
+      "Phase 3 results": 46,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 5,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Renal Function-Guided Valganciclovir Dosing and Ganciclovir Exposure Variability: A Population Pharmacokinetic Simulation Study.",
+      "what": "Ganciclovir (GCV) exposure after standard valganciclovir (VGCV) prophylaxis is highly variable. Guidelines recommend Cockcroft-Gault for renal dose adjustment.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Basic & clinical pharmacology & toxicology",
+      "url": "https://doi.org/10.1111/bcpt.70329",
+      "peer_reviewed": true,
+      "original_title": "Renal Function-Guided Valganciclovir Dosing and Ganciclovir Exposure Variability: A Population Pharmacokinetic Simulation Study.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "Renal Function-Guided Valganciclovir Dosing and Ganciclovir Exposure Variability"
+    },
+    {
+      "title": "An Open-label, DDI Study to Investigate the Effects of Duvakitug on the PK of Selected Cytochrome P450 Substrates",
+      "what": "This is an open-label, single group, 2-period, Phase 1, single-arm study. The primary purpose of this study is to investigate the effects of duvakitug on the pharmacokinetics of selected cytochrome P450 substrates in adult participants with moderately to severely active ulcerative colitis or Crohn's disease.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Trial registry",
+      "url": "https://clinicaltrials.gov/study/NCT07923383",
+      "peer_reviewed": true,
+      "original_title": "An Open-label, DDI Study to Investigate the Effects of Duvakitug on the PK of Selected Cytochrome P450 Substrates",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "An Open-label, DDI Study"
+    },
+    {
+      "title": "Evaluation of Rifaximin SSD for Delaying Encephalopathy Decompensation in Patients With Cirrhosis",
+      "what": "Study RNLC3132 is a Phase 3, randomized, double-blind, placebo-controlled, multicenter study to assess the efficacy and safety of rifaximin SSD-40mg IR for the delay of the first episode of overt hepatic encephalopathy (OHE) decompensation in liver cirrhosis, defined by the presence of medically controlled ascites.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT05297448?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Evaluation of Rifaximin SSD for Delaying Encephalopathy Decompensation in Patients With Cirrhosis",
+      "drugs": [
+        "rifaximin ssd"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Rifaximin SSD for Delaying Encephalopathy Decompensation in Patients With Cirrhosis"
+    }
+  ],
+  "molecule": {
+    "name": "celecoxib",
+    "smiles": "CC1=CC=C(C=C1)C2=CC(=NN2C3=CC=C(C=C3)S(=O)(=O)N)C(F)(F)F",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/2662",
+    "Formula": "C17H14F3N3O2S",
+    "Molecular weight": 381.4,
+    "logP": 3.51,
+    "H bond donors": 1,
+    "H bond acceptors": 3,
+    "TPSA": 78.0,
+    "Rotatable bonds": 3,
+    "Rings": 3,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: celecoxib and miconazole",
+      "url": "#lab?a=celecoxib&b=miconazole"
+    },
+    "atc": [
+      {
+        "code": "L01XX33",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "ANTINEOPLASTIC AND IMMUNOMODULATING AGENTS"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "ANTINEOPLASTIC AGENTS"
+          },
+          {
+            "level": 3,
+            "code": "L01X",
+            "name": "OTHER ANTINEOPLASTIC AGENTS"
+          },
+          {
+            "level": 4,
+            "code": "L01XX",
+            "name": "Other antineoplastic agents"
+          }
+        ],
+        "substance": "celecoxib",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=L01XX33"
+      },
+      {
+        "code": "M01AH01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "M",
+            "name": "MUSCULO-SKELETAL SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "M01",
+            "name": "ANTIINFLAMMATORY AND ANTIRHEUMATIC PRODUCTS"
+          },
+          {
+            "level": 3,
+            "code": "M01A",
+            "name": "ANTIINFLAMMATORY AND ANTIRHEUMATIC PRODUCTS, NON-STEROIDS"
+          },
+          {
+            "level": 4,
+            "code": "M01AH",
+            "name": "Coxibs"
+          }
+        ],
+        "substance": "celecoxib",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=M01AH01"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "WHO Collaborating Centre for Drug Statistics Methodology",
+    "used_for": {
+      "text": "Celecoxib is indicated Celecoxib is a nonsteroidal anti-inflammatory drug indicated for: Osteoarthritis (OA) Rheumatoid Arthritis (RA) Juvenile Rheumatoid Arthritis (JRA) in patients 2 years and older Ankylosing Spondylitis (AS) Acute Pain (AP) Primary Dysmenorrhea (PD) 1.1 Osteoarthritis (OA) For the management of the signs and symptoms of OA. 1.2 Rheumatoid Arthritis (RA) For the management of the signs and symptoms of RA. 1.3 Juvenile Rheumatoid Arthritis (JRA) For the management of the signs and symptoms of JRA in patients 2 years and older. 1.4 Ankylosing Spondylitis (AS) For the management of the signs and symptoms of AS. 1.5 Acute Pain For the management of acute pain in adults. 1.6 Primary Dysmenorrhea For the management of primary dysmenorrhea.",
+      "source": "FDA label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3a1eadd5-c0a7-473e-bde0-6b9450d11c95"
+    },
+    "mechanisms": [
+      {
+        "text": "Celecoxib has analgesic, anti-inflammatory, and antipyretic properties. The mechanism of action of celecoxib is believed to be due to inhibition of prostaglandin synthesis, primarily via inhibition of COX-2. Celecoxib is a potent inhibitor of prostaglandin synthesis in vitro.",
+        "source": "FDA label",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3a1eadd5-c0a7-473e-bde0-6b9450d11c95"
+      }
+    ],
+    "atc_url": "https://atcddd.fhi.no/atc_ddd_index/?code=L01XX33"
+  },
+  "pair": {
+    "a": "celecoxib",
+    "b": "miconazole",
+    "sentences": [
+      "miconazole is a moderate inhibitor of CYP2C9 and celecoxib is a sensitive substrate of CYP2C9, so celecoxib exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 4.0,
+    "category": "moderate increase"
+  }
+}
