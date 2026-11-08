@@ -41,6 +41,15 @@ def pick_pair(cards, day: date) -> tuple[str, str]:
     return cyp.daily_pair(day)
 
 
+def lead_with_interaction(cards, molecule_name: str | None) -> list:
+    """The interaction card that names the molecule of the day goes first, the rest keep their order."""
+    if not molecule_name:
+        return cards
+    key = molecule_name.lower()
+    lead = next((c for c in cards if c.topic == "Interaction" and key in (d.lower() for d in c.drugs)), None)
+    return cards if lead is None else [lead, *(c for c in cards if c is not lead)]
+
+
 def illustrative_ratio(findings) -> dict:
     """Takes the finding with the biggest effect, up or down, and returns its illustrative inputs."""
     best = {"fm": 0.0, "i_over_ki": 0.0, "induction_fold": 1.0, "ratio": 1.0}
@@ -222,6 +231,7 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
                 log.warning("Molecule section: %s", problem)
                 status["errors"][problem.split(" failed")[0]] = problem
             molecule.update(info)
+    cards = lead_with_interaction(cards, comp.name if comp else None)
 
     # 3. interaction of the day
     findings = cyp.check_pair(a, b)

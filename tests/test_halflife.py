@@ -2148,3 +2148,14 @@ def test_prepared_shapes_are_real_structures():
         shape = json.loads((folder / f"{cid}.json").read_text())
         assert shape["coords"] == "RDKit conformer" and shape["atoms"] and shape["bonds"]
         assert all(len(a) == 4 for a in shape["atoms"])
+
+
+def test_the_interaction_card_with_the_molecule_goes_first():
+    from halflife.pipeline import lead_with_interaction
+    news, other = _reason_card("a", ["x"], "clinic"), _reason_card("b", ["y"])
+    inter = _reason_card("c", ["Cenobamate", "midazolam"], "clinic")
+    news.topic, other.topic, inter.topic = "PK", None, "Interaction"
+    assert [c.url for c in lead_with_interaction([news, other, inter], "cenobamate")] == ["c", "a", "b"]
+    # another molecule, or no molecule: the order stays
+    assert [c.url for c in lead_with_interaction([news, other, inter], "ketoconazole")] == ["a", "b", "c"]
+    assert [c.url for c in lead_with_interaction([news, other, inter], None)] == ["a", "b", "c"]

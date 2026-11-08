@@ -45,13 +45,14 @@ The person building it (the repo owner) wants the **easiest version** first.
 * Tests guard the site: `tests.yml` on every push, and `pages.yml` runs it first and deploys exactly the commit that passed.
   `tests/conftest.py` blocks the internet and blanks the key for every test. Local hook: `git config core.hooksPath scripts/hooks`,
   it runs pytest and refuses a staged diff with the search key in it.
+* Today opens with a Dutch dedication line in the hero, the owner's own words, keep it as written.
 * Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages** (HTML, CSS,
   JavaScript with three.js), `web/index.html` at the main address, the portfolio page at `/about.html`, reading the
   JSON the pipeline writes. `scripts/build_site.py` checks `brief.json` against `data/brief.schema.json` first, a
   broken day keeps the previous brief and alerts me.
 * **Two lanes** (decided 30 October 2026): Clinic (interactions, PK, TDM, dosing) gives 2 cards, Discovery
   (new approvals, first in class or first in human, phase 3 results) gives 1. A lane short on items hands its
-  slots to the other. Every card has a `lane` field. Nothing is shown twice: `history.py` reads earlier briefs.
+  slots to the other. Every card has a `lane` field. An Interaction card that names the molecule of the day goes first (`pipeline.lead_with_interaction`). Nothing is shown twice: `history.py` reads earlier briefs.
   * Clinic sources: PubMed, bioRxiv, medRxiv, ClinicalTrials.gov, Lareb signals (RSS items with an ATC code,
     titles kept in Dutch). A Lareb signal not shown before always takes one of the two Clinic slots.
   * Discovery sources, in priority order: EMA (medicines JSON, positive opinions and EU authorisations, no
