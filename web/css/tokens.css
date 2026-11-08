@@ -8,11 +8,12 @@
   font-display: swap;
 }
 
-/* only for the dedication on Today */
+/* only for the dedication on Today, set like the dedication page of a book */
 @font-face {
-  font-family: "Great Vibes";
-  src: url("../fonts/great-vibes-latin-normal.woff2") format("woff2");
-  font-weight: 400;
+  font-family: "EB Garamond";
+  src: url("../fonts/eb-garamond-latin-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400 600;
   font-display: swap;
 }
 
@@ -36,7 +37,7 @@
 
   /* type */
   --font-display: "Space Grotesk", system-ui, sans-serif;
-  --font-script: "Great Vibes", cursive;
+  --font-dedication: "EB Garamond", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -78,7 +79,6 @@
   --text: #FFFFFF;
   --text-secondary: #A3B1CC;
   --accent: #8FD3FF;
-  --dedication: #FF8FB0;
   --card-bg: rgba(255, 255, 255, 0.05);
   --card-line: rgba(255, 255, 255, 0.09);
   --card-shadow: none;
@@ -127,7 +127,6 @@
   --text: #0B1F3A;
   --text-secondary: #4A5875;
   --accent: #2F55C8;
-  --dedication: #C2325E;
   --card-bg: #FFFFFF;
   --card-line: #E3E9F2;
   --card-shadow: 0 10px 30px rgba(11, 31, 58, 0.07);
