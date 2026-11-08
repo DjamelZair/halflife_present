@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+/* only for the dedication on Today */
+@font-face {
+  font-family: "Great Vibes";
+  src: url("../fonts/great-vibes-latin-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "Inter";
   src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2");
@@ -28,6 +36,7 @@
 
   /* type */
   --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-script: "Great Vibes", cursive;
   --font-body: "Inter", system-ui, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -69,6 +78,7 @@
   --text: #FFFFFF;
   --text-secondary: #A3B1CC;
   --accent: #8FD3FF;
+  --dedication: #FF8FB0;
   --card-bg: rgba(255, 255, 255, 0.05);
   --card-line: rgba(255, 255, 255, 0.09);
   --card-shadow: none;
@@ -117,6 +127,7 @@
   --text: #0B1F3A;
   --text-secondary: #4A5875;
   --accent: #2F55C8;
+  --dedication: #C2325E;
   --card-bg: #FFFFFF;
   --card-line: #E3E9F2;
   --card-shadow: 0 10px 30px rgba(11, 31, 58, 0.07);

@@ -15,12 +15,12 @@ const DOUBLE_GAP_FRACTION = 0.085;
 const ATOM_TOKENS = { H: "--atom-h", C: "--atom-c", O: "--atom-o", N: "--atom-n", S: "--atom-s", Cl: "--atom-cl", F: "--atom-f" };
 
 const FOV = 28;
-const CROP_RADIUS = 7; // angstrom. on Today a bigger molecule is cropped to this, never shrunk
+const CLOUD_RADIUS = 7; // angstrom, how far the atoms start out before they fly into place
 const BOKEH_COUNT = 7;
 const BLUR = 0.009;
 const FOCUS_BACK = 0.15; // the focus lies just behind the middle, the far side goes soft
 const MODES = {
-  hero: { fill: 0.4, widthFill: 0.56, lift: 0.1 },
+  hero: { fill: 0.28, widthFill: 0.42, lift: 0.13 }, // the space above the name, with room left and right
   full: { fill: 0.44, widthFill: 0.47, lift: 0 }, // the whole molecule, nothing cropped
 };
 const ZOOM_MIN = 0.6;
@@ -85,22 +85,6 @@ function faceTheCamera(atoms) {
   atoms.forEach((a) => a.real.applyMatrix4(turn));
 }
 
-function busiestRegion(atoms) {
-  let best = -1;
-  let centre = new THREE.Vector3();
-  for (const candidate of atoms) {
-    let score = 0;
-    for (const a of atoms) {
-      if (a.real.distanceTo(candidate.real) < CROP_RADIUS) score += a.element === "C" ? 1 : 2.5; // the chemistry is in the hetero atoms
-    }
-    if (score > best) {
-      best = score;
-      centre = candidate.real.clone();
-    }
-  }
-  return centre;
-}
-
 function prepare(raw, hydrogens) {
   const keep = new Map();
   raw.atoms.forEach((a, i) => { if (hydrogens || a[0] !== "H") keep.set(i, keep.size); });
@@ -114,14 +98,13 @@ function prepare(raw, hydrogens) {
   faceTheCamera(atoms);
 
   const radiusAll = Math.max(...atoms.map((a) => a.real.length())) + unit * 0.3;
-  const crop = radiusAll > CROP_RADIUS ? busiestRegion(atoms.filter((a) => a.element !== "H")) : new THREE.Vector3();
   const random = seededRandom(raw.name.length * 97 + 3);
   atoms.forEach((a) => {
     const direction = new THREE.Vector3(random() - 0.5, random() - 0.5, random() - 0.5).normalize();
-    a.cloud = direction.multiplyScalar(Math.min(radiusAll, CROP_RADIUS) * (1.4 + random() * 1.6));
+    a.cloud = direction.multiplyScalar(Math.min(radiusAll, CLOUD_RADIUS) * (1.4 + random() * 1.6));
     a.delay = random() * 0.35;
   });
-  return { atoms, bonds, unit, radiusAll, crop };
+  return { atoms, bonds, unit, radiusAll };
 }
 
 export class MoleculeScene {
@@ -297,9 +280,9 @@ export class MoleculeScene {
   applyMode() {
     const mol = this.mol;
     if (mol) {
-      const offset = this.mode === "hero" ? mol.crop : new THREE.Vector3();
-      mol.atoms.forEach((a) => { a.home = a.real.clone().sub(offset); });
-      mol.frameRadius = this.mode === "hero" ? Math.min(mol.radiusAll, CROP_RADIUS) : mol.radiusAll;
+      // the whole molecule on both screens, a phone is too narrow for a cropped one to make sense
+      mol.atoms.forEach((a) => { a.home = a.real.clone(); });
+      mol.frameRadius = mol.radiusAll;
     }
     this.canvas.style.touchAction = this.mode === "hero" ? "pan-y" : "none";
     this.resize();
@@ -577,8 +560,8 @@ export class MoleculeScene {
     this.composer.setSize(width, height);
 
     const mode = MODES[this.mode];
-    const radius = this.mol?.frameRadius ?? CROP_RADIUS;
-    const radiusAll = this.mol?.radiusAll ?? CROP_RADIUS;
+    const radius = this.mol?.frameRadius ?? CLOUD_RADIUS;
+    const radiusAll = this.mol?.radiusAll ?? CLOUD_RADIUS;
     // the same on-screen size for every molecule
     const fillPx = Math.min(width * mode.widthFill, height * mode.fill) * this.zoom;
     const tan = Math.tan(THREE.MathUtils.degToRad(FOV / 2));
@@ -650,7 +633,7 @@ export class MoleculeScene {
     this.depthPivot.rotation.copy(this.pivot.rotation);
     this.depthPivot.position.copy(this.pivot.position);
 
-    const size = mol?.frameRadius ?? CROP_RADIUS;
+    const size = mol?.frameRadius ?? CLOUD_RADIUS;
     this.camera.position.set(this.parallax.x * size * 0.16, -this.parallax.y * size * 0.1, this.camera.userData.distance ?? 40);
     this.camera.lookAt(0, 0, 0);
 

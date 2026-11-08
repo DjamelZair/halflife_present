@@ -14,6 +14,7 @@
 </script>
 <link rel="preload" href="fonts/space-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/great-vibes-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/lab-story.css">
@@ -35,9 +36,9 @@
 </header>
 
 <main id="view-today" data-view="today">
+  <p class="dedication column" lang="nl">Voor de liefste, beste en meesthardwerkende apotheker&#8209;toxicoloog</p>
   <section class="hero" aria-labelledby="molecule-name">
     <canvas id="scene" role="img" aria-label="3D molecule"></canvas>
-    <p class="dedication column" lang="nl">Voor de liefste, beste en meesthardwerkende apotheker-toxicoloog</p>
     <button class="pause" id="pause" type="button" hidden>
       <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>
       <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10-6.5Z"/></svg>
@@ -50,6 +51,14 @@
   </section>
 
   <div class="column today-body">
+    <section class="interaction reveal" id="interaction" aria-labelledby="pair-name" hidden>
+      <p class="eyebrow">Interaction of the day</p>
+      <h2 id="pair-name"></h2>
+      <ul class="chips" id="pair-chips"></ul>
+      <p class="interaction-source" id="pair-source"></p>
+      <a class="button" id="pair-link">Open in the lab</a>
+    </section>
+
     <section class="drug-info reveal" id="drug-info-today" aria-label="About this molecule"></section>
     <a class="text-link reveal" id="drug-info-more" href="#molecule" hidden>Full text and properties</a>
 
@@ -61,13 +70,6 @@
       <ol class="cards" id="cards"></ol>
     </section>
 
-    <section class="interaction reveal" id="interaction" aria-labelledby="pair-name" hidden>
-      <p class="eyebrow">Interaction of the day</p>
-      <h2 id="pair-name"></h2>
-      <ul class="chips" id="pair-chips"></ul>
-      <p class="interaction-source" id="pair-source"></p>
-      <a class="button" id="pair-link">Open in the lab</a>
-    </section>
 
     <p class="status reveal" id="status" role="status" hidden></p>
     <button class="button retry" id="retry" type="button" hidden>Try again</button>

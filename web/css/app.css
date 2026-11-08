@@ -165,18 +165,20 @@ a { color: inherit; }
 
 .hero-text a { pointer-events: auto; }
 
-/* the gift line, quiet, only on Today */
+/* the gift line, in its own space above the molecule so nothing turns over it */
 .dedication {
-  position: absolute;
-  z-index: 1;
-  top: calc(env(safe-area-inset-top) + 64px);
-  inset-inline: 0;
-  pointer-events: none;
-  color: var(--text-secondary);
-  font-family: var(--font-display);
-  font-size: var(--text-sm);
+  padding-top: calc(env(safe-area-inset-top) + 76px);
+  padding-bottom: var(--space-sm);
+  background: var(--hero);
+  color: var(--dedication);
+  font-family: var(--font-script);
+  font-size: clamp(2rem, 8.5vw, 2.75rem);
+  line-height: 1.15;
+  text-align: center;
   text-wrap: balance;
 }
+
+.dedication + .hero { padding-top: 0; }
 
 .eyebrow {
   color: var(--accent);
@@ -471,6 +473,8 @@ h2 {
   flex-direction: column;
   gap: var(--space-lg);
 }
+
+.interaction + .drug-info { margin-top: var(--space-xl); }
 
 .atc {
   display: flex;
