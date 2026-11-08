@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-09",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 39,
+      "clinic/bioRxiv": 4,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 15,
+      "discovery/ClinicalTrials.gov": 44
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 39,
+      "Preprints": 5,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 18,
+      "Phase 3 results": 44,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 6,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Primary Human Macrophages Exhibit Functional CYP3A4 Activity with Marked Expression-Function Discordance and Cocaine-Induced Catalytic Activation.",
+      "what": "CYP3A4 is a phase I drug-metabolizing enzyme responsible for transformation of ∼50% of clinically relevant drugs. While extensively characterized in hepatocytes, its role in immune cells remains poorly understood.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, bioRxiv : the preprint server for biology",
+      "url": "https://doi.org/10.64898/2026.10.21.760694",
+      "peer_reviewed": true,
+      "original_title": "Primary Human Macrophages Exhibit Functional CYP3A4 Activity with Marked Expression-Function Discordance and Cocaine-Induced Catalytic Activation.",
+      "drugs": [
+        "rifampicin"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Primary Human Macrophages Exhibit Functional CYP3A4 Activity with Marked Expression-Function Discordance"
+    },
+    {
+      "title": "Characterization of Cytochrome P450-Mediated Metabolism of Δ 8 -tetrahydrocannabinol in vitro.",
+      "what": "Δ 8 -tetrahydrocannabinol (Δ 8 -THC) is a pharmacologically active isomer of Δ 9 -THC, the main psychoactive component of cannabis. Δ 8 -THC use has increased rapidly, but the metabolism of Δ 8 -THC has been incompletely characterized.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, bioRxiv : the preprint server for biology",
+      "url": "https://doi.org/10.64898/2026.10.12.758575",
+      "peer_reviewed": true,
+      "original_title": "Characterization of Cytochrome P450-Mediated Metabolism of Δ 8 -tetrahydrocannabinol in vitro.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Characterization of Cytochrome P450-Mediated Metabolism of Δ 8 -tetrahydrocannabinol"
+    },
+    {
+      "title": "An International Prospective Open-label, Randomized, Phase III Study Comparing 177Lu-PSMA-617 in Combination With Standard of Care (SoC), Versus SoC Alone, in Adult Male Patients With Metastatic Hormone Sensitive Prostate Cancer (mHSPC)",
+      "what": "The purpose of this study is to evaluate the efficacy and safety of 177Lu-PSMA-617 in combination with Standard of Care (SOC), versus Standard of Care alone, in adult male patients with Metastatic hormone sensitive prostate cancer (mHSPC). In this study, the SoC is defined as a combination of Androgen Receptor Directed Therapy (ARDT) + Androgen Deprivation Therapy (ADT).",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT04720157?tab=results",
+      "peer_reviewed": true,
+      "original_title": "An International Prospective Open-label, Randomized, Phase III Study Comparing 177Lu-PSMA-617 in Combination With Standard of Care (SoC), Versus SoC Alone, in Adult Male Patients With Metastatic Hormone Sensitive Prostate Cancer (mHSPC)",
+      "drugs": [
+        "ardt"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "An International Prospective Open-label, Randomized, Phase III Study Comparing 177Lu-PSMA-617 in Combination With Standard of Care (SoC), Versus SoC Alone, in Adult Male"
+    }
+  ],
+  "molecule": {
+    "name": "brigatinib",
+    "smiles": "CN1CCN(CC1)C2CCN(CC2)C3=CC(=C(C=C3)NC4=NC=C(C(=N4)NC5=CC=CC=C5P(=O)(C)C)Cl)OC",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/68165256",
+    "Formula": "C29H39ClN7O2P",
+    "Molecular weight": 584.1,
+    "logP": 5.09,
+    "H bond donors": 2,
+    "H bond acceptors": 9,
+    "TPSA": 85.9,
+    "Rotatable bonds": 8,
+    "Rings": 5,
+    "Rule of five violations": 2,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: brigatinib and nefazodone",
+      "url": "#lab?a=brigatinib&b=nefazodone"
+    },
+    "atc": [
+      {
+        "code": "L01ED04",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "Antineoplastic agents"
+          },
+          {
+            "level": 3,
+            "code": "L01E",
+            "name": "Protein kinase inhibitors"
+          },
+          {
+            "level": 4,
+            "code": "L01ED",
+            "name": "Anaplastic lymphoma kinase (ALK) inhibitors"
+          }
+        ],
+        "substance": "brigatinib"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Brigatinib is a cancer medicine that is used to treat adults with a type of lung cancer called non-small cell lung cancer (NSCLC). It is used in patients who have not been treated before with a medicine of the ALK inhibitor class or who have been treated before with the ALK-inhibitor crizotinib.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/alunbrig"
+    },
+    "mechanisms": [
+      {
+        "text": "ALK tyrosine kinase receptor inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3545311"
+      },
+      {
+        "text": "Epidermal growth factor receptor erbB1 inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3545311"
+      }
+    ]
+  },
+  "pair": {
+    "a": "brigatinib",
+    "b": "nefazodone",
+    "sentences": [
+      "nefazodone is a strong inhibitor of CYP3A and brigatinib is a moderate sensitive substrate of CYP3A, so brigatinib exposure can be higher."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 3.19,
+    "category": "moderate increase"
+  }
+}
