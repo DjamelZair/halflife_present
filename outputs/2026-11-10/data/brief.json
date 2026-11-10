@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-10",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 25,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 10,
+      "discovery/ClinicalTrials.gov": 43
+    },
+    "errors": {
+      "Preprints": "503 Server Error: Service Unavailable for url: https://api.biorxiv.org/details/biorxiv/2026-11-08/2026-11-10/0?category=pharmacology_and_toxicology"
+    },
+    "sources": {
+      "PubMed": 25,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 11,
+      "Phase 3 results": 43,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 7,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 1,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "SCY-247, a second-generation triterpenoid antifungal, shows low risk for clinically meaningful interactions with CYP3A4 substrates: results from a phase 1 midazolam drug-drug interaction study.",
+      "what": "SCY-247, an oral and intravenous second-generation triterpenoid antifungal, is being developed for treatment and prevention of invasive fungal infections caused by Candida, Aspergillus, and Pneumocystis species. In vitro studies indicated that SCY-247 is metabolized by cytochrome P450 (CYP) 3A4 and 3A5 and that SCY-247 has a lowered potential for CYP450-mediated drug-drug interactions compared with azoles.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Antimicrobial agents and chemotherapy",
+      "url": "https://doi.org/10.1128/aac.00961-26",
+      "peer_reviewed": true,
+      "original_title": "SCY-247, a second-generation triterpenoid antifungal, shows low risk for clinically meaningful interactions with CYP3A4 substrates: results from a phase 1 midazolam drug-drug interaction study.",
+      "drugs": [
+        "isavuconazole",
+        "midazolam",
+        "posaconazole"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "SCY-247, a second-generation triterpenoid antifungal, shows low risk"
+    },
+    {
+      "title": "Assessing kidney function for drug dosing in critical illness.",
+      "what": "Kidney-function assessment supports drug dosing in critical illness but does not directly measure drug clearance. Reduced creatinine generation, fluid shifts and rapidly changing filtration can make creatinine-based estimates misleading, whereas genuinely augmented renal clearance can cause insufficient drug exposure.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, British journal of clinical pharmacology",
+      "url": "https://doi.org/10.1002/bcp.70911",
+      "peer_reviewed": true,
+      "original_title": "Assessing kidney function for drug dosing in critical illness.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "Assessing kidney function for drug dosing in critical illness"
+    },
+    {
+      "title": "A Study of Androgen Annihilation in High-Risk Biochemically Relapsed Prostate Cancer",
+      "what": "This is a randomized, open-label, three-arm, phase 3 study in men with biochemically recurrent prostate cancer and PSA doubling time ≤ 9 months at the time of study entry.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT03009981?tab=results",
+      "peer_reviewed": true,
+      "original_title": "A Study of Androgen Annihilation in High-Risk Biochemically Relapsed Prostate Cancer",
+      "drugs": [
+        "apalutamide",
+        "lhrh analogue",
+        "abiraterone acetate",
+        "prednisone"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Androgen Annihilation in High-Risk Biochemically Relapsed Prostate Cancer"
+    }
+  ],
+  "molecule": {
+    "name": "apalutamide",
+    "smiles": "CNC(=O)C1=C(C=C(C=C1)N2C(=S)N(C(=O)C23CCC3)C4=CC(=C(N=C4)C#N)C(F)(F)F)F",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/24872560",
+    "Formula": "C21H15F4N5O2S",
+    "Molecular weight": 477.4,
+    "logP": 3.53,
+    "H bond donors": 1,
+    "H bond acceptors": 5,
+    "TPSA": 89.3,
+    "Rotatable bonds": 3,
+    "Rings": 4,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "discovery",
+      "text": "From today's Discovery card",
+      "url": "https://clinicaltrials.gov/study/NCT03009981?tab=results"
+    },
+    "atc": [
+      {
+        "code": "L02BB05",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L02",
+            "name": "Endocrine therapy"
+          },
+          {
+            "level": 3,
+            "code": "L02B",
+            "name": "Hormone antagonists and related agents"
+          },
+          {
+            "level": 4,
+            "code": "L02BB",
+            "name": "Anti-androgens"
+          }
+        ],
+        "substance": "apalutamide"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Apalutamide is a cancer medicine used to treat men with cancer of the prostate (a gland of the male reproductive system).",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/erleada"
+    },
+    "mechanisms": [
+      {
+        "text": "Androgen Receptor antagonist",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3183409"
+      }
+    ]
+  },
+  "pair": {
+    "a": "isavuconazole",
+    "b": "midazolam",
+    "sentences": [
+      "isavuconazole is a moderate inhibitor of CYP3A and midazolam is a sensitive substrate of CYP3A, so midazolam exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 4.0,
+    "category": "moderate increase"
+  }
+}
