@@ -1,0 +1,167 @@
+{
+  "date": "2026-11-11",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 48,
+      "clinic/bioRxiv": 5,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 12,
+      "discovery/ClinicalTrials.gov": 47
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 48,
+      "Preprints": 7,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 14,
+      "Phase 3 results": 47,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 8,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Mechanistic insights into vincristine interactions with azoles and dasatinib: Implications for neurotoxicity in paediatric patients using physiologically based pharmacokinetic modelling.",
+      "what": "This study aimed to investigate the mechanisms and pharmacokinetic consequences of vincristine (VCR) drug-drug interactions (DDIs) with azole antifungals and dasatinib (DAS). In vitro enzyme and transporter assays were conducted to characterize VCR metabolism and inhibition by posaconazole (POS), voriconazole (VRZ), fluconazole (FLZ) and DAS.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, British journal of clinical pharmacology",
+      "url": "https://doi.org/10.1002/bcp.70915",
+      "peer_reviewed": true,
+      "original_title": "Mechanistic insights into vincristine interactions with azoles and dasatinib: Implications for neurotoxicity in paediatric patients using physiologically based pharmacokinetic modelling.",
+      "drugs": [
+        "dasatinib",
+        "fluconazole",
+        "posaconazole"
+      ],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Mechanistic insights into vincristine interactions with azoles and dasatinib: Implications for neurotoxicity in paediatric patients"
+    },
+    {
+      "title": "Population pharmacokinetics and model-informed precision dosing of busulfan in Chinese pediatric allogeneic hematopoietic stem cell transplantation: a prospective real-world cohort study.",
+      "what": "Busulfan is a cornerstone of conditioning regimens for pediatric allogeneic hematopoietic stem cell transplantation (HSCT), yet its narrow therapeutic index and high pharmacokinetic variability necessitate individualized dosing. This study aimed to develop and evaluate a population pharmacokinetic (PopPK) model for busulfan in Chinese pediatric allogeneic HSCT recipients, characterize the exposure-response relationship, and establish a model-informed precision dosing (MIPD) strategy for clinical implementation.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Frontiers in pharmacology",
+      "url": "https://doi.org/10.3389/fphar.2026.1974352",
+      "peer_reviewed": true,
+      "original_title": "Population pharmacokinetics and model-informed precision dosing of busulfan in Chinese pediatric allogeneic hematopoietic stem cell transplantation: a prospective real-world cohort study.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "Population pharmacokinetics and model-informed precision dosing of busulfan in Chinese pediatric"
+    },
+    {
+      "title": "Study to Compare Bictegravir/Lenacapavir Versus Current Therapy in People With HIV-1 Who Are Successfully Treated With a Complicated Regimen (ARTISTRY-1)",
+      "what": "The goal of this clinical study is to learn more about the effects of switching to the study drugs, bictegravir (BIC) plus lenacapavir (LEN), versus current therapy (Phase 2) and BIC/LEN fixed-dose combination (FDC) versus current therapy (Phase 3) in people living with HIV (PWH).",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT05502341?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Study to Compare Bictegravir/Lenacapavir Versus Current Therapy in People With HIV-1 Who Are Successfully Treated With a Complicated Regimen (ARTISTRY-1)",
+      "drugs": [
+        "bictegravir",
+        "lenacapavir"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Study to Compare Bictegravir/Lenacapavir Versus Current Therapy in People"
+    }
+  ],
+  "molecule": {
+    "name": "lenacapavir",
+    "smiles": "CC(C)(C#CC1=NC(=C(C=C1)C2=C3C(=C(C=C2)Cl)C(=NN3CC(F)(F)F)NS(=O)(=O)C)[C@H](CC4=CC(=CC(=C4)F)F)NC(=O)CN5C6=C([C@H]7C[C@H]7C6(F)F)C(=N5)C(F)(F)F)S(=O)(=O)C",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/133082658",
+    "Formula": "C39H32ClF10N7O5S2",
+    "Molecular weight": 968.3,
+    "logP": 7.66,
+    "H bond donors": 2,
+    "H bond acceptors": 8,
+    "TPSA": 157.9,
+    "Rotatable bonds": 11,
+    "Rings": 7,
+    "Rule of five violations": 2,
+    "reason": {
+      "kind": "discovery",
+      "text": "From today's Discovery card",
+      "url": "https://clinicaltrials.gov/study/NCT05502341?tab=results"
+    },
+    "atc": [
+      {
+        "code": "J05AX31",
+        "levels": [
+          {
+            "level": 1,
+            "code": "J",
+            "name": "Antiinfectives for systemic use"
+          },
+          {
+            "level": 2,
+            "code": "J05",
+            "name": "Antivirals for systemic use"
+          },
+          {
+            "level": 3,
+            "code": "J05A",
+            "name": "Direct acting antivirals"
+          },
+          {
+            "level": 4,
+            "code": "J05AX",
+            "name": "Other antivirals"
+          }
+        ],
+        "substance": "lenacapavir"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Lenacapavir is used, together with other medicines, to treat adults infected with human immunodeficiency virus type 1 (HIV-1), a virus that causes acquired immune deficiency syndrome (AIDS). Lenacapavir is given when the virus is resistant to other treatments.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/sunlenca"
+    },
+    "mechanisms": [
+      {
+        "text": "Structural capsid protein inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4594438"
+      }
+    ]
+  },
+  "pair": {
+    "a": "dasatinib",
+    "b": "posaconazole",
+    "sentences": [
+      "posaconazole is a strong inhibitor of CYP3A and dasatinib is a sensitive substrate of CYP3A, so dasatinib exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 8.5,
+    "category": "strong increase"
+  }
+}

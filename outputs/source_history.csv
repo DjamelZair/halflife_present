@@ -62,3 +62,12 @@ date,source,items,failed
 2026-11-10,Preprints,0,True
 2026-11-10,PubMed,25,False
 2026-11-10,PubMed discovery,11,False
+2026-11-11,ClinicalTrials.gov,20,False
+2026-11-11,EMA,5,False
+2026-11-11,EUDA,0,False
+2026-11-11,FDA,2,False
+2026-11-11,Lareb,1,False
+2026-11-11,Phase 3 results,47,False
+2026-11-11,Preprints,7,False
+2026-11-11,PubMed,48,False
+2026-11-11,PubMed discovery,14,False
