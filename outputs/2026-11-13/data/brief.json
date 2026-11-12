@@ -1,0 +1,162 @@
+{
+  "date": "2026-11-13",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 54,
+      "clinic/bioRxiv": 4,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 10,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 54,
+      "Preprints": 6,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 11,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 10,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Physiologically Based Pharmacokinetic Modeling of Fruquintinib and Its Metabolite to Assess Drug-Drug Interaction Liability as an Object or Precipitant.",
+      "what": "Fruquintinib is approved, including in the United States and Europe, for previously treated metastatic colorectal cancer, regardless of biomarker status. Using in vitro and clinical data, physiologically based pharmacokinetic (PBPK) models were developed for fruquintinib and M11, a major metabolite of fruquintinib.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, CPT: pharmacometrics & systems pharmacology",
+      "url": "https://doi.org/10.1002/psp4.70356",
+      "peer_reviewed": true,
+      "original_title": "Physiologically Based Pharmacokinetic Modeling of Fruquintinib and Its Metabolite to Assess Drug-Drug Interaction Liability as an Object or Precipitant.",
+      "drugs": [
+        "rifampicin"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Physiologically Based Pharmacokinetic Modeling of Fruquintinib and Its Metabolite"
+    },
+    {
+      "title": "Pharmacokinetic determinants, clinical efficacy, and safety of teicoplanin in adults: a correlative analysis of plasma concentration and treatment outcomes.",
+      "what": "The aim of this study was to develop and validate a high-performance liquid chromatography (HPLC) method for the determination of plasma teicoplanin concentrations, identify factors influencing teicoplanin exposure in adult patients, and assess its clinical efficacy and safety. A cohort of 125 adult patients who received teicoplanin therapy at the Second Hospital of Hebei Medical University between June 2022 and March 2023 were retrospectively enrolled.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Frontiers in pharmacology",
+      "url": "https://doi.org/10.3389/fphar.2026.1838465",
+      "peer_reviewed": true,
+      "original_title": "Pharmacokinetic determinants, clinical efficacy, and safety of teicoplanin in adults: a correlative analysis of plasma concentration and treatment outcomes.",
+      "drugs": [
+        "quetiapine"
+      ],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Pharmacokinetic determinants, clinical efficacy, and safety of teicoplanin in adults"
+    },
+    {
+      "title": "Study of Carbetocin Nasal Spray for the Treatment of Hyperphagia in Prader-Willi Syndrome",
+      "what": "12-week, randomized, double-blind, placebo-controlled, parallel-group study of carbetocin nasal spray for the treatment of hyperphagia in Prader-Willi syndrome (PWS)",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT06173531?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Study of Carbetocin Nasal Spray for the Treatment of Hyperphagia in Prader-Willi Syndrome",
+      "drugs": [
+        "carbetocin"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Carbetocin Nasal Spray for the Treatment of Hyperphagia"
+    }
+  ],
+  "molecule": {
+    "name": "carbetocin",
+    "smiles": "CC[C@H](C)[C@H]1C(=O)N[C@H](C(=O)N[C@H](C(=O)N[C@@H](CSCCCC(=O)N[C@H](C(=O)N1)CC2=CC=C(C=C2)OC)C(=O)N3CCC[C@H]3C(=O)N[C@@H](CC(C)C)C(=O)NCC(=O)N)CC(=O)N)CCC(=O)N",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/16681432",
+    "Formula": "C45H69N11O12S",
+    "Molecular weight": 988.2,
+    "logP": -2.5,
+    "H bond donors": 10,
+    "H bond acceptors": 13,
+    "TPSA": 362.5,
+    "Rotatable bonds": 18,
+    "Rings": 3,
+    "Rule of five violations": 3,
+    "reason": {
+      "kind": "discovery",
+      "text": "From today's Discovery card",
+      "url": "https://clinicaltrials.gov/study/NCT06173531?tab=results"
+    },
+    "atc": [
+      {
+        "code": "H01BB03",
+        "levels": [
+          {
+            "level": 1,
+            "code": "H",
+            "name": "Systemic hormonal preparations, excl. sex hormones and insulins"
+          },
+          {
+            "level": 2,
+            "code": "H01",
+            "name": "Pituitary and hypothalamic hormones and analogues"
+          },
+          {
+            "level": 3,
+            "code": "H01B",
+            "name": "Posterior pituitary lobe hormones"
+          },
+          {
+            "level": 4,
+            "code": "H01BB",
+            "name": "Oxytocin and analogues"
+          }
+        ],
+        "substance": "carbetocin"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": null,
+    "mechanisms": [
+      {
+        "text": "Oxytocin receptor agonist",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3301668"
+      }
+    ]
+  },
+  "pair": {
+    "a": "loperamide",
+    "b": "amiodarone",
+    "sentences": [
+      "amiodarone is an inhibitor of P-gp and loperamide is a substrate of P-gp, so loperamide exposure can be higher."
+    ],
+    "fm": null,
+    "i_over_ki": null,
+    "induction_fold": null,
+    "illustrative_auc_ratio": null,
+    "category": null
+  }
+}
