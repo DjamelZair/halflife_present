@@ -232,5 +232,37 @@
   "bictegravir": {
     "checked": "2026-11-10",
     "entries": []
+  },
+  "finerenone": {
+    "checked": "2026-11-12",
+    "entries": [
+      {
+        "code": "C03DA05",
+        "levels": [
+          {
+            "level": 1,
+            "code": "C",
+            "name": "CARDIOVASCULAR SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "C03",
+            "name": "DIURETICS"
+          },
+          {
+            "level": 3,
+            "code": "C03D",
+            "name": "ALDOSTERONE ANTAGONISTS AND OTHER POTASSIUM-SPARING AGENTS"
+          },
+          {
+            "level": 4,
+            "code": "C03DA",
+            "name": "Aldosterone antagonists"
+          }
+        ],
+        "substance": "finerenone",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=C03DA05"
+      }
+    ]
   }
 }

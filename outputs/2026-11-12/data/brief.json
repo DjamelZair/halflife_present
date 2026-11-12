@@ -1,0 +1,166 @@
+{
+  "date": "2026-11-12",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 51,
+      "clinic/bioRxiv": 4,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 5,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 7,
+      "discovery/ClinicalTrials.gov": 47
+    },
+    "errors": {
+      "ChEMBL": "ChEMBL failed: 500 Server Error: Internal Server Error for url: https://www.ebi.ac.uk/chembl/api/data/molecule.json?pref_name__iexact=FINERENONE&limit=1"
+    },
+    "sources": {
+      "PubMed": 51,
+      "Preprints": 5,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 5,
+      "FDA": 2,
+      "PubMed discovery": 8,
+      "Phase 3 results": 47,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 9,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Factors Associated With Dose-Corrected Active Moiety Concentrations of Venlafaxine: A Retrospective Therapeutic Drug Monitoring Study.",
+      "what": "Interindividual variability in venlafaxine (VEN) exposure complicates the interpretation of therapeutic drug monitoring results. This study investigated factors associated with dose-corrected active moiety concentrations of VEN.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Therapeutic drug monitoring",
+      "url": "https://doi.org/10.1097/FTD.0000000000001552",
+      "peer_reviewed": true,
+      "original_title": "Factors Associated With Dose-Corrected Active Moiety Concentrations of Venlafaxine: A Retrospective Therapeutic Drug Monitoring Study.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "TDM",
+      "headline": "Factors Associated With Dose-Corrected Active Moiety Concentrations of Venlafaxine"
+    },
+    {
+      "title": "Continuous intravenous infusion of vancomycin in preterm neonates: case series from a neonatal intensive care unit.",
+      "what": "There is no standard dosing guideline available for continuous intravenous infusion (cIVI) vancomycin in the neonatal population. Vancomycin administered as cIVI is the current practice in our neonatal intensive care unit.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, BMC pediatrics",
+      "url": "https://doi.org/10.1186/s12887-026-07181-y",
+      "peer_reviewed": true,
+      "original_title": "Continuous intravenous infusion of vancomycin in preterm neonates: case series from a neonatal intensive care unit.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Continuous intravenous infusion of vancomycin in preterm neonates: case series from a neonatal"
+    },
+    {
+      "title": "A Study to Learn How Well the Study Treatment Finerenone Works and How Safe it is in People With Long-term Decrease in the Kidneys' Ability to Work Properly (Chronic Kidney Disease) Together With Type 1 Diabetes",
+      "what": "Researchers are looking for a better way to treat people with chronic kidney disease (CKD), a progressive decrease in the kidneys' ability to work properly, and type 1 diabetes. In people with type 1 diabetes, the body does not make enough of a hormone called insulin, resulting in high blood sugar levels that can cause damage to the kidneys.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT05901831?tab=results",
+      "peer_reviewed": true,
+      "original_title": "A Study to Learn How Well the Study Treatment Finerenone Works and How Safe it is in People With Long-term Decrease in the Kidneys' Ability to Work Properly (Chronic Kidney Disease) Together With Type 1 Diabetes",
+      "drugs": [
+        "finerenone"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "A Study to Learn How Well the Study Treatment Finerenone Works and How Safe it is in People With Long-term Decrease in the Kidneys' Ability to Work Properly (Chronic Kidney Disease"
+    }
+  ],
+  "molecule": {
+    "name": "finerenone",
+    "smiles": "CCOC1=NC=C(C2=C1[C@@H](C(=C(N2)C)C(=O)N)C3=C(C=C(C=C3)C#N)OC)C",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/60150535",
+    "Formula": "C21H22N4O3",
+    "Molecular weight": 378.4,
+    "logP": 2.99,
+    "H bond donors": 2,
+    "H bond acceptors": 6,
+    "TPSA": 110.3,
+    "Rotatable bonds": 5,
+    "Rings": 3,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "discovery",
+      "text": "From today's Discovery card",
+      "url": "https://clinicaltrials.gov/study/NCT05901831?tab=results"
+    },
+    "atc": [
+      {
+        "code": "C03DA05",
+        "levels": [
+          {
+            "level": 1,
+            "code": "C",
+            "name": "CARDIOVASCULAR SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "C03",
+            "name": "DIURETICS"
+          },
+          {
+            "level": 3,
+            "code": "C03D",
+            "name": "ALDOSTERONE ANTAGONISTS AND OTHER POTASSIUM-SPARING AGENTS"
+          },
+          {
+            "level": 4,
+            "code": "C03DA",
+            "name": "Aldosterone antagonists"
+          }
+        ],
+        "substance": "finerenone",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=C03DA05"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "WHO Collaborating Centre for Drug Statistics Methodology",
+    "used_for": {
+      "text": "Finerenone is a medicine used to treat chronic (long-term) kidney disease in adults with type 2 diabetes. It is used for patients with kidney damage who pass albumin (a type of protein) in their urine.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/kerendia"
+    },
+    "mechanisms": [
+      {
+        "text": "Finerenone is a nonsteroidal, selective antagonist of the mineralocorticoid receptor (MR), which is activated by aldosterone and cortisol and regulates gene transcription. Finerenone blocks MR mediated sodium reabsorption and MR overactivation in both epithelial (e.g., kidney) and nonepithelial (e.g., heart, and blood vessels) tissues. MR overactivation is thought to contribute to fibrosis and inflammation.",
+        "source": "FDA label",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fc726765-5d5a-4d6e-b037-b847bda9fb7c"
+      }
+    ],
+    "atc_url": "https://atcddd.fhi.no/atc_ddd_index/?code=C03DA05"
+  },
+  "pair": {
+    "a": "metformin",
+    "b": "trimethoprim",
+    "sentences": [
+      "trimethoprim is an inhibitor of MATE1 and MATE2-K and metformin is a substrate of them, so metformin exposure can be higher."
+    ],
+    "fm": null,
+    "i_over_ki": null,
+    "induction_fold": null,
+    "illustrative_auc_ratio": null,
+    "category": null
+  }
+}
