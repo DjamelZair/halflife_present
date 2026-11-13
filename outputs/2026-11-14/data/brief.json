@@ -1,0 +1,162 @@
+{
+  "date": "2026-11-14",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 55,
+      "clinic/bioRxiv": 6,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "discovery/EMA": 8,
+      "discovery/PubMed": 14,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 55,
+      "Preprints": 7,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 0,
+      "EMA": 8,
+      "FDA": 0,
+      "PubMed discovery": 14,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 11,
+      "FDA": 1,
+      "Lareb": 1,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Pharmacokinetics of Clinically Applied Boron-Containing Compounds.",
+      "what": "Pharmacology of boron-containing compounds suggests diverse novel advancements within the domain of medical chemistry. In the context of cancer, infectious, dermatological, and inflammatory disorders, boron atoms have distinctive electronic characteristics and the potential for reversible covalent bonding.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Handbook of experimental pharmacology",
+      "url": "https://doi.org/10.1007/164_2026_861",
+      "peer_reviewed": true,
+      "original_title": "Pharmacokinetics of Clinically Applied Boron-Containing Compounds.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Pharmacokinetics of Clinically Applied Boron-Containing Compounds"
+    },
+    {
+      "title": "Prediction of Drug Transporter-Mediated Disposition, Tissue Concentration, and Drug-Drug Interaction.",
+      "what": "Drug transporters play a crucial role in drug elimination and tissue distribution. This chapter focuses particularly on the liver, which expresses clinically important transporters, summarizing the latest findings on appropriate experimental tools, methodologies, and strategies for quantitatively understanding/predicting transporter-mediated drug distribution and elimination.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Handbook of experimental pharmacology",
+      "url": "https://doi.org/10.1007/164_2026_857",
+      "peer_reviewed": true,
+      "original_title": "Prediction of Drug Transporter-Mediated Disposition, Tissue Concentration, and Drug-Drug Interaction.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Prediction of Drug Transporter-Mediated Disposition, Tissue Concentration, and Drug-Drug Interaction"
+    },
+    {
+      "title": "Baxdrostat recommended by EMA for hypertension in adults",
+      "what": "Treatment of hypertension in adults.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/baxfendy",
+      "peer_reviewed": true,
+      "original_title": "Baxdrostat recommended by EMA for hypertension in adults",
+      "drugs": [
+        "baxdrostat"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Baxdrostat recommended by EMA for hypertension in adults"
+    }
+  ],
+  "molecule": {
+    "name": "baxdrostat",
+    "smiles": "CCC(=O)N[C@@H]1CCCC2=C1C=NC=C2C3=CC4=C(C=C3)N(C(=O)CC4)C",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/71535962",
+    "Formula": "C22H25N3O2",
+    "Molecular weight": 363.5,
+    "logP": 3.56,
+    "H bond donors": 1,
+    "H bond acceptors": 3,
+    "TPSA": 62.3,
+    "Rotatable bonds": 3,
+    "Rings": 4,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "ema_opinion",
+      "text": "Recommended by EMA on 12 November 2026",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/baxfendy"
+    },
+    "atc": [
+      {
+        "code": "C02KN02",
+        "levels": [
+          {
+            "level": 1,
+            "code": "C",
+            "name": "CARDIOVASCULAR SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "C02",
+            "name": "ANTIHYPERTENSIVES"
+          },
+          {
+            "level": 3,
+            "code": "C02K",
+            "name": "OTHER ANTIHYPERTENSIVES"
+          },
+          {
+            "level": 4,
+            "code": "C02KN",
+            "name": "Other antihypertensives"
+          }
+        ],
+        "substance": "baxdrostat",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=C02KN02"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "WHO Collaborating Centre for Drug Statistics Methodology",
+    "used_for": {
+      "text": "Treatment of hypertension in adults.",
+      "source": "EMA indication",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/baxfendy"
+    },
+    "mechanisms": [
+      {
+        "text": "Baxdrostat is an inhibitor of human aldosterone synthase. Aldosterone contributes to hypertension by promoting the retention of sodium and water by the kidneys, which increases blood volume and, consequently, raises blood pressure. Aldosterone can cause vascular dysfunction, inflammation, and fibrosis.",
+        "source": "FDA label",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1fc1ee7-facc-4099-b3db-a4c1daeaa4be"
+      }
+    ],
+    "atc_url": "https://atcddd.fhi.no/atc_ddd_index/?code=C02KN02"
+  },
+  "pair": {
+    "a": "sevabertinib",
+    "b": "erythromycin",
+    "sentences": [
+      "erythromycin is a moderate inhibitor of CYP3A and sevabertinib is a moderate sensitive substrate of CYP3A, so sevabertinib exposure can be higher."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 2.4,
+    "category": "moderate increase"
+  }
+}

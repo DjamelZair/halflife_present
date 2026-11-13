@@ -264,5 +264,37 @@
         "url": "https://atcddd.fhi.no/atc_ddd_index/?code=C03DA05"
       }
     ]
+  },
+  "baxdrostat": {
+    "checked": "2026-11-13",
+    "entries": [
+      {
+        "code": "C02KN02",
+        "levels": [
+          {
+            "level": 1,
+            "code": "C",
+            "name": "CARDIOVASCULAR SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "C02",
+            "name": "ANTIHYPERTENSIVES"
+          },
+          {
+            "level": 3,
+            "code": "C02K",
+            "name": "OTHER ANTIHYPERTENSIVES"
+          },
+          {
+            "level": 4,
+            "code": "C02KN",
+            "name": "Other antihypertensives"
+          }
+        ],
+        "substance": "baxdrostat",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=C02KN02"
+      }
+    ]
   }
 }
