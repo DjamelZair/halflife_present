@@ -1,0 +1,170 @@
+{
+  "date": "2026-11-15",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 45,
+      "clinic/bioRxiv": 6,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "discovery/EMA": 8,
+      "discovery/PubMed": 12,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 45,
+      "Preprints": 7,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 0,
+      "EMA": 8,
+      "FDA": 0,
+      "PubMed discovery": 12,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 12,
+      "FDA": 2,
+      "Lareb": 2,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Antimicrobial stewardship in critical care: Applying PK/PD and optimised antimicrobial dosing to improve care.",
+      "what": "Life-threatening infections are common in critically ill patients and remain a major cause of morbidity and mortality in the intensive care unit (ICU). Antimicrobial stewardship (AMS) aims to optimise antimicrobial use by balancing effective treatment with minimising toxicity, resistance and unnecessary exposure.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Journal of critical care",
+      "url": "https://doi.org/10.1016/j.jcrc.2026.155817",
+      "peer_reviewed": true,
+      "original_title": "Antimicrobial stewardship in critical care: Applying PK/PD and optimised antimicrobial dosing to improve care.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "Antimicrobial stewardship in critical care"
+    },
+    {
+      "title": "Personalized Geriatric Pharmacotherapy: Pharmacogenomics, Polypharmacy, and Age-Related Pharmacokinetic and Pharmacodynamic Changes.",
+      "what": "Aging induces profound physiological changes that alter drug disposition and response, narrowing therapeutic windows and increasing susceptibility to adverse drug reactions (ADRs). This review synthesizes current evidence on age-related pharmacokinetic and pharmacodynamic changes, with a focus on pharmacogenomic determinants of drug response in older adults.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, International journal of molecular sciences",
+      "url": "https://doi.org/10.3390/ijms27219948",
+      "peer_reviewed": true,
+      "original_title": "Personalized Geriatric Pharmacotherapy: Pharmacogenomics, Polypharmacy, and Age-Related Pharmacokinetic and Pharmacodynamic Changes.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Pharmacogenomics",
+      "headline": "Personalized Geriatric"
+    },
+    {
+      "title": "Sintilimab recommended by EMA for non-squamous non-small cell lung cancer in adults",
+      "what": "Treatment of non-squamous non-small cell lung cancer in adults.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/zybrivo",
+      "peer_reviewed": true,
+      "original_title": "Sintilimab recommended by EMA for non-squamous non-small cell lung cancer in adults",
+      "drugs": [
+        "sintilimab"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Sintilimab recommended by EMA for non-squamous non-small cell lung cancer in adults"
+    }
+  ],
+  "molecule": {
+    "name": "entrectinib",
+    "smiles": "CN1CCN(CC1)C2=CC(=C(C=C2)C(=O)NC3=NNC4=C3C=C(C=C4)CC5=CC(=CC(=C5)F)F)NC6CCOCC6",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/25141092",
+    "Formula": "C31H34F2N6O2",
+    "Molecular weight": 560.6,
+    "logP": 5.03,
+    "H bond donors": 3,
+    "H bond acceptors": 6,
+    "TPSA": 85.5,
+    "Rotatable bonds": 7,
+    "Rings": 6,
+    "Rule of five violations": 2,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: entrectinib and etravirine",
+      "url": "#lab?a=entrectinib&b=etravirine"
+    },
+    "atc": [
+      {
+        "code": "L01EX14",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "Antineoplastic agents"
+          },
+          {
+            "level": 3,
+            "code": "L01E",
+            "name": "Protein kinase inhibitors"
+          },
+          {
+            "level": 4,
+            "code": "L01EX",
+            "name": "Other protein kinase inhibitors"
+          }
+        ],
+        "substance": "entrectinib"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Entrectinib is a cancer medicine. It can be used for treating patients from 1 month of age with solid tumours (cancer growths) that have a genetic abnormality called NTRK gene fusion. Entrectinib is for use in patients with tumours that have spread nearby or to other parts of the body (metastatic cancer) or when removing the tumour by surgery could cause severe harm. It should be used only if the patient has not been treated previously with a medicine that works in the same way as entrectinib and other treatments are not suitable.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rozlytrek"
+    },
+    "mechanisms": [
+      {
+        "text": "Neurotrophic tyrosine kinase receptor inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL1983268"
+      },
+      {
+        "text": "Proto-oncogene tyrosine-protein kinase ROS inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL1983268"
+      },
+      {
+        "text": "ALK tyrosine kinase receptor inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL1983268"
+      }
+    ]
+  },
+  "pair": {
+    "a": "entrectinib",
+    "b": "etravirine",
+    "sentences": [
+      "etravirine is a moderate inducer of CYP3A and entrectinib is a sensitive substrate of CYP3A, so entrectinib exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.36,
+    "category": "moderate decrease"
+  }
+}
