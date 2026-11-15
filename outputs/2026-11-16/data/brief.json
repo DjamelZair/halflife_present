@@ -1,0 +1,167 @@
+{
+  "date": "2026-11-16",
+  "mode": "fallback",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 39,
+      "clinic/bioRxiv": 4,
+      "clinic/ClinicalTrials.gov": 20,
+      "discovery/FDA": 2,
+      "discovery/PubMed": 13,
+      "discovery/ClinicalTrials.gov": 44
+    },
+    "errors": {
+      "EMA": "429 Client Error: Too Many Requests for url: https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json",
+      "EMA medicines": "EMA medicines failed: 429 Client Error: Too Many Requests for url: https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json"
+    },
+    "sources": {
+      "PubMed": 39,
+      "Preprints": 4,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 0,
+      "FDA": 2,
+      "PubMed discovery": 13,
+      "Phase 3 results": 44,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 1,
+      "EUDA": 13,
+      "FDA": 0,
+      "Lareb": 3,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Model-Informed Evaluation of Drug-Drug Interaction Recommendations for Amlodipine and Nirmatrelvir-Ritonavir: A Hypothesis-Generating Analysis.",
+      "what": "While nirmatrelvir-ritonavir effectively prevents severe COVID-19, its ritonavir component causes significant drug-drug interactions (DDIs). Current guidelines suggest mitigating this interaction by halving the amlodipine dose or moving to every-other-day (EOD) dosing, then resuming the standard regimen 3-5 days post-antiviral treatment.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Clinical pharmacology and therapeutics",
+      "url": "https://doi.org/10.1002/cpt.70572",
+      "peer_reviewed": true,
+      "original_title": "Model-Informed Evaluation of Drug-Drug Interaction Recommendations for Amlodipine and Nirmatrelvir-Ritonavir: A Hypothesis-Generating Analysis.",
+      "drugs": [
+        "ritonavir"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Drug-Drug Interaction Recommendations for Amlodipine and Nirmatrelvir-Ritonavir"
+    },
+    {
+      "title": "Drug-Drug Interaction Assessment of WXFL10203614 With Rifampicin, Itraconazole and Metformin: A Three-Cohort Phase I Study.",
+      "what": "To evaluate the effects of rifampicin and itraconazole on the pharmacokinetics (PK) of the Janus kinase 1 (JAK1) inhibitor WXFL10203614 and the effects of steady-state WXFL10203614 on metformin PK and safety. In this single-center, open-label, fixed-sequence, self-controlled Phase I study, 54 healthy participants were enrolled into three cohorts.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "PubMed, Clinical pharmacology in drug development",
+      "url": "https://doi.org/10.1002/cpdd.70119",
+      "peer_reviewed": true,
+      "original_title": "Drug-Drug Interaction Assessment of WXFL10203614 With Rifampicin, Itraconazole and Metformin: A Three-Cohort Phase I Study.",
+      "drugs": [
+        "itraconazole",
+        "metformin",
+        "rifampicin"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "WXFL10203614 With Rifampicin, Itraconazole and Metformin"
+    },
+    {
+      "title": "A Study of Rusfertide in Adults With Polycythemia Vera (PV)",
+      "what": "Polycythemia vera (PV) is a long-term condition in which the bone marrow makes too many red blood cells (RBCs). Bone marrow is the soft tissue inside the large bones where blood cells are made.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT05210790?tab=results",
+      "peer_reviewed": true,
+      "original_title": "A Study of Rusfertide in Adults With Polycythemia Vera (PV)",
+      "drugs": [
+        "rusfertide"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "A Study of Rusfertide in Adults With Polycythemia Vera"
+    }
+  ],
+  "molecule": {
+    "name": "midazolam",
+    "smiles": "CC1=NC=C2N1C3=C(C=C(C=C3)Cl)C(=NC2)C4=CC=CC=C4F",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/4192",
+    "Formula": "C18H13ClFN3",
+    "Molecular weight": 325.8,
+    "logP": 4.32,
+    "H bond donors": 0,
+    "H bond acceptors": 2,
+    "TPSA": 30.2,
+    "Rotatable bonds": 1,
+    "Rings": 4,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: midazolam and nefazodone",
+      "url": "#lab?a=midazolam&b=nefazodone"
+    },
+    "atc": [
+      {
+        "code": "N05CD08",
+        "levels": [
+          {
+            "level": 1,
+            "code": "N",
+            "name": "Nervous system"
+          },
+          {
+            "level": 2,
+            "code": "N05",
+            "name": "Psycholeptics"
+          },
+          {
+            "level": 3,
+            "code": "N05C",
+            "name": "Hypnotics and sedatives"
+          },
+          {
+            "level": 4,
+            "code": "N05CD",
+            "name": "Benzodiazepine derivatives"
+          }
+        ],
+        "substance": "midazolam"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Midazolam Injection is indicated: intramuscularly or intravenously for preoperative sedation/anxiolysis/amnesia; intravenously as an agent for sedation/anxiolysis/amnesia prior to or during diagnostic, therapeutic or endoscopic procedures, such as bronchoscopy, gastroscopy, cystoscopy, coronary angiography, cardiac catheterization, oncology procedures, radiologic procedures, suture of lacerations and other procedures either alone or in combination with other CNS depressants; intravenously for induction of general anesthesia, before administration of other anesthetic agents. With the sue of narcotic premedications, induction of anesthesia can be attained within a relatively narrow dose range and in a short period of time. Intravenous midazolam can also be used as a component of intravenous supplementation of nitrous oxide and oxygen (balanced anesthesia): continuous intravenous infusion for sedation of intubated and mechanically ventilated patients as a component of anesthesia or during treatment in a critical care setting.",
+      "source": "FDA label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=3c2fd6ee-4ede-4ee4-8c05-34c93598f381"
+    },
+    "mechanisms": [
+      {
+        "text": "GABA-A receptor; anion channel positive allosteric modulator",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL655"
+      }
+    ]
+  },
+  "pair": {
+    "a": "midazolam",
+    "b": "nefazodone",
+    "sentences": [
+      "nefazodone is a strong inhibitor of CYP3A and midazolam is a sensitive substrate of CYP3A, so midazolam exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 8.5,
+    "category": "strong increase"
+  }
+}

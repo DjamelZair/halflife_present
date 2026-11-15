@@ -107,3 +107,12 @@ date,source,items,failed
 2026-11-15,Preprints,7,False
 2026-11-15,PubMed,45,False
 2026-11-15,PubMed discovery,12,False
+2026-11-16,ClinicalTrials.gov,20,False
+2026-11-16,EMA,0,True
+2026-11-16,EUDA,0,False
+2026-11-16,FDA,2,False
+2026-11-16,Lareb,0,False
+2026-11-16,Phase 3 results,44,False
+2026-11-16,Preprints,4,False
+2026-11-16,PubMed,39,False
+2026-11-16,PubMed discovery,13,False
