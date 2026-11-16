@@ -213,7 +213,7 @@ def run(demo: bool = False, push: bool = True, day: date | None = None) -> dict:
     picked_ids = {c.url for c in cards}
     for c in cards:
         c.topic = topics.topic_for(c.lane, c.source, c.title, c.what)
-        c.headline = headline.short(c.title)
+        c.headline = c.headline or headline.short(c.title)  # Mistral may have written one already
 
     # 2. molecule of the day
     figures, molecule = {}, None

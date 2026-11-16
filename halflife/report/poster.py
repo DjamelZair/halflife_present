@@ -39,7 +39,7 @@ def build(out_dir: Path, cards: list, mode: str, figures: dict, molecule: dict |
           pair: dict | None, day: date | None = None) -> Path:
     day = day or date.today()
     mode_note = {
-        "claude": "Summaries written by Claude from the abstracts.",
+        "mistral": "Headlines, why lines and PK hooks by Mistral 7B on our own machine, checked against each abstract.",
         "fallback": "No summaries today: titles and opening sentences of the original abstracts.",
         "empty": "No new items found today.",
     }.get(mode, "")

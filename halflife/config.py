@@ -100,11 +100,17 @@ PUBMED_DISCOVERY_QUERY = (
 TRIALS_QUERY = "drug interaction OR pharmacokinetics"
 
 # api keys, only read from the environment, never hardcoded
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-5-5")
 NCBI_EMAIL = os.getenv("NCBI_EMAIL", "")
 NCBI_API_KEY = os.getenv("NCBI_API_KEY", "")
 SERPAPI_KEY = os.getenv("SERPAPI_KEY", "")  # optional, without it the web search is skipped
+
+# the language model is Mistral 7B on our own machine through Ollama, no paid api and nothing from Claude.
+# when Ollama isn't running the brief is made in plain mode, so the model is never a reason for a missing morning
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+MISTRAL_ON = os.getenv("HALFLIFE_MISTRAL", "1") != "0"
+MISTRAL_BUDGET_SECONDS = 1200  # all cards together. past this the rest stays plain, the run must finish
+MISTRAL_CACHE = ROOT / ".cache" / "mistral"
+MISTRAL_LOG = OUTPUT_ROOT / "llm_calls.jsonl"  # no text in here, only hashes, timings and token counts
 
 # ntfy topic name, pick something long and random since anyone who knows it can read it
 NTFY_TOPIC = os.getenv("NTFY_TOPIC", "")

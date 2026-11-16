@@ -27,6 +27,27 @@ jobs:
       - name: Install
         run: pip install -r requirements.txt
 
+      # Mistral 7B words the cards, on this runner, no paid api. the 4.4 GB of weights stay in the cache between nights.
+      # anything going wrong here only means plain cards, so these steps may fail without stopping the brief
+      - name: Keep the Mistral weights
+        uses: actions/cache@v6
+        with:
+          path: ~/ollama-models
+          key: mistral-7b-instruct-v0.3-q4_K_M-6577803a
+
+      - name: Start Mistral 7B
+        id: mistral
+        continue-on-error: true
+        timeout-minutes: 15
+        run: |
+          export OLLAMA_MODELS="$HOME/ollama-models"
+          curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.11.4 sh
+          sudo systemctl stop ollama || true  # the installer starts its own service, I want mine with the cached folder
+          # a process started here keeps running for the later steps of this job
+          nohup ollama serve > "$RUNNER_TEMP/ollama.log" 2>&1 &
+          for i in $(seq 60); do curl -sf localhost:11434/api/version > /dev/null && break; sleep 1; done
+          ollama pull mistral:7b-instruct-v0.3-q4_K_M
+
       - name: Run the morning brief
         env:
           ADMIN_NTFY_TOPIC: ${{ secrets.ADMIN_NTFY_TOPIC }}
@@ -34,7 +55,7 @@ jobs:
           NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
           NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}  # optional, empty means the web search is skipped
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}  # optional, empty means plain mode
+          HALFLIFE_MISTRAL: ${{ steps.mistral.outcome == 'success' && '1' || '0' }}
         run: python run_daily.py --push-later
 
       - name: Save outputs to the repo

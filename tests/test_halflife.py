@@ -2159,3 +2159,72 @@ def test_the_interaction_card_with_the_molecule_goes_first():
     # another molecule, or no molecule: the order stays
     assert [c.url for c in lead_with_interaction([news, other, inter], "ketoconazole")] == ["a", "b", "c"]
     assert [c.url for c in lead_with_interaction([news, other, inter], None)] == ["a", "b", "c"]
+
+
+# Mistral 7B, with a fake Ollama: no model, no internet, seconds per test
+def _fake_mistral(tmp_path, answers):
+    from halflife.llm.mistral import Mistral, Settings
+    sent = []
+
+    def send(body):
+        sent.append(body)
+        return {"response": answers[min(len(sent), len(answers)) - 1], "eval_count": 20, "prompt_eval_count": 100,
+                "done_reason": "stop"}
+    llm = Mistral(Settings(cache_dir=tmp_path / "cache", log_file=tmp_path / "calls.jsonl"), send=send)
+    return llm, sent
+
+
+def _abstract_item():
+    return Item(source="PubMed", title="Vancomycin exposure in critically ill neonates on continuous infusion",
+                abstract="We studied 40 critically ill neonates. Vancomycin clearance was 0.06 L/h/kg and targets were "
+                         "reached in 70% of patients with continuous infusion.",
+                url="https://example.org/v", date="2026-11-01", journal="J", lane="clinic")
+
+
+def test_mistral_retries_with_a_new_seed_and_caches(tmp_path):
+    from halflife.summarise.mistral_cards import CardText
+    good = '{"headline": "Vancomycin in critically ill neonates", "why": "x", "pkpd_hook": "y"}'
+    llm, sent = _fake_mistral(tmp_path, ["not json", good])
+    first = llm.generate("p", schema=CardText)
+    assert first.success and first.retries == 1 and [b["options"]["seed"] for b in sent] == [42, 43]
+    assert sent[0]["model"] == "mistral:7b-instruct-v0.3-q4_K_M" and "format" in sent[0]
+    again = llm.generate("p", schema=CardText)
+    assert again.cached and len(sent) == 2
+    assert '"text"' not in (tmp_path / "calls.jsonl").read_text()  # the log never holds the answer itself
+
+
+def test_mistral_card_text_must_come_from_the_abstract(tmp_path):
+    from halflife.summarise import brief, mistral_cards
+    item = _abstract_item()
+    answer = ('{"headline": "Vancomycin clearance in critically ill neonates", '
+              '"why": "Targets were reached in 70% of neonates, which helps dosing on the ward.", '
+              '"pkpd_hook": "unknown"}')
+    llm, _ = _fake_mistral(tmp_path, [answer])
+    cards = brief.summarise_fallback([item], 1)
+    assert mistral_cards.write(cards, [item], llm) == 1
+    assert cards[0].headline == "Vancomycin clearance in critically ill neonates"
+    assert "70%" in cards[0].why and cards[0].pkpd_hook == ""
+    # a number, a drug or a patient group the abstract doesn't have, or a lost patient group: the plain card stays
+    for bad in ['{"headline": "Vancomycin clearance of 0.9 L/h in neonates", "why": "", "pkpd_hook": ""}',
+                '{"headline": "Vancomycin and rifampicin in critically ill neonates", "why": "", "pkpd_hook": ""}',
+                '{"headline": "Vancomycin clearance in critically ill adults and neonates", "why": "", "pkpd_hook": ""}',
+                '{"headline": "Vancomycin continuous infusion reaches targets well", "why": "", "pkpd_hook": ""}']:
+        assert mistral_cards.checked(__import__("json").loads(bad), item) == {}
+
+
+def test_no_mistral_means_plain_cards_and_no_claude_anywhere():
+    from halflife.summarise import brief
+    cards, mode = brief.build_brief([_abstract_item()])
+    assert mode == "fallback" and cards[0].headline == ""
+    code = " ".join(p.read_text(encoding="utf-8") for p in (config.ROOT / "halflife").rglob("*.py"))
+    assert "anthropic" not in code.lower() and "anthropic" not in (config.ROOT / "requirements.txt").read_text().lower()
+
+
+def test_mistral_headline_in_sentence_case_without_new_abbreviations():
+    from halflife.summarise import mistral_cards
+    item = _abstract_item()
+    kept = mistral_cards.checked({"headline": "Vancomycin Exposure in Critically Ill Neonates", "why": "x is crucial",
+                                  "pkpd_hook": ""}, item)
+    assert kept == {"headline": "Vancomycin exposure in critically ill neonates"}  # the hollow why is dropped
+    assert mistral_cards.checked({"headline": "Vancomycin TDM in critically ill neonates", "why": "", "pkpd_hook": ""},
+                                 item) == {}

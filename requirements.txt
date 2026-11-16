@@ -8,9 +8,7 @@ rdkit>=2024.3
 pillow>=10.0
 python-dotenv>=1.0
 jsonschema>=4.20
-
-# optional, only used when ANTHROPIC_API_KEY is set
-anthropic>=0.40
+pydantic>=2.0  # the json shape Mistral 7B has to answer in
 
 # tests
 pytest>=8.0

@@ -8,9 +8,13 @@ The person building it (the repo owner) wants the **easiest version** first.
 ## Decisions already made
 * English interface, but **always European generic names (INN)**: rifampicin, paracetamol, ciclosporin.
   Never US names, never brand names. `halflife/names.py` maps the known US names.
-* **No Claude API key for now.** Plain mode: `rank.py` picks the three most relevant items by keywords,
-  cards show the title and first two sentences of the abstract. The Claude path in
-  `summarise/brief.py` stays in place for later, it only activates when `ANTHROPIC_API_KEY` is set.
+* **No Claude, no paid api at runtime** (decided 16 November 2026). `rank.py` picks the three cards by keywords, deterministic.
+  Mistral 7B (`mistral:7b-instruct-v0.3-q4_K_M`, digest pinned in `halflife/llm/mistral.py`, through Ollama) then words each card:
+  a shorter headline, a why line and a PK or PD hook, from that card's abstract only (`summarise/mistral_cards.py`, prompt in
+  `prompts/card.txt`). Every answer is checked against the item's own text: a number, abbreviation, drug or patient group the source
+  doesn't have, a lost patient group, or an empty phrase, and that field stays plain. No Ollama, wrong weights or too slow
+  (`config.MISTRAL_BUDGET_SECONDS`): plain mode, the brief never waits on the model. The nightly job runs Ollama 0.11.4 on the runner,
+  weights in the actions cache; `outputs/llm_calls.jsonl` logs hashes, timings and token counts, never text. Tests use a fake Ollama.
 * Push via **ntfy** (no account, secret topic). No Telegram. Sent the evening before with the `At` header (`halflife/schedule.py`), because GitHub cron can start hours late.
 * Alerts for the builder go to a separate ntfy topic, secret `ADMIN_NTFY_TOPIC`: a source error, zero items from a
   source that normally has some (`config.ZERO_IS_NORMAL`, `config.QUIET_SOURCES`), the same two days running, a failed job, and an alarm scheduled on ntfy two
@@ -45,8 +49,7 @@ The person building it (the repo owner) wants the **easiest version** first.
 * Tests guard the site: `tests.yml` on every push, and `pages.yml` runs it first and deploys exactly the commit that passed.
   `tests/conftest.py` blocks the internet and blanks the key for every test. Local hook: `git config core.hooksPath scripts/hooks`,
   it runs pytest and refuses a staged diff with the search key in it.
-* Today opens with a Dutch dedication line above the molecule (EB Garamond italic, `web/fonts/`, like a book dedication), the owner's own words, keep it as written.
-  Under the molecule comes the Interaction of the day box first, then the molecule's facts, then the cards. Both screens show the whole molecule, never a crop.
+* On Today, under the molecule comes the Interaction of the day box first, then the molecule's facts, then the cards. Both screens show the whole molecule, never a crop.
 * Hosting: GitHub Actions for the daily job. The app is a **static web app on GitHub Pages** (HTML, CSS,
   JavaScript with three.js), `web/index.html` at the main address, the portfolio page at `/about.html`, reading the
   JSON the pipeline writes. `scripts/build_site.py` checks `brief.json` against `data/brief.schema.json` first, a
@@ -113,7 +116,7 @@ Use a virtualenv in `.venv/`, it is ignored by git.
 6. Today screen: built, look to be fine tuned later.
 7. Molecule screen: built. One canvas moves between Today and Molecule.
 8. Lab screen: built. `web/js/m12.js` is checked against the python by `tests/m12_check.mjs`, numbers come through `data/model.json`.
-9. Shorter headlines: built in `summarise/headline.py`, plain rules. The Claude API key can improve them later.
+9. Shorter headlines: built in `summarise/headline.py`, plain rules. Mistral 7B writes them when it runs, the plain rules are the fallback.
 10. Technical work, in this order: reliability, source health, content correctness, transporter data, clean-up.
     Later, parked on purpose: fine tuning the molecule look, restyling the poster and figures, a design review.
     In between, feedback from a pharmacist on the Lab: too kinetic, too many sliders. The Lab is now a visual story in three steps

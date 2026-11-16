@@ -53,7 +53,7 @@ halflife/
 ├── pipeline.py        the whole morning in one function
 ├── style.py           shared matplotlib style
 ├── sources/           pubmed, preprints (bioRxiv, medRxiv), trials, lareb, ema, fda_novel, euda, collect
-├── summarise/         card builder, plain mode or Claude when a key is set
+├── summarise/         card builder, Mistral 7B through Ollama when it runs, plain mode otherwise
 ├── molecules/         pubchem, rdkit properties, figures
 ├── interactions/      FDA table lookups, ICH M12 model, figures
 ├── report/            daily HTML poster and overview figure
@@ -67,7 +67,7 @@ data/                  cyp_reference.csv and transporter_reference.csv (FDA), br
 
 1. **ntfy**: install the ntfy app on his phone, subscribe to a long random topic name.
 2. **GitHub secrets** (repo, Settings, Secrets and variables, Actions): `NTFY_TOPIC`, `APP_URL`, `ADMIN_NTFY_TOPIC`.
-   Optional: `NCBI_EMAIL`, `NCBI_API_KEY`, `ANTHROPIC_API_KEY`.
+   Optional: `NCBI_EMAIL`, `NCBI_API_KEY`. For the card wording: Ollama with `ollama pull mistral:7b-instruct-v0.3-q4_K_M`.
 3. **GitHub Actions**: the workflow in `.github/workflows/daily.yml` runs every evening, commits the
    new `outputs/` folder, deploys the site and schedules the push for 07:30 Dutch time the next morning.
    Press "Run workflow" once to test it.

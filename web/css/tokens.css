@@ -8,15 +8,6 @@
   font-display: swap;
 }
 
-/* only for the dedication on Today, set like the dedication page of a book */
-@font-face {
-  font-family: "EB Garamond";
-  src: url("../fonts/eb-garamond-latin-italic.woff2") format("woff2");
-  font-style: italic;
-  font-weight: 400 600;
-  font-display: swap;
-}
-
 @font-face {
   font-family: "Inter";
   src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2");
@@ -37,7 +28,6 @@
 
   /* type */
   --font-display: "Space Grotesk", system-ui, sans-serif;
-  --font-dedication: "EB Garamond", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;

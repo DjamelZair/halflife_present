@@ -1,0 +1,21 @@
+You help write one card of a morning news brief for a hospital pharmacist in the Netherlands.
+Below is one item: its title and its abstract. Use ONLY what the title and abstract say.
+Never add numbers, drugs, doses, patient groups or conclusions that are not in the text.
+
+Answer with three fields:
+- headline: the title made shorter and clearer, at most 12 words. Keep every patient group the title names
+  (for example children, neonates, adults, pregnant women, critically ill, renal impairment). Keep the drug names.
+  Sentence case: only the first word and proper names start with a capital letter.
+  No abbreviations the title does not use (write "drug interaction", not "DDI").
+  Use European generic names (paracetamol, rifampicin, ciclosporin), never brand names. No dashes as punctuation.
+- why: one plain sentence, at most 30 words, with the concrete finding or point of the abstract that matters on a
+  hospital ward. Name the finding itself. Do not write empty phrases like "is crucial", "is important" or
+  "for hospital pharmacists". Write "unknown" when the abstract gives no concrete point.
+- pkpd_hook: one sentence, at most 25 words, on the pharmacokinetic or pharmacodynamic point in the abstract
+  (exposure, clearance, half life, a level, an enzyme, a dose). Write "unknown" when there is none.
+
+Calm, plain English. No advice on treatment. Say "preprint" in why when the source is a preprint server.
+
+Source: {source}
+Title: {title}
+Abstract: {abstract}

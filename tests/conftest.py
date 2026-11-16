@@ -1,4 +1,4 @@
-"""Every test runs like this: no internet, no search key, and its own admin log and search store.
+"""Every test runs like this: no internet, no search key, no Mistral, and its own admin log and search store.
 So a test can never use the key, never write to the real outputs/, and CI can't go red because a server is down."""
 
 import socket
@@ -28,6 +28,8 @@ def sealed(monkeypatch, tmp_path):
     monkeypatch.setattr(socket.socket, "connect", connect)
     monkeypatch.setattr(socket, "getaddrinfo", blocked)
     monkeypatch.setattr(config, "SERPAPI_KEY", "")
+    monkeypatch.setattr(config, "MISTRAL_ON", False)  # a test that wants Mistral passes a fake one itself
+    monkeypatch.setattr(config, "MISTRAL_LOG", tmp_path / "llm_calls.jsonl")
     monkeypatch.setattr(config, "ADMIN_LOG", tmp_path / "admin_log.csv")
     monkeypatch.setattr(config, "WEB_SEARCH_STORE", tmp_path / "web_search.json")
     monkeypatch.setattr(config, "WHO_ATC_STORE", tmp_path / "who_atc.json")
