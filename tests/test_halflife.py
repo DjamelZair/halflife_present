@@ -2228,3 +2228,11 @@ def test_mistral_headline_in_sentence_case_without_new_abbreviations():
     assert kept == {"headline": "Vancomycin exposure in critically ill neonates"}  # the hollow why is dropped
     assert mistral_cards.checked({"headline": "Vancomycin TDM in critically ill neonates", "why": "", "pkpd_hook": ""},
                                  item) == {}
+
+
+def test_a_bracket_that_says_who_it_is_about_stays():
+    from halflife.summarise.headline import keeps_population, short
+    title = ("Ivosidenib in Treating Patients With Advanced Solid Tumors, Lymphoma, or Histiocytic Disorders With IDH1 "
+             "Mutations (A Pediatric MATCH Treatment Trial)")
+    assert keeps_population(title, short(title)) and short(title).count("(") == short(title).count(")")
+    assert short("Seladelpar in primary biliary cholangitis (PBC)") == "Seladelpar in primary biliary cholangitis"

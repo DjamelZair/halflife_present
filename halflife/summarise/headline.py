@@ -61,7 +61,10 @@ def through_last_population(text: str) -> str:
     last = None
     for last in POPULATION.finditer(text):
         pass
-    return text if last is None else text[:last.end()]
+    if last is None:
+        return text
+    cut = text[:last.end()]
+    return cut + ")" if cut.count("(") > cut.count(")") else cut  # "(A Pediatric" reads better closed
 
 
 def _neat_cut(text: str) -> str:
@@ -92,7 +95,9 @@ def _neat_cut(text: str) -> str:
 def short(title: str) -> str:
     """Up to about nine words. Titles that are short already pass through unchanged, apart from the full stop."""
     text = re.sub(r"\s+", " ", europeanise(title)).strip().rstrip(".")
-    text = re.sub(r"\s*\([^()]*\)$", "", text)  # (PBC), (MK-1242-036)
+    without_brackets = re.sub(r"\s*\([^()]*\)$", "", text)  # (PBC), (MK-1242-036)
+    if keeps_population(text, without_brackets):  # but "(A Pediatric MATCH Treatment Trial)" says who it is about
+        text = without_brackets
     if _words(text) <= TARGET_WORDS + 1:
         return text
     cut = _neat_cut(text)
