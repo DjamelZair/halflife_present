@@ -2236,3 +2236,30 @@ def test_a_bracket_that_says_who_it_is_about_stays():
              "Mutations (A Pediatric MATCH Treatment Trial)")
     assert keeps_population(title, short(title)) and short(title).count("(") == short(title).count(")")
     assert short("Seladelpar in primary biliary cholangitis (PBC)") == "Seladelpar in primary biliary cholangitis"
+
+
+def test_ema_waits_and_asks_once_more_after_a_429(monkeypatch):
+    from halflife.sources import ema
+    answers = iter([(429, {"Retry-After": "5"}), (200, {})])
+    waited = []
+
+    class R:
+        def __init__(self, code, headers):
+            self.status_code, self.headers = code, headers
+        def raise_for_status(self):
+            if self.status_code >= 400:
+                raise requests.HTTPError(str(self.status_code))
+        def json(self):
+            return {"data": [{"name": "x"}]}
+
+    monkeypatch.setattr(ema.requests, "get", lambda *a, **k: R(*next(answers)))
+    monkeypatch.setattr(ema.time, "sleep", waited.append)
+    ema.medicines.cache_clear()
+    assert ema.medicines() == [{"name": "x"}] and waited == [5]
+    ema.medicines.cache_clear()
+
+
+def test_no_new_fda_approval_is_not_a_problem():
+    from halflife import health
+    assert health.problems({"sources": {"FDA": 0}, "zero_streaks": {"FDA": 3}, "errors": {}}) == []
+    assert health.problems({"sources": {"FDA": 0}, "zero_streaks": {}, "errors": {"FDA": "page parsed to zero rows"}})

@@ -6,6 +6,7 @@ the CHMP highlights page, and it already has the INN, the indication and flags l
 
 import html
 import re
+import time
 from datetime import date, timedelta
 from functools import lru_cache
 
@@ -15,6 +16,8 @@ from halflife import config
 from halflife.names import to_inn
 from halflife.sources.base import Item
 
+RETRY_SECONDS = 30
+RETRY_MAX_SECONDS = 60
 MEDICINES_JSON = "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json"
 
 # these get a word in the card, so he sees at a glance why it is special
@@ -107,6 +110,11 @@ def parse_medicines(rows: list[dict], since: str) -> list[Item]:
 def medicines() -> list[dict]:
     # about 7 MB, and the molecule section needs it too, so once per run is plenty
     r = requests.get(MEDICINES_JSON, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT * 2)
+    if r.status_code == 429:
+        # EMA asks me to come back later, so I wait as long as it says (a minute at most) and ask once more
+        wait = r.headers.get("Retry-After", "")
+        time.sleep(min(int(wait), RETRY_MAX_SECONDS) if wait.isdigit() else RETRY_SECONDS)
+        r = requests.get(MEDICINES_JSON, headers=config.HTTP_HEADERS, timeout=config.HTTP_TIMEOUT * 2)
     r.raise_for_status()
     return r.json()["data"]
 

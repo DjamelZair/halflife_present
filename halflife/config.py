@@ -118,8 +118,9 @@ APP_URL = os.getenv("APP_URL", "")
 ADMIN_NTFY_TOPIC = os.getenv("ADMIN_NTFY_TOPIC", "")  # my own alerts, never the topic he subscribes to
 ACTIONS_URL = "https://github.com/DjamelZair/halflife_present/actions"
 NO_RUN_ALARM_HOURS = 50  # two days and a bit, ntfy schedules up to 3 days ahead
-# zero items is normal for EUDA most days, its parser raises when the page breaks. no alert for zero at all
-ZERO_IS_NORMAL = {"EUDA"}
+# zero items is normal for these most days, and their parsers raise when the page breaks. no alert for zero at all.
+# FDA approves about one new molecule a week, a broken page already counts as an error (fda_novel.fetch_page)
+ZERO_IS_NORMAL = {"EUDA", "FDA"}
 # Lareb can have a month without a signal. no alert on the first day, one notice on the second
 QUIET_SOURCES = {"Lareb"}
 # the job runs the evening before, the push is scheduled for this time
