@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-18",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 48,
+      "clinic/bioRxiv": 14,
+      "clinic/ClinicalTrials.gov": 20,
+      "discovery/EMA": 6,
+      "discovery/FDA": 4,
+      "discovery/PubMed": 11,
+      "discovery/ClinicalTrials.gov": 48
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 48,
+      "Preprints": 14,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 0,
+      "EMA": 6,
+      "FDA": 4,
+      "PubMed discovery": 11,
+      "Phase 3 results": 48,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 15,
+      "FDA": 0,
+      "Lareb": 5,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Refining antibiotic dosing regimens for the treatment of sepsis in critically ill patients in the intensive care unit.",
+      "what": "Critically ill patients experience significant and dynamic changes in physiology, risking suboptimal antibiotic exposure. Dose optimization strategies can help address this therapeutic gap.",
+      "why": "Dose optimization strategies can help address suboptimal antibiotic exposure in critically ill patients with sepsis.",
+      "pkpd_hook": "Pharmacokinetic and pharmacodynamic derangements affect antibiotic exposure in critically ill patients.",
+      "source": "PubMed, Expert review of clinical pharmacology",
+      "url": "https://doi.org/10.1080/17512433.2026.2758495",
+      "peer_reviewed": true,
+      "original_title": "Refining antibiotic dosing regimens for the treatment of sepsis in critically ill patients in the intensive care unit.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "Optimizing antibiotic dosing for sepsis in critically ill patients"
+    },
+    {
+      "title": "Discovery of isoindolinone derivatives as potent, safe, and intravenously administrable NaV1.8 inhibitors for the treatment of pain.",
+      "what": "The voltage-gated sodium channel NaV1.8 is primarily expressed in nociceptors in the dorsal root ganglia (DRG) and has emerged as a highly promising target for the development of non-addictive analgesics. Although the selective NaV1.8 inhibitor suzetrigine (VX-548) has demonstrated clinical efficacy, its poor physicochemical properties and significant CYP450 enzyme induction present challenges for intravenous administration and potential drug-drug interactions.",
+      "why": "Compound 3c exhibits potent inhibition of the NaV1.8 ion channel, improved solubility, favorable pharmacokinetic properties, and reduced CYP450 enzyme induction.",
+      "pkpd_hook": "Compound 3c has a half-life of 7.3 hours and clearance of 38.8 mL/min/kg.",
+      "source": "PubMed, European journal of medicinal chemistry",
+      "url": "https://doi.org/10.1016/j.ejmech.2026.119501",
+      "peer_reviewed": true,
+      "original_title": "Discovery of isoindolinone derivatives as potent, safe, and intravenously administrable NaV1.8 inhibitors for the treatment of pain.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "New nav1.8 inhibitor compound 3c shows potent analgesia and improved safety"
+    },
+    {
+      "title": "Glepaglutide authorised in the EU for adults with Short Bowel Syndrome (SBS)",
+      "what": "glepaglutide is indicated for the treatment of adults with Short Bowel Syndrome (SBS). Patients should be stable following a period of intestinal adaptation after surgery.",
+      "why": "The European Medicines Agency authorizes glepaglutide for treating adults with Short Bowel Syndrome who are stable following intestinal adaptation after surgery.",
+      "pkpd_hook": "No pharmacokinetic or pharmacodynamic points mentioned in the abstract.",
+      "source": "EMA, EU authorisation",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/zeydovio",
+      "peer_reviewed": true,
+      "original_title": "Glepaglutide authorised in the EU for adults with Short Bowel Syndrome (SBS)",
+      "drugs": [
+        "glepaglutide"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Glepaglutide approved in EU for adults with Short Bowel Syndrome"
+    }
+  ],
+  "molecule": {
+    "name": "lemborexant",
+    "smiles": "CC1=NC(=NC=C1OC[C@]2(C[C@H]2C(=O)NC3=NC=C(C=C3)F)C4=CC(=CC=C4)F)C",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/56944144",
+    "Formula": "C22H20F2N4O2",
+    "Molecular weight": 410.4,
+    "logP": 3.74,
+    "H bond donors": 1,
+    "H bond acceptors": 5,
+    "TPSA": 77.0,
+    "Rotatable bonds": 6,
+    "Rings": 4,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: lemborexant and ciprofloxacin",
+      "url": "#lab?a=lemborexant&b=ciprofloxacin"
+    },
+    "atc": [
+      {
+        "code": "N05CJ02",
+        "levels": [
+          {
+            "level": 1,
+            "code": "N",
+            "name": "Nervous system"
+          },
+          {
+            "level": 2,
+            "code": "N05",
+            "name": "Psycholeptics"
+          },
+          {
+            "level": 3,
+            "code": "N05C",
+            "name": "Hypnotics and sedatives"
+          },
+          {
+            "level": 4,
+            "code": "N05CJ",
+            "name": "Orexin receptor antagonists"
+          }
+        ],
+        "substance": "lemborexant"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Lemborexant is indicated for the treatment of adult patients with insomnia, characterized by difficulties with sleep onset and/or sleep maintenance. Lemborexant is an orexin receptor antagonist indicated for the treatment of adult patients with insomnia, characterized by difficulties with sleep onset and/or sleep maintenance.",
+      "source": "FDA label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7074cb65-77b3-45d2-8e8d-da8dc0f70bfd"
+    },
+    "mechanisms": [
+      {
+        "text": "Orexin receptor 1 antagonist",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3545367"
+      },
+      {
+        "text": "Orexin receptor 2 antagonist",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL3545367"
+      }
+    ]
+  },
+  "pair": {
+    "a": "lemborexant",
+    "b": "ciprofloxacin",
+    "sentences": [
+      "ciprofloxacin is a moderate inhibitor of CYP3A and lemborexant is a sensitive substrate of CYP3A, so lemborexant exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 4.0,
+    "category": "moderate increase"
+  }
+}
