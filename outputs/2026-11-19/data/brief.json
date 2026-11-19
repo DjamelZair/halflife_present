@@ -1,0 +1,160 @@
+{
+  "date": "2026-11-19",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 53,
+      "clinic/bioRxiv": 7,
+      "clinic/ClinicalTrials.gov": 20,
+      "discovery/EMA": 6,
+      "discovery/FDA": 8,
+      "discovery/PubMed": 10,
+      "discovery/ClinicalTrials.gov": 47
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 53,
+      "Preprints": 7,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 0,
+      "EMA": 6,
+      "FDA": 8,
+      "PubMed discovery": 10,
+      "Phase 3 results": 47,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 16,
+      "FDA": 0,
+      "Lareb": 6,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Recommended Phase 2 Dose for Abemaciclib in Combination With Temozolomide in Pediatric and Young Adult Patients With Relapsed/Refractory Solid Tumors: Results From Study JPCS Part B.",
+      "what": "Cyclin-dependent kinase 4/6 (CDK4/6) pathway aberrations, including CDK4 or CCND1 amplification, CDKN2A/B loss, retinoblastoma (RB) dysregulation, and cyclin D overexpression, are relevant for pediatric cancers. Abemaciclib, a selective CDK4/6 inhibitor with preferential CDK4 activity and central nervous system (CNS) penetration, induces sustained G1 arrest.",
+      "why": "The recommended phase 2 dose for the combination of abemaciclib and temozolomide is established, showing preliminary antitumor activity.",
+      "pkpd_hook": "Steady-state abemaciclib concentrations align with adult efficacy-associated ranges.",
+      "source": "PubMed, Pediatric blood & cancer",
+      "url": "https://doi.org/10.1002/1545-5017.70817",
+      "peer_reviewed": true,
+      "original_title": "Recommended Phase 2 Dose for Abemaciclib in Combination With Temozolomide in Pediatric and Young Adult Patients With Relapsed/Refractory Solid Tumors: Results From Study JPCS Part B.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "Recommended Phase 2 Dose for Abemaciclib in Combination With Temozolomide in Pediatric and Young Adult Patients"
+    },
+    {
+      "title": "A literature-informed pharmacokinetic framework for polymyxin B dosing during continuous renal replacement therapy: integrating renal function and extracorporeal clearance.",
+      "what": "Existing population pharmacokinetic (PopPK) models for polymyxin B in patients receiving CRRT remain limited, and all of them have neglected the impact of membrane materials on drug adsorption. Recently, a few studies have attempted to construct integrated PK models by combining pharmacokinetic (PK) parameters derived from patients not receiving CRRT with CRRT-specific parameters.",
+      "why": "This study proposes a framework to predict polymyxin B exposure during continuous renal replacement therapy (CRRT), taking into account filter type and residual renal function.",
+      "pkpd_hook": "The framework incorporates intrinsic clearance adjusted by CrCL, transmembrane clearance, and adsorptive clearance components.",
+      "source": "PubMed, Frontiers in pharmacology",
+      "url": "https://doi.org/10.3389/fphar.2026.1955923",
+      "peer_reviewed": true,
+      "original_title": "A literature-informed pharmacokinetic framework for polymyxin B dosing during continuous renal replacement therapy: integrating renal function and extracorporeal clearance.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "A literature-informed pharmacokinetic framework for polymyxin B dosing"
+    },
+    {
+      "title": "Aumolertinib recommended by EMA for non-small cell lung cancer in adults",
+      "what": "Treatment of non-small cell lung cancer in adults.",
+      "why": "EMA recommends Aumolertinib for treating non-small cell lung cancer in adults",
+      "pkpd_hook": "",
+      "source": "EMA, CHMP opinion",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/aumseqa",
+      "peer_reviewed": true,
+      "original_title": "Aumolertinib recommended by EMA for non-small cell lung cancer in adults",
+      "drugs": [
+        "aumolertinib"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Aumolertinib recommended by EMA for non-small cell lung cancer in adults"
+    }
+  ],
+  "molecule": {
+    "name": "aumolertinib",
+    "smiles": "CN(C)CCN(C)C1=CC(=C(C=C1NC(=O)C=C)NC2=NC=CC(=N2)C3=CN(C4=CC=CC=C43)C5CC5)OC",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/121280087",
+    "Formula": "C30H35N7O2",
+    "Molecular weight": 525.7,
+    "logP": 5.31,
+    "H bond donors": 2,
+    "H bond acceptors": 7,
+    "TPSA": 87.5,
+    "Rotatable bonds": 11,
+    "Rings": 5,
+    "Rule of five violations": 2,
+    "reason": {
+      "kind": "ema_opinion",
+      "text": "Recommended by EMA on 12 November 2026",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/aumseqa"
+    },
+    "atc": [
+      {
+        "code": "L01EB11",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "Antineoplastic agents"
+          },
+          {
+            "level": 3,
+            "code": "L01E",
+            "name": "Protein kinase inhibitors"
+          },
+          {
+            "level": 4,
+            "code": "L01EB",
+            "name": "Epidermal growth factor receptor (EGFR) tyrosine kinase inhibitors"
+          }
+        ],
+        "substance": "aumolertinib"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Treatment of non-small cell lung cancer in adults.",
+      "source": "EMA indication",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/aumseqa"
+    },
+    "mechanisms": [
+      {
+        "text": "Epidermal growth factor receptor erbB1 inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4761468"
+      }
+    ]
+  },
+  "pair": {
+    "a": "eplerenone",
+    "b": "enzalutamide",
+    "sentences": [
+      "enzalutamide is a strong inducer of CYP3A and eplerenone is a sensitive substrate of CYP3A, so eplerenone exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 10.0,
+    "illustrative_auc_ratio": 0.11,
+    "category": "strong decrease"
+  }
+}
