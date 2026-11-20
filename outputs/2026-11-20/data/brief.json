@@ -1,0 +1,151 @@
+{
+  "date": "2026-11-20",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 55,
+      "clinic/bioRxiv": 5,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 7,
+      "discovery/FDA": 8,
+      "discovery/PubMed": 4,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {
+      "ChEMBL ATC levels": "ChEMBL ATC levels failed: 404 Client Error: Not Found for url: https://www.ebi.ac.uk/chembl/api/data/atc_class/L01XK07.json"
+    },
+    "sources": {
+      "PubMed": 55,
+      "Preprints": 5,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 7,
+      "FDA": 8,
+      "PubMed discovery": 5,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 17,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Initiation of lenacapavir with dose escalation in a patient receiving rifabutin: A case report with therapeutic drug monitoring.",
+      "what": "Lenacapavir is a first-in-class HIV-1 capsid inhibitor with long-acting pharmacokinetics that enable 6-monthly subcutaneous dosing after initiation with oral lead-in. Lenacapavir is a CYP3A4, UGT1A1 and P-gp substrate; inducers of these enzymes and P-gp can significantly decrease lenacapavir concentrations.",
+      "why": "Dose escalation maintains therapeutic lenacapavir levels despite rifabutin induction",
+      "pkpd_hook": "Cmax of 245.7 ng/mL, projected Cmin of 19.5 ng/mL at 6 months",
+      "source": "PubMed, British journal of clinical pharmacology",
+      "url": "https://doi.org/10.1002/bcp.70932",
+      "peer_reviewed": true,
+      "original_title": "Initiation of lenacapavir with dose escalation in a patient receiving rifabutin: A case report with therapeutic drug monitoring.",
+      "drugs": [
+        "darunavir",
+        "rifampicin",
+        "ritonavir"
+      ],
+      "lane": "clinic",
+      "topic": "TDM",
+      "headline": "Lenacapavir dose adjustment with rifabutin"
+    },
+    {
+      "title": "Vitamine B6-tekort mogelijk bij levodopa met carbidopa",
+      "what": "Een tekort aan vitamine B6 is een mogelijke bijwerking van levodopa met carbidopa tabletten. Bijwerkingencentrum Lareb ontving hierover 13 meldingen.",
+      "why": "A possible side effect of levodopa-carbidopa tablets is a vitamin B6 deficiency, based on 13 reports to the Dutch pharmacovigilance centre.",
+      "pkpd_hook": "No specific pharmacokinetic or pharmacodynamic point mentioned.",
+      "source": "Lareb, Pharmacovigilance signal (Dutch)",
+      "url": "https://www.lareb.nl/news/vitamine-b6-tekort-mogelijk-bij-levodopa-met-carbidopa/",
+      "peer_reviewed": true,
+      "original_title": "Vitamine B6-tekort mogelijk bij levodopa met carbidopa",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Signal",
+      "headline": "Potential vitamin B6 deficiency with levodopa-carbidopa tablets"
+    },
+    {
+      "title": "Senaparib authorised in the EU for monotherapy for the maintenance treatment of adult patients with advanced (FIGO Stages III and IV) epithelial high-grade ovarian, fallopian tube or primary peritoneal cancer who are in response (complete or partial) following completion of first-line platinum-based chemotherapy",
+      "what": "senaparib is indicated as monotherapy for the maintenance treatment of adult patients with advanced (FIGO Stages III and IV) epithelial high-grade ovarian, fallopian tube or primary peritoneal cancer who are in response (complete or partial) following completion of first-line platinum-based chemotherapy.",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "EMA, EU authorisation",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/sepalna",
+      "peer_reviewed": true,
+      "original_title": "Senaparib authorised in the EU for monotherapy for the maintenance treatment of adult patients with advanced (FIGO Stages III and IV) epithelial high-grade ovarian, fallopian tube or primary peritoneal cancer who are in response (complete or partial) following completion of first-line platinum-based chemotherapy",
+      "drugs": [
+        "senaparib"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Senaparib authorised in the EU for monotherapy for the maintenance treatment of adult patients"
+    }
+  ],
+  "molecule": {
+    "name": "senaparib",
+    "smiles": "C1CN(CCN1C2=NC=CC=N2)C(=O)C3=C(C=CC(=C3)CN4C5=C(C(=CC=C5)F)C(=O)NC4=O)F",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/68389008",
+    "Formula": "C24H20F2N6O3",
+    "Molecular weight": 478.5,
+    "logP": 1.77,
+    "H bond donors": 1,
+    "H bond acceptors": 6,
+    "TPSA": 104.2,
+    "Rotatable bonds": 4,
+    "Rings": 5,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "eu_authorised",
+      "text": "Authorised in the EU on 12 November 2026",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/sepalna"
+    },
+    "atc": [
+      {
+        "code": "L01XK07",
+        "levels": [],
+        "substance": null
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "EMA",
+    "used_for": {
+      "text": "Senaparib is a cancer medicine used on its own in adults with the following cancers: epithelial ovarian cancer (cancer that forms in the tissue covering the ovaries); fallopian tube cancer (cancer of the tissue lining the tubes connecting the ovaries to the womb); primary peritoneal cancer (cancer that forms in the membrane lining the abdomen).",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/sepalna"
+    },
+    "mechanisms": [
+      {
+        "text": "Poly [ADP-ribose] polymerase-1 inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4802152"
+      },
+      {
+        "text": "Poly [ADP-ribose] polymerase 2 inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4802152"
+      }
+    ]
+  },
+  "pair": {
+    "a": "darunavir",
+    "b": "rifampicin",
+    "sentences": [
+      "rifampicin is a strong inducer of CYP3A and darunavir is a sensitive substrate of CYP3A, so darunavir exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 10.0,
+    "illustrative_auc_ratio": 0.11,
+    "category": "strong decrease"
+  }
+}
