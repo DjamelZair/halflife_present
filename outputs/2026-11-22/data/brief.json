@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-22",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 48,
+      "clinic/bioRxiv": 6,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 7,
+      "discovery/FDA": 8,
+      "discovery/PubMed": 14,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 48,
+      "Preprints": 7,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 7,
+      "FDA": 8,
+      "PubMed discovery": 14,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 19,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Development of a machine learning-based treatment-response prediction model for levetiracetam in pediatric epilepsy: integrating ABCB1 polymorphism and therapeutic drug monitoring.",
+      "what": "Empirical dosing of levetiracetam (LEV) in pediatric epilepsy often yields variable outcomes. This study aimed to develop a machine learning-based treatment-response prediction model integrating therapeutic drug monitoring (TDM) and ABCB1 C3435 T polymorphism.",
+      "why": "The study found that LEV trough concentration and ABCB1 genotype are the strongest associative factors for clinical outcomes.",
+      "pkpd_hook": "The XGBoost model demonstrated a high predictive performance, with LEV trough concentration as a key factor.",
+      "source": "PubMed, Frontiers in medicine",
+      "url": "https://doi.org/10.3389/fmed.2026.1914546",
+      "peer_reviewed": true,
+      "original_title": "Development of a machine learning-based treatment-response prediction model for levetiracetam in pediatric epilepsy: integrating ABCB1 polymorphism and therapeutic drug monitoring.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "TDM",
+      "headline": "Machine learning model predicts levetiracetam response in pediatric epilepsy"
+    },
+    {
+      "title": "Attainment of Prophylactic Target Posaconazole Concentrations During Admission for Allogeneic Stem Cell Transplant.",
+      "what": "Invasive fungal infections (IFIs) contribute to morbidity and mortality following allogeneic hematopoietic stem cell transplantation (HSCT). Posaconazole is oftentimes utilized for antifungal prophylaxis due to its broad-spectrum activity against yeast and mold.",
+      "why": "32.4% of patients achieved initial prophylactic target trough concentration, while 67.6% had concentrations below target.",
+      "pkpd_hook": "Median time to target attainment was 16 days (IQR, 7-20 days)",
+      "source": "PubMed, Transplantation and cellular therapy",
+      "url": "https://doi.org/10.1016/j.jtct.2026.11.035",
+      "peer_reviewed": true,
+      "original_title": "Attainment of Prophylactic Target Posaconazole Concentrations During Admission for Allogeneic Stem Cell Transplant.",
+      "drugs": [
+        "methotrexate",
+        "posaconazole"
+      ],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Prophylactic Posaconazole Concentrations in Allogeneic Stem Cell Transplant patients"
+    },
+    {
+      "title": "Efficacy and Safety of Benralizumab in Moderate to Very Severe Chronic Obstructive Pulmonary Disease (COPD) With a History of Frequent Exacerbations",
+      "what": "Phase 3 study to evaluate the efficacy and safety of a benralizumab in patients with moderate to very severe COPD with a history of frequent COPD exacerbations and elevated peripheral blood eosinophils (≥300/μL). Eligible patients must have a history of ≥2 moderate and/or severe COPD exacerbations in the previous year despite receiving triple (ICS/LABA/LAMA) background therapy for at least 3 months and ICS-based dual inhaled treatment for the remainder of the year.",
+      "why": "Study evaluates benralizumab's effectiveness and safety for moderate to severe COPD patients with frequent exacerbations and high eosinophil count.",
+      "pkpd_hook": "Study duration varies, primary endpoint analyzed at Week 56.",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT04053634?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Efficacy and Safety of Benralizumab in Moderate to Very Severe Chronic Obstructive Pulmonary Disease (COPD) With a History of Frequent Exacerbations",
+      "drugs": [
+        "benralizumab"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Benralizumab efficacy & Safety in Frequent COPD exacerbators"
+    }
+  ],
+  "molecule": {
+    "name": "rivaroxaban",
+    "smiles": "C1COCC(=O)N1C2=CC=C(C=C2)N3C[C@@H](OC3=O)CNC(=O)C4=CC=C(S4)Cl",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/9875401",
+    "Formula": "C19H18ClN3O5S",
+    "Molecular weight": 435.9,
+    "logP": 2.52,
+    "H bond donors": 1,
+    "H bond acceptors": 6,
+    "TPSA": 88.2,
+    "Rotatable bonds": 5,
+    "Rings": 4,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: rivaroxaban and bosentan",
+      "url": "#lab?a=rivaroxaban&b=bosentan"
+    },
+    "atc": [
+      {
+        "code": "B01AF01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "B",
+            "name": "Blood and blood forming organs"
+          },
+          {
+            "level": 2,
+            "code": "B01",
+            "name": "Antithrombotic agents"
+          },
+          {
+            "level": 3,
+            "code": "B01A",
+            "name": "Antithrombotic agents"
+          },
+          {
+            "level": 4,
+            "code": "B01AF",
+            "name": "Direct factor Xa inhibitors"
+          }
+        ],
+        "substance": "rivaroxaban"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Rivaroxaban is an anticoagulant medicine (a medicine that prevents blood clotting) used: to treat deep vein thrombosis (DVT, a blood clot in a deep vein, usually in the leg) and pulmonary embolism (a clot in a blood vessel supplying the lungs), and to prevent DVT and pulmonary embolism from recurring in adults; to prevent venous thromboembolism (VTE, the formation of blood clots in the veins) in adults who are undergoing surgery to replace a hip or knee; to treat VTE and prevent VTE from recurring in children and adolescents aged less than 18 years; to prevent stroke (caused by a blood clot in the brain) and systemic embolism (a blood clot in another organ) in adults with non-valvular atrial fibrillation (irregular rapid contractions of the upper chambers of the heart); to prevent atherothrombotic events (such as heart attack, stroke or death from heart disease) in adults: after an acute coronary syndrome, when it is used with an antiplatelet medicine (which prevents the formation of blood clots). Acute coronary syndrome consists of conditions such as unstable angina (a severe type of chest pain) and heart attack; at high risk of ischaemic events (problems caused by restricted blood supply) who have coronary artery disease (disease caused by obstructed blood supply to the heart muscle) or peripheral artery disease (disease caused by defective blood flow in the arteries). It is used with acetylsalicylic acid.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/xarelto"
+    },
+    "mechanisms": [
+      {
+        "text": "Coagulation factor X inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL198362"
+      }
+    ]
+  },
+  "pair": {
+    "a": "rivaroxaban",
+    "b": "bosentan",
+    "sentences": [
+      "bosentan is a moderate inducer of CYP3A and rivaroxaban is a moderate sensitive substrate of CYP3A, so rivaroxaban exposure can be lower."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.42,
+    "category": "moderate decrease"
+  }
+}
