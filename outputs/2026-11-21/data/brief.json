@@ -1,0 +1,164 @@
+{
+  "date": "2026-11-21",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 55,
+      "clinic/bioRxiv": 5,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 7,
+      "discovery/FDA": 8,
+      "discovery/PubMed": 11,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 55,
+      "Preprints": 6,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 7,
+      "FDA": 8,
+      "PubMed discovery": 12,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 18,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Machine learning prediction of cyclosporine nephrotoxicity in pediatric patients using therapeutic drug monitoring and clinical data.",
+      "what": "Cyclosporine A (CsA) nephrotoxicity is a dose-limiting toxicity in pediatric immunosuppression, and early identification of children at risk of CsA-associated acute kidney injury (AKI) remains an unmet clinical need. In retrospective cohorts of CsA-treated inpatients undergoing therapeutic drug monitoring (352 children; 342 adults), a regularized logistic-regression model was compared with six machine-learning classifiers under five feature-selection schemes, three small-sample strategies were evaluated, and adult-child transferability was assessed on 95 aligned features.",
+      "why": "A machine learning model can predict the risk of ciclosporin-associated acute kidney injury in pediatric patients.",
+      "pkpd_hook": "The model uses therapeutic drug monitoring and clinical data, including 14 variables.",
+      "source": "PubMed, Expert opinion on drug metabolism & toxicology",
+      "url": "https://doi.org/10.1080/17425255.2026.2767120",
+      "peer_reviewed": true,
+      "original_title": "Machine learning prediction of cyclosporine nephrotoxicity in pediatric patients using therapeutic drug monitoring and clinical data.",
+      "drugs": [
+        "ciclosporin"
+      ],
+      "lane": "clinic",
+      "topic": "TDM",
+      "headline": "Machine learning predicts ciclosporin nephrotoxicity risk in pediatric patients"
+    },
+    {
+      "title": "Model-based exploration of tamoxifen therapy: addressing exposure and the influence of albumin on proposed endoxifen threshold concentration levels.",
+      "what": "Tamoxifen is a cornerstone in the treatment of estrogen receptor-positive breast cancer. While the standard dose of 20 mg/day is widely accepted, emerging evidence suggests that this regimen may not be sufficient to consistently achieve therapeutic endoxifen concentrations in many patients.",
+      "why": "Emerging evidence suggests standard tamoxifen dose may not consistently achieve therapeutic endoxifen levels in many patients, particularly in those with large body weight or CYP2D6 poor metabolism.",
+      "pkpd_hook": "",
+      "source": "PubMed, Anti-cancer drugs",
+      "url": "https://doi.org/10.1097/CAD.0000000000001850",
+      "peer_reviewed": true,
+      "original_title": "Model-based exploration of tamoxifen therapy: addressing exposure and the influence of albumin on proposed endoxifen threshold concentration levels.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Exploring tamoxifen therapy: addressing albumin impact on endoxifen levels"
+    },
+    {
+      "title": "Phase III Trial to Evaluate the Efficacy and Safety in Patients With Ankle Sprains.",
+      "what": "This study is a multi-center, double-blind, randomized controlled trial to evaluate the efficacy and safety of EFTS vs. placebo in patients with ankle sprains.",
+      "why": "Demonstrates potential superiority of EFTS over placebo for pain reduction in ankle sprain patients",
+      "pkpd_hook": "No pharmacokinetic or pharmacodynamic points mentioned in the abstract",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT06866613?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Phase III Trial to Evaluate the Efficacy and Safety in Patients With Ankle Sprains.",
+      "drugs": [
+        "esflurbiprofen topical system"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Phase III Trial to Evaluate the Efficacy and Safety"
+    }
+  ],
+  "molecule": {
+    "name": "rivaroxaban",
+    "smiles": "C1COCC(=O)N1C2=CC=C(C=C2)N3C[C@@H](OC3=O)CNC(=O)C4=CC=C(S4)Cl",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/9875401",
+    "Formula": "C19H18ClN3O5S",
+    "Molecular weight": 435.9,
+    "logP": 2.52,
+    "H bond donors": 1,
+    "H bond acceptors": 6,
+    "TPSA": 88.2,
+    "Rotatable bonds": 5,
+    "Rings": 4,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: rivaroxaban and ciprofloxacin",
+      "url": "#lab?a=rivaroxaban&b=ciprofloxacin"
+    },
+    "atc": [
+      {
+        "code": "B01AF01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "B",
+            "name": "Blood and blood forming organs"
+          },
+          {
+            "level": 2,
+            "code": "B01",
+            "name": "Antithrombotic agents"
+          },
+          {
+            "level": 3,
+            "code": "B01A",
+            "name": "Antithrombotic agents"
+          },
+          {
+            "level": 4,
+            "code": "B01AF",
+            "name": "Direct factor Xa inhibitors"
+          }
+        ],
+        "substance": "rivaroxaban"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Rivaroxaban is an anticoagulant medicine (a medicine that prevents blood clotting) used: to treat deep vein thrombosis (DVT, a blood clot in a deep vein, usually in the leg) and pulmonary embolism (a clot in a blood vessel supplying the lungs), and to prevent DVT and pulmonary embolism from recurring in adults; to prevent venous thromboembolism (VTE, the formation of blood clots in the veins) in adults who are undergoing surgery to replace a hip or knee; to treat VTE and prevent VTE from recurring in children and adolescents aged less than 18 years; to prevent stroke (caused by a blood clot in the brain) and systemic embolism (a blood clot in another organ) in adults with non-valvular atrial fibrillation (irregular rapid contractions of the upper chambers of the heart); to prevent atherothrombotic events (such as heart attack, stroke or death from heart disease) in adults: after an acute coronary syndrome, when it is used with an antiplatelet medicine (which prevents the formation of blood clots). Acute coronary syndrome consists of conditions such as unstable angina (a severe type of chest pain) and heart attack; at high risk of ischaemic events (problems caused by restricted blood supply) who have coronary artery disease (disease caused by obstructed blood supply to the heart muscle) or peripheral artery disease (disease caused by defective blood flow in the arteries). It is used with acetylsalicylic acid.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/xarelto"
+    },
+    "mechanisms": [
+      {
+        "text": "Coagulation factor X inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL198362"
+      }
+    ]
+  },
+  "pair": {
+    "a": "rivaroxaban",
+    "b": "ciprofloxacin",
+    "sentences": [
+      "ciprofloxacin is a moderate inhibitor of CYP3A and rivaroxaban is a moderate sensitive substrate of CYP3A, so rivaroxaban exposure can be higher."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 2.4,
+    "category": "moderate increase"
+  }
+}
