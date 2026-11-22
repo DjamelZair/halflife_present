@@ -1,0 +1,166 @@
+{
+  "date": "2026-11-23",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 34,
+      "clinic/bioRxiv": 2,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 6,
+      "discovery/FDA": 6,
+      "discovery/PubMed": 14,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {
+      "FDA novel approvals": "FDA novel approvals failed: 401 Client Error: Unauthorized for url: https://www.fda.gov/drugs/novel-drug-approvals-fda/novel-drug-approvals-2026"
+    },
+    "sources": {
+      "PubMed": 34,
+      "Preprints": 3,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 6,
+      "FDA": 6,
+      "PubMed discovery": 14,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 20,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Vancomycin Clearance During CVVHDF With an oXiris Membrane: Pharmacokinetic Evidence of Adsorptive Drug Removal.",
+      "what": "Adsorptive hemofilters such as oXiris are increasingly used during continuous renal replacement therapy (CRRT) in septic shock, yet their interaction with antimicrobial agents remains insufficiently characterized. Vancomycin dosing during CRRT is particularly challenging because of altered volume of distribution, protein binding, and extracorporeal clearance.",
+      "why": "In vivo study shows time-dependent vancomycin adsorption by oXiris membrane during CVVHDF, affecting drug exposure.",
+      "pkpd_hook": "Estimated extracorporeal clearance of vancomycin was approximately 1.25 L/h after first-order correction.",
+      "source": "PubMed, Blood purification",
+      "url": "https://doi.org/10.1159/bpu/abpag034",
+      "peer_reviewed": true,
+      "original_title": "Vancomycin Clearance During CVVHDF With an oXiris Membrane: Pharmacokinetic Evidence of Adsorptive Drug Removal.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Vancomycin adsorption During CVVHDF with oXiris Membrane"
+    },
+    {
+      "title": "Two-sample machine-learning estimation of rifampicin exposure in tuberculosis: an external validation study.",
+      "what": "Subtherapeutic rifampicin exposure drives treatment failure and acquired resistance in tuberculosis. We aimed to develop and externally validate a concentration-driven machine learning (ML) model predicting rifampicin systemic exposure (AUC0-24h) from sparse clinical sampling, addressing the structural biases and limited generalizability of conventional Bayesian precision dosing.",
+      "why": "A machine learning model predicts rifampicin systemic exposure (AUC0-24h) from sparse clinical sampling, outperforming traditional methods.",
+      "pkpd_hook": "The model was evaluated based on a two-point sampling strategy at 2 and 8 hours post-dose.",
+      "source": "PubMed, Clinical microbiology and infection : the official publication of the European Society of Clinical Microbiology and Infectious Diseases",
+      "url": "https://doi.org/10.1016/j.cmi.2026.11.017",
+      "peer_reviewed": true,
+      "original_title": "Two-sample machine-learning estimation of rifampicin exposure in tuberculosis: an external validation study.",
+      "drugs": [
+        "rifampicin"
+      ],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "Two-sample machine-learning estimation of rifampicin exposure in tuberculosis"
+    },
+    {
+      "title": "Giredestran approved by the FDA",
+      "what": "",
+      "why": "",
+      "pkpd_hook": "",
+      "source": "FDA, Novel drug approval",
+      "url": "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=220791",
+      "peer_reviewed": true,
+      "original_title": "Giredestran approved by the FDA",
+      "drugs": [
+        "giredestran"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Giredestran approved by the FDA"
+    }
+  ],
+  "molecule": {
+    "name": "nisoldipine",
+    "smiles": "CC1=C(C(C(=C(N1)C)C(=O)OCC(C)C)C2=CC=CC=C2[N+](=O)[O-])C(=O)OC",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/4499",
+    "Formula": "C20H24N2O6",
+    "Molecular weight": 388.4,
+    "logP": 3.2,
+    "H bond donors": 1,
+    "H bond acceptors": 7,
+    "TPSA": 107.8,
+    "Rotatable bonds": 6,
+    "Rings": 2,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: nisoldipine and sotorasib",
+      "url": "#lab?a=nisoldipine&b=sotorasib"
+    },
+    "atc": [
+      {
+        "code": "C08CA07",
+        "levels": [
+          {
+            "level": 1,
+            "code": "C",
+            "name": "Cardiovascular system"
+          },
+          {
+            "level": 2,
+            "code": "C08",
+            "name": "Calcium channel blockers"
+          },
+          {
+            "level": 3,
+            "code": "C08C",
+            "name": "Selective calcium channel blockers with mainly vascular effects"
+          },
+          {
+            "level": 4,
+            "code": "C08CA",
+            "name": "Dihydropyridine derivatives"
+          }
+        ],
+        "substance": "nisoldipine"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Nisoldipine extended-release tablets are indicated for the treatment of hypertension. It may be used alone or in combination with other antihypertensive agents.",
+      "source": "FDA label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a52b773a-44f9-442f-a4be-39f79a558bd2"
+    },
+    "mechanisms": [
+      {
+        "text": "Voltage-gated L-type calcium channel blocker",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL1726"
+      }
+    ]
+  },
+  "pair": {
+    "a": "nisoldipine",
+    "b": "sotorasib",
+    "sentences": [
+      "sotorasib is a moderate inducer of CYP3A and nisoldipine is a sensitive substrate of CYP3A, so nisoldipine exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 3.0,
+    "illustrative_auc_ratio": 0.36,
+    "category": "moderate decrease"
+  }
+}
