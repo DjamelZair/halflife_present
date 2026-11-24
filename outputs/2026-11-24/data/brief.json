@@ -1,0 +1,165 @@
+{
+  "date": "2026-11-24",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 31,
+      "clinic/bioRxiv": 2,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 6,
+      "discovery/FDA": 9,
+      "discovery/PubMed": 4,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 31,
+      "Preprints": 3,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 6,
+      "FDA": 9,
+      "PubMed discovery": 4,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 21,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Beyond interaction checking: mechanism-informed drug-drug interaction management in contemporary HIV pharmacotherapy.",
+      "what": "Drug-drug interactions (DDIs) complicate antiretroviral therapy (ART), particularly with multimorbidity and polypharmacy. This review connects interaction mechanisms with prescribing decisions, distinguishing altered exposure from demonstrated toxicity or virological failure.",
+      "why": "This review highlights the importance of understanding interaction mechanisms to guide prescribing decisions, particularly for multimorbidity and polypharmacy cases.",
+      "pkpd_hook": "Pharmacokinetic boosters are identified as interaction drivers. Long-acting formulations require prospective medication review due to potential persisting interactions with limited reversibility.",
+      "source": "PubMed, Expert opinion on pharmacotherapy",
+      "url": "https://doi.org/10.1080/14656566.2026.2768642",
+      "peer_reviewed": true,
+      "original_title": "Beyond interaction checking: mechanism-informed drug-drug interaction management in contemporary HIV pharmacotherapy.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Mechanism-informed management of drug-drug interactions in contemporary HIV therapy"
+    },
+    {
+      "title": "A phase 1 study of secutrelvir with single and multiple oral doses evaluating the safety, tolerability, pharmacokinetics, and drug-drug interaction with midazolam.",
+      "what": "This Phase 1 study characterized the safety, tolerability, pharmacokinetics (PK), relative bioavailability (BA), food effect (FE), and CYP3A drug-drug interaction (DDI) potential of secutrelvir (SCV), a SARS-CoV-2 3CL protease inhibitor, following single- and multiple-ascending dose (SAD and MAD) assessments in healthy adults. This single-center study comprised three parts: Part 1, randomized, double-blind, placebo-controlled SAD assessment of SCV oral suspension (5-600 mg); Part 2, randomized, open-label crossover assessing relative BA of 20-mg SCV tablet vs suspension and FE; and Part 3, randomized, double-blind, placebo-controlled MAD assessment of SCV tablet for 14 days (40/20 mg or 80/40 mg with midazolam in Japanese adults; 80/40 mg without midazolam in White adults).",
+      "why": "Secutrelvir (SCV) demonstrates manageable food effect and low potential for CYP3A-mediated drug-drug interaction with midazolam.",
+      "pkpd_hook": "Exposure increases dose-proportionally, tablet Cmax is lower than suspension, and food reduces tablet drug exposure.",
+      "source": "PubMed, Antimicrobial agents and chemotherapy",
+      "url": "https://doi.org/10.1128/aac.00952-26",
+      "peer_reviewed": true,
+      "original_title": "A phase 1 study of secutrelvir with single and multiple oral doses evaluating the safety, tolerability, pharmacokinetics, and drug-drug interaction with midazolam.",
+      "drugs": [
+        "midazolam"
+      ],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Secutrelvir with single and multiple oral doses evaluating the safety"
+    },
+    {
+      "title": "CHIlled Platelet Study \"CHIPS\"",
+      "what": "A phase 3 randomized partial blind storage duration ranging study in patients undergoing complex cardiac surgery that will compare the transfusion of cold stored platelets to standard room temperature stored platelets. The primary objective is to establish that cold stored platelets have a non-inferiority (or superiority) to room temperature platelets.",
+      "why": "The study aims to determine if cold stored platelets have non-inferiority or superiority to room temperature platelets.",
+      "pkpd_hook": "No specific pharmacokinetic or pharmacodynamic points mentioned.",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT04834414?tab=results",
+      "peer_reviewed": true,
+      "original_title": "CHIlled Platelet Study \"CHIPS\"",
+      "drugs": [
+        "cold stored platelets",
+        "room temperature platelets"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "CHIlled Platelet Study \"CHIPS\""
+    }
+  ],
+  "molecule": {
+    "name": "darunavir",
+    "smiles": "CC(C)CN(C[C@H]([C@H](CC1=CC=CC=C1)NC(=O)O[C@H]2CO[C@@H]3[C@H]2CCO3)O)S(=O)(=O)C4=CC=C(C=C4)N",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/213039",
+    "Formula": "C27H37N3O7S",
+    "Molecular weight": 547.7,
+    "logP": 2.38,
+    "H bond donors": 3,
+    "H bond acceptors": 8,
+    "TPSA": 140.4,
+    "Rotatable bonds": 11,
+    "Rings": 4,
+    "Rule of five violations": 1,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: darunavir and rifampicin",
+      "url": "#lab?a=darunavir&b=rifampicin"
+    },
+    "atc": [
+      {
+        "code": "J05AE10",
+        "levels": [
+          {
+            "level": 1,
+            "code": "J",
+            "name": "Antiinfectives for systemic use"
+          },
+          {
+            "level": 2,
+            "code": "J05",
+            "name": "Antivirals for systemic use"
+          },
+          {
+            "level": 3,
+            "code": "J05A",
+            "name": "Direct acting antivirals"
+          },
+          {
+            "level": 4,
+            "code": "J05AE",
+            "name": "Protease inhibitors"
+          }
+        ],
+        "substance": "darunavir"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Darunavir is used together with low-dose ritonavir and other HIV medicines to treat patients from 3 years of age (weighing at least 15 kg) who are infected with human immunodeficiency virus type 1 (HIV-1), a virus that causes acquired immune deficiency syndrome (AIDS).",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/prezista"
+    },
+    "mechanisms": [
+      {
+        "text": "Human immunodeficiency virus type 1 protease inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL1323"
+      }
+    ]
+  },
+  "pair": {
+    "a": "darunavir",
+    "b": "rifampicin",
+    "sentences": [
+      "rifampicin is a strong inducer of CYP3A and darunavir is a sensitive substrate of CYP3A, so darunavir exposure can be lower."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 0.0,
+    "induction_fold": 10.0,
+    "illustrative_auc_ratio": 0.11,
+    "category": "strong decrease"
+  }
+}
