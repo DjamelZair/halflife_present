@@ -1,0 +1,176 @@
+{
+  "date": "2026-11-25",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 56,
+      "clinic/bioRxiv": 8,
+      "clinic/medRxiv": 1,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 7,
+      "discovery/FDA": 10,
+      "discovery/PubMed": 8,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 56,
+      "Preprints": 9,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 7,
+      "FDA": 10,
+      "PubMed discovery": 8,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 22,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "HIV Pre-Exposure Prophylaxis in Solid Organ Transplant Recipients: An Overlooked Component of Long-Term Care.",
+      "what": "Sexual health and HIV prevention remain inconsistently addressed during follow-up after solid organ transplantation. This narrative review examines the potential role of HIV pre-exposure prophylaxis (PrEP) in transplant recipients with ongoing or anticipated HIV exposure.",
+      "why": "No clinical trials have evaluated PrEP in solid organ transplant recipients, but existing evidence supports individualized consideration.",
+      "pkpd_hook": "Tenofovir alafenamide/emtricitabine offers a more favorable renal profile, while long-acting cabotegravir avoids tenofovir exposure.",
+      "source": "PubMed, Clinical transplantation",
+      "url": "https://doi.org/10.1111/ctr.70776",
+      "peer_reviewed": true,
+      "original_title": "HIV Pre-Exposure Prophylaxis in Solid Organ Transplant Recipients: An Overlooked Component of Long-Term Care.",
+      "drugs": [
+        "tenofovir",
+        "tenofovir alafenamide",
+        "tenofovir disoproxil"
+      ],
+      "lane": "clinic",
+      "topic": "PK",
+      "headline": "HIV Pre-Exposure Prophylaxis in Solid Organ Transplant Recipients"
+    },
+    {
+      "title": "Hepatocyte-based models for cytochrome P450 fraction metabolized determination: Recommendations from the Quantitative Fraction Metabolized Working Group of the International Consortium for Innovation and Quality in Pharmaceutical Development.",
+      "what": "Accurate quantification of fraction metabolized (fm) by drug metabolizing enzymes is essential for understanding clearance mechanisms, predicting interindividual variability, and assessing victim drug-drug interaction (DDI) risk during drug discovery and development. Particularly, determining fm for metabolically stable, low turnover compounds remains challenging.",
+      "why": "Study highlights differences in intrinsic clearance, inhibitor response, and fraction metabolized predictions across hepatocyte systems.",
+      "pkpd_hook": "Differences in metabolite representation, inhibitor behavior, and effective inhibitor exposure may influence fm predictions.",
+      "source": "PubMed, Drug metabolism and disposition: the biological fate of chemicals",
+      "url": "https://doi.org/10.1016/j.dmd.2026.100426",
+      "peer_reviewed": true,
+      "original_title": "Hepatocyte-based models for cytochrome P450 fraction metabolized determination: Recommendations from the Quantitative Fraction Metabolized Working Group of the International Consortium for Innovation and Quality in Pharmaceutical Development.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Recommendations for cytochrome P450 Fraction Metabolized determination"
+    },
+    {
+      "title": "Rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m) authorised in the EU for pre-exposure and post-exposure prophylaxis against rabies in individuals of all age groups.rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m) should be used in accordance with official recommendations",
+      "what": "rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m) is indicated for pre-exposure and post-exposure prophylaxis against rabies in individuals of all age groups.rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m) should be used in accordance with official recommendations.",
+      "why": "A new rabies vaccine has been authorized for pre- and post-exposure prophylaxis in individuals of all ages.",
+      "pkpd_hook": "Dose recommendations should align with official guidelines.",
+      "source": "EMA, EU authorisation",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/vaxrabeo",
+      "peer_reviewed": true,
+      "original_title": "Rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m) authorised in the EU for pre-exposure and post-exposure prophylaxis against rabies in individuals of all age groups.rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m) should be used in accordance with official recommendations",
+      "drugs": [
+        "rabies virus (inactivated) strain wistar (pm/wi 38-1503-3m)"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Rabies vaccine strain wistar authorized for use in all age groups"
+    }
+  ],
+  "molecule": {
+    "name": "pralsetinib",
+    "smiles": "CC1=CC(=NN1)NC2=NC(=NC(=C2)C)C3CCC(CC3)(C(=O)N[C@@H](C)C4=CN=C(C=C4)N5C=C(C=N5)F)OC",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/129073603",
+    "Formula": "C27H32FN9O2",
+    "Molecular weight": 533.6,
+    "logP": 4.2,
+    "H bond donors": 3,
+    "H bond acceptors": 8,
+    "TPSA": 135.5,
+    "Rotatable bonds": 8,
+    "Rings": 5,
+    "Rule of five violations": 1,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: pralsetinib and posaconazole",
+      "url": "#lab?a=pralsetinib&b=posaconazole"
+    },
+    "atc": [
+      {
+        "code": "L01EX23",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "Antineoplastic agents"
+          },
+          {
+            "level": 3,
+            "code": "L01E",
+            "name": "Protein kinase inhibitors"
+          },
+          {
+            "level": 4,
+            "code": "L01EX",
+            "name": "Other protein kinase inhibitors"
+          }
+        ],
+        "substance": "pralsetinib"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Pralsetinib is a kinase inhibitor indicated for treatment of: Adult patients with metastatic rearranged during transfection (RET ) fusion-positive non-small cell lung cancer as detected by an FDA approved test (NSCLC). Adult and pediatric patients 12 years of age and older with advanced or metastatic RET fusion-positive thyroid cancer who require systemic therapy and who are radioactive iodine-refractory (if radioactive iodine is appropriate). This indication is approved under accelerated approval based on overall response rate and duration of response.",
+      "source": "FDA label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=16edd46e-28b8-f06d-e063-6394a90ae31b"
+    },
+    "mechanisms": [
+      {
+        "text": "Tyrosine-protein kinase receptor RET inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4582651"
+      },
+      {
+        "text": "Coiled-coil domain-containing protein 6/Tyrosine-protein kinase receptor RET inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4582651"
+      },
+      {
+        "text": "Kinesin-1 heavy chain/ Tyrosine-protein kinase receptor RET inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL4582651"
+      }
+    ]
+  },
+  "pair": {
+    "a": "pralsetinib",
+    "b": "posaconazole",
+    "sentences": [
+      "posaconazole is a strong inhibitor of CYP3A and pralsetinib is a moderate sensitive substrate of CYP3A, so pralsetinib exposure can be higher."
+    ],
+    "fm": 0.7,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 3.19,
+    "category": "moderate increase"
+  }
+}
