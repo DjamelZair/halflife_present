@@ -1,0 +1,141 @@
+{
+  "date": "2026-11-26",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 59,
+      "clinic/bioRxiv": 9,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 8,
+      "discovery/FDA": 10,
+      "discovery/PubMed": 10,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {
+      "ChEMBL": "ChEMBL failed: 500 Server Error: Internal Server Error for url: https://www.ebi.ac.uk/chembl/api/data/molecule.json?pref_name__iexact=LURASIDONE&limit=1",
+      "ChEMBL ATC levels": "ChEMBL ATC levels failed: 500 Server Error: Internal Server Error for url: https://www.ebi.ac.uk/chembl/api/data/atc_class/N05AE05.json"
+    },
+    "sources": {
+      "PubMed": 59,
+      "Preprints": 10,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 8,
+      "FDA": 10,
+      "PubMed discovery": 10,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 23,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Clozapine Intoxication: What Can We Learn from Case Reports? A Systematic Review.",
+      "what": "Clozapine remains the gold standard for treatment resistant schizophrenia; however, the complex pharmacokinetic and pharmacodynamic properties makes clozapine susceptible to interactions and thus increase the risk of intoxications. By reviewing published case reports on acute clozapine intoxications, we aimed to identify clinical scenarios, risk factors and trajectory outcomes, to recommend potentially preventable measures.",
+      "why": "Identified life-threatening scenarios, risk factors, and outcomes of clozapine intoxications.",
+      "pkpd_hook": "Maximum survived clozapine plasma level was 9476 ng/mL.",
+      "source": "PubMed, Drugs - real world outcomes",
+      "url": "https://doi.org/10.1007/s40801-026-00600-7",
+      "peer_reviewed": true,
+      "original_title": "Clozapine Intoxication: What Can We Learn from Case Reports? A Systematic Review.",
+      "drugs": [
+        "clozapine"
+      ],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Clozapine Intoxication risks: insights from Case Reports"
+    },
+    {
+      "title": "A Dynamic, Inflammation-Aware Framework for Safe Clozapine Prescribing in East Asian Populations.",
+      "what": "Background: Clozapine is the most effective antipsychotic for treatment-resistant schizophrenia, yet it remains underused in many East Asian settings. Lower average dose requirements have often been attributed to CYP1A2 genetic variation, but genotype alone does not adequately explain interindividual or within-patient variability.",
+      "why": "Cytokine-mediated CYP1A2 suppression may cause concentration increases during inflammation",
+      "pkpd_hook": "Clozapine exposure reflects both stable and time-varying factors, including smoking, interacting medicines, adherence, and inflammatory illness.",
+      "source": "PubMed, Clinics and practice",
+      "url": "https://doi.org/10.3390/clinpract16110214",
+      "peer_reviewed": true,
+      "original_title": "A Dynamic, Inflammation-Aware Framework for Safe Clozapine Prescribing in East Asian Populations.",
+      "drugs": [
+        "clozapine"
+      ],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "A Framework for Safe Clozapine Prescribing in East Asian Populations"
+    },
+    {
+      "title": "Phase III Trial to Assess the Safety and Efficacy of TK-254RX in Patients With Contusions",
+      "what": "This study is an open-label, multi-centric clinical trial to evaluate the safety and efficacy of TK-254RX in patients with contusions. The primary objective of this study is to assess the safety of TK-254RX.",
+      "why": "This trial aims to determine the safety of TK-254RX in contusion patients.",
+      "pkpd_hook": "No pharmacokinetic or pharmacodynamic points mentioned.",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT06871046?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Phase III Trial to Assess the Safety and Efficacy of TK-254RX in Patients With Contusions",
+      "drugs": [
+        "esflurbiprofen topical system"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Assessing Safety and Efficacy of TK-254RX in contusion Patients"
+    }
+  ],
+  "molecule": {
+    "name": "lurasidone",
+    "smiles": "C1CC[C@H]([C@@H](C1)CN2CCN(CC2)C3=NSC4=CC=CC=C43)CN5C(=O)[C@H]6[C@@H]7CC[C@@H](C7)[C@H]6C5=O",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/213046",
+    "Formula": "C28H36N4O2S",
+    "Molecular weight": 492.7,
+    "logP": 4.26,
+    "H bond donors": 0,
+    "H bond acceptors": 6,
+    "TPSA": 56.8,
+    "Rotatable bonds": 5,
+    "Rings": 7,
+    "Rule of five violations": 0,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: lurasidone and conivaptan",
+      "url": "#lab?a=lurasidone&b=conivaptan"
+    },
+    "atc": [
+      {
+        "code": "N05AE05",
+        "levels": [],
+        "substance": null
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "EMA",
+    "used_for": {
+      "text": "Lurasidone is a medicine that is used to treat patients from 13 years of age with schizophrenia, a mental illness with symptoms that include disorganised thinking and speech, hallucinations (hearing or seeing things that are not there), suspiciousness and delusions (mistaken beliefs).",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/latuda"
+    },
+    "mechanisms": []
+  },
+  "pair": {
+    "a": "lurasidone",
+    "b": "conivaptan",
+    "sentences": [
+      "conivaptan is a moderate inhibitor of CYP3A and lurasidone is a sensitive substrate of CYP3A, so lurasidone exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 4.0,
+    "category": "moderate increase"
+  }
+}

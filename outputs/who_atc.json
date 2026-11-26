@@ -300,5 +300,37 @@
   "povorcitinib": {
     "checked": "2026-11-17",
     "entries": []
+  },
+  "conivaptan": {
+    "checked": "2026-11-26",
+    "entries": [
+      {
+        "code": "C03XA02",
+        "levels": [
+          {
+            "level": 1,
+            "code": "C",
+            "name": "CARDIOVASCULAR SYSTEM"
+          },
+          {
+            "level": 2,
+            "code": "C03",
+            "name": "DIURETICS"
+          },
+          {
+            "level": 3,
+            "code": "C03X",
+            "name": "OTHER DIURETICS"
+          },
+          {
+            "level": 4,
+            "code": "C03XA",
+            "name": "Vasopressin antagonists"
+          }
+        ],
+        "substance": "conivaptan",
+        "url": "https://atcddd.fhi.no/atc_ddd_index/?code=C03XA02"
+      }
+    ]
   }
 }
