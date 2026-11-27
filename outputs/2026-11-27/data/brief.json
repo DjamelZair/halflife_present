@@ -1,0 +1,217 @@
+{
+  "date": "2026-11-27",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 59,
+      "clinic/bioRxiv": 5,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 8,
+      "discovery/FDA": 10,
+      "discovery/PubMed": 16,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 59,
+      "Preprints": 5,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 8,
+      "FDA": 10,
+      "PubMed discovery": 17,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 24,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "The ROAD Concept: A Mechanism-Guided Approach to Antimicrobial Therapy for Carbapenemase-Producing Bacteria.",
+      "what": "Carbapenemase-producing Gram-negative bacteria are among the most challenging pathogens encountered in contemporary infectious diseases and critical care practice. Although antimicrobial susceptibility testing remains the cornerstone of laboratory diagnosis, reliance on the minimum inhibitory concentration (MIC) in isolation is insufficient to predict clinical outcome.",
+      "why": "Highlights the importance of considering multiple factors beyond MIC for effective antimicrobial therapy.",
+      "pkpd_hook": "Discusses pharmacokinetic/pharmacodynamic optimization strategies in critically ill patients.",
+      "source": "PubMed, Biomedicines",
+      "url": "https://doi.org/10.3390/biomedicines14112659",
+      "peer_reviewed": true,
+      "original_title": "The ROAD Concept: A Mechanism-Guided Approach to Antimicrobial Therapy for Carbapenemase-Producing Bacteria.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Mechanism-Guided Approach to carbapenemase Bacteria Therapy"
+    },
+    {
+      "title": "Posaconazole in Clinical Practice: A Narrative Review of Current Evidence and Expert Recommendations.",
+      "what": "Posaconazole is a broad-spectrum antifungal agent used to manage invasive fungal infections (IFIs), particularly in high-risk immunocompromised patients. It is active against a range of fungal pathogens, including Candida spp., Aspergillus spp., and Mucorales.",
+      "why": "Strong evidence supports posaconazole as preferred agent for primary antifungal prophylaxis in high-risk patients.",
+      "pkpd_hook": "Pharmacokinetics vary by formulation, with delayed-release tablets and intravenous formulations overcoming limitations of original oral suspension.",
+      "source": "PubMed, Infectious diseases & clinical microbiology",
+      "url": "https://doi.org/10.36519/idcm.2026.1128",
+      "peer_reviewed": true,
+      "original_title": "Posaconazole in Clinical Practice: A Narrative Review of Current Evidence and Expert Recommendations.",
+      "drugs": [
+        "fluconazole",
+        "itraconazole",
+        "posaconazole"
+      ],
+      "lane": "clinic",
+      "topic": "Clinic",
+      "headline": "Posaconazole: Current Evidence and Expert Recommendations"
+    },
+    {
+      "title": "Study to Assess Rifaximin Soluble Solid Dispersion (SSD) for the Delay of Encephalopathy Decompensation in Cirrhosis",
+      "what": "Study RNLC3131 is a Phase 3, randomized, double-blind, placebo-controlled, multicenter study to assess the efficacy and safety of rifaximin SSD-40mg IR for the delay of the first episode of overt hepatic encephalopathy (OHE) decompensation in liver cirrhosis, defined by the presence of medically controlled ascites.",
+      "why": "This study evaluates the efficacy and safety of a higher dose of rifaximin for delaying the first overt hepatic encephalopathy decompensation in liver cirrhosis patients with medically controlled ascites.",
+      "pkpd_hook": "The study focuses on the efficacy of rifaximin SSD-40mg IR, potentially impacting its exposure and effect on decompensation delay.",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT05071716?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Study to Assess Rifaximin Soluble Solid Dispersion (SSD) for the Delay of Encephalopathy Decompensation in Cirrhosis",
+      "drugs": [
+        "rifaximin ssd"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Study on Rifaximin Soluble Solid Dispersion for delaying Encephalopathy Decompensation in Cirrhosis"
+    }
+  ],
+  "molecule": {
+    "name": "sirolimus",
+    "smiles": "C[C@@H]1CC[C@H]2C[C@@H](/C(=C/C=C/C=C/[C@H](C[C@H](C(=O)[C@@H]([C@@H](/C(=C/[C@H](C(=O)C[C@H](OC(=O)[C@@H]3CCCCN3C(=O)C(=O)[C@@]1(O2)O)[C@H](C)C[C@@H]4CC[C@H]([C@@H](C4)OC)O)C)/C)O)OC)C)C)/C)OC",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/5284616",
+    "Formula": "C51H79NO13",
+    "Molecular weight": 914.2,
+    "logP": 6.18,
+    "H bond donors": 3,
+    "H bond acceptors": 13,
+    "TPSA": 195.4,
+    "Rotatable bonds": 6,
+    "Rings": 4,
+    "Rule of five violations": 3,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: sirolimus and crizotinib",
+      "url": "#lab?a=sirolimus&b=crizotinib"
+    },
+    "atc": [
+      {
+        "code": "S01XA23",
+        "levels": [
+          {
+            "level": 1,
+            "code": "S",
+            "name": "Sensory organs"
+          },
+          {
+            "level": 2,
+            "code": "S01",
+            "name": "Ophthalmologicals"
+          },
+          {
+            "level": 3,
+            "code": "S01X",
+            "name": "Other ophthalmologicals"
+          },
+          {
+            "level": 4,
+            "code": "S01XA",
+            "name": "Other ophthalmologicals"
+          }
+        ],
+        "substance": "sirolimus"
+      },
+      {
+        "code": "L04AH01",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L04",
+            "name": "Immunosuppressants"
+          },
+          {
+            "level": 3,
+            "code": "L04A",
+            "name": "Immunosuppressants"
+          },
+          {
+            "level": 4,
+            "code": "L04AH",
+            "name": "Mammalian target of rapamycin (mTOR) kinase inhibitors"
+          }
+        ],
+        "substance": "sirolimus"
+      },
+      {
+        "code": "L01EG04",
+        "levels": [
+          {
+            "level": 1,
+            "code": "L",
+            "name": "Antineoplastic and immunomodulating agents"
+          },
+          {
+            "level": 2,
+            "code": "L01",
+            "name": "Antineoplastic agents"
+          },
+          {
+            "level": 3,
+            "code": "L01E",
+            "name": "Protein kinase inhibitors"
+          },
+          {
+            "level": 4,
+            "code": "L01EG",
+            "name": "Mammalian target of rapamycin (mTOR) kinase inhibitors"
+          }
+        ],
+        "substance": "sirolimus"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Sirolimus is a medicine used to prevent the body from rejecting a newly transplanted kidney. It is used in adults who are at a low to moderate risk of rejection. It is recommended that sirolimus is used with ciclosporin and corticosteroids (other medicines to prevent organ rejection) for two to three months. Sirolimus can then be used for continuing treatment with corticosteroids, but only if ciclosporin treatment can be stopped.",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/rapamune"
+    },
+    "mechanisms": [
+      {
+        "text": "FK506-binding protein 1A inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL413"
+      }
+    ]
+  },
+  "pair": {
+    "a": "sirolimus",
+    "b": "crizotinib",
+    "sentences": [
+      "crizotinib is a moderate inhibitor of CYP3A and sirolimus is a sensitive substrate of CYP3A, so sirolimus exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 5.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 4.0,
+    "category": "moderate increase"
+  }
+}
