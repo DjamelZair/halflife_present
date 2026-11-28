@@ -1,0 +1,162 @@
+{
+  "date": "2026-11-28",
+  "mode": "mistral",
+  "demo": false,
+  "status": {
+    "demo": false,
+    "counts": {
+      "clinic/PubMed": 60,
+      "clinic/bioRxiv": 6,
+      "clinic/medRxiv": 2,
+      "clinic/ClinicalTrials.gov": 20,
+      "clinic/Lareb": 1,
+      "discovery/EMA": 8,
+      "discovery/FDA": 10,
+      "discovery/PubMed": 19,
+      "discovery/ClinicalTrials.gov": 50
+    },
+    "errors": {},
+    "sources": {
+      "PubMed": 60,
+      "Preprints": 8,
+      "ClinicalTrials.gov": 20,
+      "Lareb": 1,
+      "EMA": 8,
+      "FDA": 10,
+      "PubMed discovery": 21,
+      "Phase 3 results": 50,
+      "EUDA": 0
+    },
+    "zero_streaks": {
+      "ClinicalTrials.gov": 0,
+      "EMA": 0,
+      "EUDA": 25,
+      "FDA": 0,
+      "Lareb": 0,
+      "Phase 3 results": 0,
+      "Preprints": 0,
+      "PubMed": 0,
+      "PubMed discovery": 0
+    }
+  },
+  "cards": [
+    {
+      "title": "Prediction of Drug Metabolism-Mediated Clearance and Drug-Drug Interactions.",
+      "what": "Drug metabolism-mediated clearance and drug-drug interactions (DDIs) are critical considerations in drug development and therapeutic management. This chapter explores the integration of in vitro systems with physiologically based pharmacokinetic (PBPK) modeling to predict clearance and interaction risk for small-molecule drugs.",
+      "why": "This chapter discusses the use of in vitro systems and PBPK modeling to predict drug clearance and interaction risks for small-molecule drugs.",
+      "pkpd_hook": "The chapter covers topics like enzyme kinetics, IVIVE for cytochrome P450 and non-P450 pathways, reversible inhibition, time-dependent inhibition, and enzyme induction.",
+      "source": "PubMed, Handbook of experimental pharmacology",
+      "url": "https://doi.org/10.1007/164_2026_871",
+      "peer_reviewed": true,
+      "original_title": "Prediction of Drug Metabolism-Mediated Clearance and Drug-Drug Interactions.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Interaction",
+      "headline": "Predicting Drug metabolism and Interactions with PBPK modeling"
+    },
+    {
+      "title": "Pharmacokinetics, Pharmacodynamics, and Tolerability of BC0305, a Dual SGLT1/2 Inhibitor, in a First-in-Human Single Ascending Dose Study.",
+      "what": "BC0305 is a novel dual sodium-glucose cotransporter 1/2 (SGLT1/2) inhibitor in clinical development for the treatment of type 2 diabetes. This first-in-human studyevaluated the safety, pharmacokinetics (PK), and pharmacodynamics (PD) of BC0305 after single ascending oral doses in healthy volunteers.",
+      "why": "BC0305 increases urinary glucose excretion in a dose-dependent manner up to 100 mg, suggesting renal SGLT2 inhibition",
+      "pkpd_hook": "Exposure increases with dose across the range studied, with a terminal half-life of 8.2-14.6 h",
+      "source": "PubMed, Drugs in R&D",
+      "url": "https://doi.org/10.1007/s40268-026-00558-5",
+      "peer_reviewed": true,
+      "original_title": "Pharmacokinetics, Pharmacodynamics, and Tolerability of BC0305, a Dual SGLT1/2 Inhibitor, in a First-in-Human Single Ascending Dose Study.",
+      "drugs": [],
+      "lane": "clinic",
+      "topic": "Dosing",
+      "headline": "First-in-Human Study of BC0305, a Dual sglt1/2 Inhibitor, for type 2 diabetes"
+    },
+    {
+      "title": "Axillary Reverse Mapping in Preventing Lymphedema in Patients With Breast Cancer Undergoing Axillary Lymph Node Dissection",
+      "what": "This phase III trial studies how well axillary reverse mapping works in preventing lymphedema in patients with breast cancer undergoing axillary lymph node dissection. Axillary reverse mapping may help to preserve the lymph node drainage system around the breast so as to prevent lymphedema after surgery.",
+      "why": "This study investigates if axillary reverse mapping can help reduce the risk of lymphedema in breast cancer patients undergoing axillary lymph node dissection.",
+      "pkpd_hook": "The study focuses on preserving the lymph node drainage system around the breast.",
+      "source": "ClinicalTrials.gov, Phase 3 results",
+      "url": "https://clinicaltrials.gov/study/NCT03927027?tab=results",
+      "peer_reviewed": true,
+      "original_title": "Axillary Reverse Mapping in Preventing Lymphedema in Patients With Breast Cancer Undergoing Axillary Lymph Node Dissection",
+      "drugs": [
+        "isosulfan blue"
+      ],
+      "lane": "discovery",
+      "topic": "",
+      "headline": "Axillary Reverse Mapping for Preventing Lymphedema in Breast Cancer Patients"
+    }
+  ],
+  "molecule": {
+    "name": "darunavir",
+    "smiles": "CC(C)CN(C[C@H]([C@H](CC1=CC=CC=C1)NC(=O)O[C@H]2CO[C@@H]3[C@H]2CCO3)O)S(=O)(=O)C4=CC=C(C=C4)N",
+    "source": "PubChem",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/compound/213039",
+    "Formula": "C27H37N3O7S",
+    "Molecular weight": 547.7,
+    "logP": 2.38,
+    "H bond donors": 3,
+    "H bond acceptors": 8,
+    "TPSA": 140.4,
+    "Rotatable bonds": 11,
+    "Rings": 4,
+    "Rule of five violations": 1,
+    "reason": {
+      "kind": "interaction",
+      "text": "In today's interaction: darunavir and nefazodone",
+      "url": "#lab?a=darunavir&b=nefazodone"
+    },
+    "atc": [
+      {
+        "code": "J05AE10",
+        "levels": [
+          {
+            "level": 1,
+            "code": "J",
+            "name": "Antiinfectives for systemic use"
+          },
+          {
+            "level": 2,
+            "code": "J05",
+            "name": "Antivirals for systemic use"
+          },
+          {
+            "level": 3,
+            "code": "J05A",
+            "name": "Direct acting antivirals"
+          },
+          {
+            "level": 4,
+            "code": "J05AE",
+            "name": "Protease inhibitors"
+          }
+        ],
+        "substance": "darunavir"
+      }
+    ],
+    "atc_status": "assigned",
+    "atc_source": "ChEMBL",
+    "used_for": {
+      "text": "Darunavir is used together with low-dose ritonavir and other HIV medicines to treat patients from 3 years of age (weighing at least 15 kg) who are infected with human immunodeficiency virus type 1 (HIV-1), a virus that causes acquired immune deficiency syndrome (AIDS).",
+      "source": "EMA summary of one medicine with this substance",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/prezista"
+    },
+    "mechanisms": [
+      {
+        "text": "Human immunodeficiency virus type 1 protease inhibitor",
+        "source": "ChEMBL",
+        "url": "https://www.ebi.ac.uk/chembl/explore/compound/CHEMBL1323"
+      }
+    ]
+  },
+  "pair": {
+    "a": "darunavir",
+    "b": "nefazodone",
+    "sentences": [
+      "nefazodone is a strong inhibitor of CYP3A and darunavir is a sensitive substrate of CYP3A, so darunavir exposure can be higher."
+    ],
+    "fm": 0.9,
+    "i_over_ki": 50.0,
+    "induction_fold": 1.0,
+    "illustrative_auc_ratio": 8.5,
+    "category": "strong increase"
+  }
+}
